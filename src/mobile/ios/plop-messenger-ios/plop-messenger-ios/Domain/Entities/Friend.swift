@@ -2,7 +2,8 @@ import Foundation
 
 struct Friend {
   enum Status {
-    
+    case online
+    case offline
   }
   
   let userID: Int

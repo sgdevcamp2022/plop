@@ -19,7 +19,6 @@ struct User {
   let profile: Profile
   let state: State
   let role: Role
-  let profileImage: AnyPublisher<Data, Never>
   let device: Device
   let createdAt: String
   let updatedAt: String
@@ -29,7 +28,7 @@ struct User {
 
 struct Profile {
   let nickname: String
-  let image: String
+  let image: AnyPublisher<Data, Never>
 }
 
 struct Device {
