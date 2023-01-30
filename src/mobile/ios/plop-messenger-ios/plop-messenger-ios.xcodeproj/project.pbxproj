@@ -16,6 +16,7 @@
 		B41E40D029877F6500BB3126 /* Room.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41E40CF29877F6500BB3126 /* Room.swift */; };
 		B41E40D229877F6A00BB3126 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41E40D129877F6A00BB3126 /* Message.swift */; };
 		B41E40D9298783AE00BB3126 /* Friend.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41E40D8298783AE00BB3126 /* Friend.swift */; };
+		B41E40F1298792AD00BB3126 /* PlopMessengerModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B41E40EF298792AD00BB3126 /* PlopMessengerModel.xcdatamodeld */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +31,7 @@
 		B41E40CF29877F6500BB3126 /* Room.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Room.swift; sourceTree = "<group>"; };
 		B41E40D129877F6A00BB3126 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		B41E40D8298783AE00BB3126 /* Friend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Friend.swift; sourceTree = "<group>"; };
+		B41E40F0298792AD00BB3126 /* PlopMessengerModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = PlopMessengerModel.xcdatamodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +64,7 @@
 		B41E40B62987797C00BB3126 /* plop-messenger-ios */ = {
 			isa = PBXGroup;
 			children = (
+				B41E40EA2987926A00BB3126 /* Data */,
 				B41E40CB29877F0100BB3126 /* Domain */,
 				B41E40B72987797C00BB3126 /* AppDelegate.swift */,
 				B41E40B92987797C00BB3126 /* SceneDelegate.swift */,
@@ -90,6 +93,38 @@
 				B41E40D8298783AE00BB3126 /* Friend.swift */,
 			);
 			path = Entities;
+			sourceTree = "<group>";
+		};
+		B41E40EA2987926A00BB3126 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				B41E40ED2987927800BB3126 /* ImageLoader */,
+				B41E40EC2987927300BB3126 /* CoreData */,
+				B41E40EB2987927000BB3126 /* Network */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
+		B41E40EB2987927000BB3126 /* Network */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Network;
+			sourceTree = "<group>";
+		};
+		B41E40EC2987927300BB3126 /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+				B41E40EF298792AD00BB3126 /* PlopMessengerModel.xcdatamodeld */,
+			);
+			path = CoreData;
+			sourceTree = "<group>";
+		};
+		B41E40ED2987927800BB3126 /* ImageLoader */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = ImageLoader;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -166,6 +201,7 @@
 				B41E40D9298783AE00BB3126 /* Friend.swift in Sources */,
 				B41E40BC2987797C00BB3126 /* ViewController.swift in Sources */,
 				B41E40B82987797C00BB3126 /* AppDelegate.swift in Sources */,
+				B41E40F1298792AD00BB3126 /* PlopMessengerModel.xcdatamodeld in Sources */,
 				B41E40D229877F6A00BB3126 /* Message.swift in Sources */,
 				B41E40BA2987797C00BB3126 /* SceneDelegate.swift in Sources */,
 				B41E40D029877F6500BB3126 /* Room.swift in Sources */,
@@ -376,6 +412,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		B41E40EF298792AD00BB3126 /* PlopMessengerModel.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				B41E40F0298792AD00BB3126 /* PlopMessengerModel.xcdatamodel */,
+			);
+			currentVersion = B41E40F0298792AD00BB3126 /* PlopMessengerModel.xcdatamodel */;
+			path = PlopMessengerModel.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = B41E40AC2987797C00BB3126 /* Project object */;
 }
