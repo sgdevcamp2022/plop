@@ -8,6 +8,14 @@
 
 /* Begin PBXBuildFile section */
 		B401930729880F7200217AEB /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = B401930629880F7200217AEB /* CoreDataStack.swift */; };
+		B401930A298810D300217AEB /* NSManagedObjectContext+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4019309298810D300217AEB /* NSManagedObjectContext+Ext.swift */; };
+		B401930C29881E2800217AEB /* Observable+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = B401930B29881E2800217AEB /* Observable+Ext.swift */; };
+		B401930E29881F4800217AEB /* DomainConvertibleType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B401930D29881F4800217AEB /* DomainConvertibleType.swift */; };
+		B40193102988230B00217AEB /* Persistable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B401930F2988230B00217AEB /* Persistable.swift */; };
+		B40193132988242800217AEB /* ContextScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B40193122988242800217AEB /* ContextScheduler.swift */; };
+		B40193152988297300217AEB /* FetchedResultsControllerObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = B40193142988297300217AEB /* FetchedResultsControllerObserver.swift */; };
+		B4019317298829E700217AEB /* NSManagedObjectContext+Rx.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4019316298829E700217AEB /* NSManagedObjectContext+Rx.swift */; };
+		B401931929882D4000217AEB /* CoreDataRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B401931829882D4000217AEB /* CoreDataRepository.swift */; };
 		B41E40B82987797C00BB3126 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41E40B72987797C00BB3126 /* AppDelegate.swift */; };
 		B41E40BA2987797C00BB3126 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41E40B92987797C00BB3126 /* SceneDelegate.swift */; };
 		B41E40BC2987797C00BB3126 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41E40BB2987797C00BB3126 /* ViewController.swift */; };
@@ -37,6 +45,14 @@
 
 /* Begin PBXFileReference section */
 		B401930629880F7200217AEB /* CoreDataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
+		B4019309298810D300217AEB /* NSManagedObjectContext+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSManagedObjectContext+Ext.swift"; sourceTree = "<group>"; };
+		B401930B29881E2800217AEB /* Observable+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Observable+Ext.swift"; sourceTree = "<group>"; };
+		B401930D29881F4800217AEB /* DomainConvertibleType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainConvertibleType.swift; sourceTree = "<group>"; };
+		B401930F2988230B00217AEB /* Persistable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistable.swift; sourceTree = "<group>"; };
+		B40193122988242800217AEB /* ContextScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextScheduler.swift; sourceTree = "<group>"; };
+		B40193142988297300217AEB /* FetchedResultsControllerObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchedResultsControllerObserver.swift; sourceTree = "<group>"; };
+		B4019316298829E700217AEB /* NSManagedObjectContext+Rx.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSManagedObjectContext+Rx.swift"; sourceTree = "<group>"; };
+		B401931829882D4000217AEB /* CoreDataRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataRepository.swift; sourceTree = "<group>"; };
 		B41E40B42987797C00BB3126 /* plop-messenger-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "plop-messenger-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B41E40B72987797C00BB3126 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B41E40B92987797C00BB3126 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -77,6 +93,25 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		B4019308298810C700217AEB /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				B4019309298810D300217AEB /* NSManagedObjectContext+Ext.swift */,
+				B401930B29881E2800217AEB /* Observable+Ext.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		B40193112988241900217AEB /* RxCoreData */ = {
+			isa = PBXGroup;
+			children = (
+				B40193122988242800217AEB /* ContextScheduler.swift */,
+				B40193142988297300217AEB /* FetchedResultsControllerObserver.swift */,
+				B4019316298829E700217AEB /* NSManagedObjectContext+Rx.swift */,
+			);
+			path = RxCoreData;
+			sourceTree = "<group>";
+		};
 		B41E40AB2987797C00BB3126 = {
 			isa = PBXGroup;
 			children = (
@@ -148,10 +183,13 @@
 		B41E40EC2987927300BB3126 /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
+				B40193112988241900217AEB /* RxCoreData */,
+				B4019308298810C700217AEB /* Extensions */,
 				B4E8D66A2987B126003B946D /* Entities */,
 				B41E40EF298792AD00BB3126 /* PlopMessengerModel.xcdatamodeld */,
 				B41E40FC2987B07C00BB3126 /* UIImageTransformer.swift */,
 				B401930629880F7200217AEB /* CoreDataStack.swift */,
+				B401931829882D4000217AEB /* CoreDataRepository.swift */,
 			);
 			path = CoreData;
 			sourceTree = "<group>";
@@ -176,6 +214,8 @@
 				B4E8D65D2987B123003B946D /* CDFriend+CoreDataProperties.swift */,
 				B4E8D65E2987B123003B946D /* CDRoom+CoreDataClass.swift */,
 				B4E8D65F2987B123003B946D /* CDRoom+CoreDataProperties.swift */,
+				B401930D29881F4800217AEB /* DomainConvertibleType.swift */,
+				B401930F2988230B00217AEB /* Persistable.swift */,
 			);
 			path = Entities;
 			sourceTree = "<group>";
@@ -261,15 +301,22 @@
 				B401930729880F7200217AEB /* CoreDataStack.swift in Sources */,
 				B41E40CE29877F5E00BB3126 /* User.swift in Sources */,
 				B41E40D9298783AE00BB3126 /* Friend.swift in Sources */,
+				B40193132988242800217AEB /* ContextScheduler.swift in Sources */,
 				B4E8D6622987B123003B946D /* CDUser+CoreDataClass.swift in Sources */,
+				B4019317298829E700217AEB /* NSManagedObjectContext+Rx.swift in Sources */,
 				B4E8D6692987B123003B946D /* CDRoom+CoreDataProperties.swift in Sources */,
+				B401930E29881F4800217AEB /* DomainConvertibleType.swift in Sources */,
 				B4E8D6652987B123003B946D /* CDMessage+CoreDataProperties.swift in Sources */,
 				B4E8D6612987B123003B946D /* CDMember+CoreDataProperties.swift in Sources */,
 				B41E40BC2987797C00BB3126 /* ViewController.swift in Sources */,
 				B4E8D6602987B123003B946D /* CDMember+CoreDataClass.swift in Sources */,
+				B401930C29881E2800217AEB /* Observable+Ext.swift in Sources */,
 				B41E40F329879D2900BB3126 /* ServiceProvider.swift in Sources */,
+				B401930A298810D300217AEB /* NSManagedObjectContext+Ext.swift in Sources */,
 				B4E8D6672987B123003B946D /* CDFriend+CoreDataProperties.swift in Sources */,
+				B40193102988230B00217AEB /* Persistable.swift in Sources */,
 				B41E40B82987797C00BB3126 /* AppDelegate.swift in Sources */,
+				B40193152988297300217AEB /* FetchedResultsControllerObserver.swift in Sources */,
 				B41E40F1298792AD00BB3126 /* PlopMessengerModel.xcdatamodeld in Sources */,
 				B4E8D6632987B123003B946D /* CDUser+CoreDataProperties.swift in Sources */,
 				B41E40D229877F6A00BB3126 /* Message.swift in Sources */,
@@ -278,6 +325,7 @@
 				B41E40D029877F6500BB3126 /* Room.swift in Sources */,
 				B4E8D6682987B123003B946D /* CDRoom+CoreDataClass.swift in Sources */,
 				B41E40FD2987B07C00BB3126 /* UIImageTransformer.swift in Sources */,
+				B401931929882D4000217AEB /* CoreDataRepository.swift in Sources */,
 				B4E8D6642987B123003B946D /* CDMessage+CoreDataClass.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
