@@ -7,6 +7,11 @@
         <attribute name="name" attributeType="String"/>
         <relationship name="user" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CDUser" inverseName="friends" inverseEntity="CDUser"/>
     </entity>
+    <entity name="CDMember" representedClassName="CDMember" syncable="YES" codeGenerationType="class">
+        <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <relationship name="room" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CDRoom" inverseName="members" inverseEntity="CDRoom"/>
+    </entity>
     <entity name="CDMessage" representedClassName="CDMessage" syncable="YES" codeGenerationType="class">
         <attribute name="content" optional="YES" attributeType="String"/>
         <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
@@ -21,12 +26,15 @@
         <attribute name="lastMessage" optional="YES" attributeType="String"/>
         <attribute name="title" attributeType="String"/>
         <attribute name="unread" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="members" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CDMember" inverseName="room" inverseEntity="CDMember"/>
         <relationship name="messages" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="CDMessage" inverseName="room" inverseEntity="CDMessage"/>
+        <relationship name="user" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CDUser" inverseName="rooms" inverseEntity="CDUser"/>
     </entity>
     <entity name="CDUser" representedClassName="CDUser" syncable="YES" codeGenerationType="class">
         <attribute name="email" attributeType="String"/>
         <attribute name="id" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="name" attributeType="String"/>
         <relationship name="friends" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="CDFriend" inverseName="user" inverseEntity="CDFriend"/>
+        <relationship name="rooms" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CDRoom" inverseName="user" inverseEntity="CDRoom"/>
     </entity>
 </model>
