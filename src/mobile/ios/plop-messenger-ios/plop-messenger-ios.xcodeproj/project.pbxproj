@@ -29,6 +29,9 @@
 		B4E8D6672987B123003B946D /* CDFriend+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4E8D65D2987B123003B946D /* CDFriend+CoreDataProperties.swift */; };
 		B4E8D6682987B123003B946D /* CDRoom+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4E8D65E2987B123003B946D /* CDRoom+CoreDataClass.swift */; };
 		B4E8D6692987B123003B946D /* CDRoom+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4E8D65F2987B123003B946D /* CDRoom+CoreDataProperties.swift */; };
+		B4E8D66F29880E9D003B946D /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = B4E8D66E29880E9D003B946D /* RxCocoa */; };
+		B4E8D67129880E9D003B946D /* RxRelay in Frameworks */ = {isa = PBXBuildFile; productRef = B4E8D67029880E9D003B946D /* RxRelay */; };
+		B4E8D67329880E9D003B946D /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = B4E8D67229880E9D003B946D /* RxSwift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -63,6 +66,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B4E8D67329880E9D003B946D /* RxSwift in Frameworks */,
+				B4E8D67129880E9D003B946D /* RxRelay in Frameworks */,
+				B4E8D66F29880E9D003B946D /* RxCocoa in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -187,6 +193,11 @@
 			dependencies = (
 			);
 			name = "plop-messenger-ios";
+			packageProductDependencies = (
+				B4E8D66E29880E9D003B946D /* RxCocoa */,
+				B4E8D67029880E9D003B946D /* RxRelay */,
+				B4E8D67229880E9D003B946D /* RxSwift */,
+			);
 			productName = "plop-messenger-ios";
 			productReference = B41E40B42987797C00BB3126 /* plop-messenger-ios.app */;
 			productType = "com.apple.product-type.application";
@@ -215,6 +226,9 @@
 				Base,
 			);
 			mainGroup = B41E40AB2987797C00BB3126;
+			packageReferences = (
+				B4E8D66D29880E9D003B946D /* XCRemoteSwiftPackageReference "RxSwift" */,
+			);
 			productRefGroup = B41E40B52987797C00BB3126 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -468,6 +482,35 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		B4E8D66D29880E9D003B946D /* XCRemoteSwiftPackageReference "RxSwift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ReactiveX/RxSwift.git";
+			requirement = {
+				kind = exactVersion;
+				version = 6.5.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		B4E8D66E29880E9D003B946D /* RxCocoa */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B4E8D66D29880E9D003B946D /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxCocoa;
+		};
+		B4E8D67029880E9D003B946D /* RxRelay */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B4E8D66D29880E9D003B946D /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxRelay;
+		};
+		B4E8D67229880E9D003B946D /* RxSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B4E8D66D29880E9D003B946D /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxSwift;
+		};
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
 		B41E40EF298792AD00BB3126 /* PlopMessengerModel.xcdatamodeld */ = {
