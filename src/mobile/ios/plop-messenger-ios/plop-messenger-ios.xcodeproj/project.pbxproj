@@ -16,10 +16,6 @@
 		B41E40D029877F6500BB3126 /* Room.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41E40CF29877F6500BB3126 /* Room.swift */; };
 		B41E40D229877F6A00BB3126 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41E40D129877F6A00BB3126 /* Message.swift */; };
 		B41E40D9298783AE00BB3126 /* Friend.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41E40D8298783AE00BB3126 /* Friend.swift */; };
-		B41E40DF29878B6F00BB3126 /* RoomsRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41E40DE29878B6F00BB3126 /* RoomsRepository.swift */; };
-		B41E40E129878BB300BB3126 /* UsersRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41E40E029878BB300BB3126 /* UsersRepository.swift */; };
-		B41E40E329878BE600BB3126 /* FriendsRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41E40E229878BE600BB3126 /* FriendsRepository.swift */; };
-		B41E40E529878DC500BB3126 /* MessagesRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41E40E429878DC500BB3126 /* MessagesRepository.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,10 +30,6 @@
 		B41E40CF29877F6500BB3126 /* Room.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Room.swift; sourceTree = "<group>"; };
 		B41E40D129877F6A00BB3126 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		B41E40D8298783AE00BB3126 /* Friend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Friend.swift; sourceTree = "<group>"; };
-		B41E40DE29878B6F00BB3126 /* RoomsRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomsRepository.swift; sourceTree = "<group>"; };
-		B41E40E029878BB300BB3126 /* UsersRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersRepository.swift; sourceTree = "<group>"; };
-		B41E40E229878BE600BB3126 /* FriendsRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsRepository.swift; sourceTree = "<group>"; };
-		B41E40E429878DC500BB3126 /* MessagesRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesRepository.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,7 +76,6 @@
 		B41E40CB29877F0100BB3126 /* Domain */ = {
 			isa = PBXGroup;
 			children = (
-				B41E40DD29878B5D00BB3126 /* Repositories */,
 				B41E40CC29877F0300BB3126 /* Entities */,
 			);
 			path = Domain;
@@ -99,17 +90,6 @@
 				B41E40D8298783AE00BB3126 /* Friend.swift */,
 			);
 			path = Entities;
-			sourceTree = "<group>";
-		};
-		B41E40DD29878B5D00BB3126 /* Repositories */ = {
-			isa = PBXGroup;
-			children = (
-				B41E40DE29878B6F00BB3126 /* RoomsRepository.swift */,
-				B41E40E029878BB300BB3126 /* UsersRepository.swift */,
-				B41E40E229878BE600BB3126 /* FriendsRepository.swift */,
-				B41E40E429878DC500BB3126 /* MessagesRepository.swift */,
-			);
-			path = Repositories;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -182,17 +162,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B41E40DF29878B6F00BB3126 /* RoomsRepository.swift in Sources */,
-				B41E40E129878BB300BB3126 /* UsersRepository.swift in Sources */,
 				B41E40CE29877F5E00BB3126 /* User.swift in Sources */,
 				B41E40D9298783AE00BB3126 /* Friend.swift in Sources */,
 				B41E40BC2987797C00BB3126 /* ViewController.swift in Sources */,
-				B41E40E529878DC500BB3126 /* MessagesRepository.swift in Sources */,
 				B41E40B82987797C00BB3126 /* AppDelegate.swift in Sources */,
 				B41E40D229877F6A00BB3126 /* Message.swift in Sources */,
 				B41E40BA2987797C00BB3126 /* SceneDelegate.swift in Sources */,
 				B41E40D029877F6500BB3126 /* Room.swift in Sources */,
-				B41E40E329878BE600BB3126 /* FriendsRepository.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
