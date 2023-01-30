@@ -1,5 +1,4 @@
 import Foundation
-import Combine
 
 struct User {
   enum State: Int {
@@ -13,7 +12,7 @@ struct User {
     case user
   }
   
-  let id: Int
+  let id: Int64
   let name: String
   let email: String
   let profile: Profile
@@ -28,7 +27,7 @@ struct User {
 
 struct Profile {
   let nickname: String
-  let image: AnyPublisher<Data, Never>
+  let image: String
 }
 
 struct Device {

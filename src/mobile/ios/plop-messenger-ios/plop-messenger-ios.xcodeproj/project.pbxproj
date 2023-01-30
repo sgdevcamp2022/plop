@@ -18,8 +18,6 @@
 		B41E40D9298783AE00BB3126 /* Friend.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41E40D8298783AE00BB3126 /* Friend.swift */; };
 		B41E40F1298792AD00BB3126 /* PlopMessengerModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B41E40EF298792AD00BB3126 /* PlopMessengerModel.xcdatamodeld */; };
 		B41E40F329879D2900BB3126 /* ServiceProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41E40F229879D2900BB3126 /* ServiceProvider.swift */; };
-		B41E40F529879D3B00BB3126 /* CoreDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41E40F429879D3B00BB3126 /* CoreDataService.swift */; };
-		B41E40F72987A66900BB3126 /* NSManagedObjectContext+Combine.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41E40F62987A66900BB3126 /* NSManagedObjectContext+Combine.swift */; };
 		B41E40FD2987B07C00BB3126 /* UIImageTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41E40FC2987B07C00BB3126 /* UIImageTransformer.swift */; };
 		B4E8D6602987B123003B946D /* CDMember+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4E8D6562987B123003B946D /* CDMember+CoreDataClass.swift */; };
 		B4E8D6612987B123003B946D /* CDMember+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4E8D6572987B123003B946D /* CDMember+CoreDataProperties.swift */; };
@@ -47,8 +45,6 @@
 		B41E40D8298783AE00BB3126 /* Friend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Friend.swift; sourceTree = "<group>"; };
 		B41E40F0298792AD00BB3126 /* PlopMessengerModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = PlopMessengerModel.xcdatamodel; sourceTree = "<group>"; };
 		B41E40F229879D2900BB3126 /* ServiceProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceProvider.swift; sourceTree = "<group>"; };
-		B41E40F429879D3B00BB3126 /* CoreDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataService.swift; sourceTree = "<group>"; };
-		B41E40F62987A66900BB3126 /* NSManagedObjectContext+Combine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSManagedObjectContext+Combine.swift"; sourceTree = "<group>"; };
 		B41E40FC2987B07C00BB3126 /* UIImageTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageTransformer.swift; sourceTree = "<group>"; };
 		B4E8D6562987B123003B946D /* CDMember+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDMember+CoreDataClass.swift"; sourceTree = "<group>"; };
 		B4E8D6572987B123003B946D /* CDMember+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDMember+CoreDataProperties.swift"; sourceTree = "<group>"; };
@@ -145,9 +141,7 @@
 			isa = PBXGroup;
 			children = (
 				B4E8D66A2987B126003B946D /* Entities */,
-				B41E40F429879D3B00BB3126 /* CoreDataService.swift */,
 				B41E40EF298792AD00BB3126 /* PlopMessengerModel.xcdatamodeld */,
-				B41E40F62987A66900BB3126 /* NSManagedObjectContext+Combine.swift */,
 				B41E40FC2987B07C00BB3126 /* UIImageTransformer.swift */,
 			);
 			path = CoreData;
@@ -251,9 +245,7 @@
 				B41E40D9298783AE00BB3126 /* Friend.swift in Sources */,
 				B4E8D6622987B123003B946D /* CDUser+CoreDataClass.swift in Sources */,
 				B4E8D6692987B123003B946D /* CDRoom+CoreDataProperties.swift in Sources */,
-				B41E40F529879D3B00BB3126 /* CoreDataService.swift in Sources */,
 				B4E8D6652987B123003B946D /* CDMessage+CoreDataProperties.swift in Sources */,
-				B41E40F72987A66900BB3126 /* NSManagedObjectContext+Combine.swift in Sources */,
 				B4E8D6612987B123003B946D /* CDMember+CoreDataProperties.swift in Sources */,
 				B41E40BC2987797C00BB3126 /* ViewController.swift in Sources */,
 				B4E8D6602987B123003B946D /* CDMember+CoreDataClass.swift in Sources */,
