@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21512" systemVersion="22C65" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
-    <entity name="CDFriend" representedClassName="CDFriend" syncable="YES" codeGenerationType="class">
+    <entity name="CDFriend" representedClassName="CDFriend" syncable="YES">
         <attribute name="block" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="id" attributeType="Integer 64" defaultValueString="0.0" usesScalarValueType="YES"/>
-        <attribute name="image" optional="YES" attributeType="String"/>
+        <attribute name="image" optional="YES" attributeType="Transformable" valueTransformerName="UIImageTransformer" customClassName="UIImage"/>
         <attribute name="name" attributeType="String"/>
         <relationship name="user" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CDUser" inverseName="friends" inverseEntity="CDUser"/>
     </entity>
-    <entity name="CDMember" representedClassName="CDMember" syncable="YES" codeGenerationType="class">
+    <entity name="CDMember" representedClassName="CDMember" syncable="YES">
         <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="image" optional="YES" attributeType="Transformable" valueTransformerName="UIImageTransformer" customClassName="UIImage"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <relationship name="room" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CDRoom" inverseName="members" inverseEntity="CDRoom"/>
     </entity>
-    <entity name="CDMessage" representedClassName="CDMessage" syncable="YES" codeGenerationType="class">
+    <entity name="CDMessage" representedClassName="CDMessage" syncable="YES">
         <attribute name="content" optional="YES" attributeType="String"/>
         <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="from" attributeType="String"/>
@@ -21,7 +22,7 @@
         <attribute name="unread" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
         <relationship name="room" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CDRoom" inverseName="messages" inverseEntity="CDRoom"/>
     </entity>
-    <entity name="CDRoom" representedClassName="CDRoom" syncable="YES" codeGenerationType="class">
+    <entity name="CDRoom" representedClassName="CDRoom" syncable="YES">
         <attribute name="id" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="lastMessage" optional="YES" attributeType="String"/>
         <attribute name="title" attributeType="String"/>
@@ -30,9 +31,10 @@
         <relationship name="messages" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="CDMessage" inverseName="room" inverseEntity="CDMessage"/>
         <relationship name="user" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CDUser" inverseName="rooms" inverseEntity="CDUser"/>
     </entity>
-    <entity name="CDUser" representedClassName="CDUser" syncable="YES" codeGenerationType="class">
+    <entity name="CDUser" representedClassName="CDUser" syncable="YES">
         <attribute name="email" attributeType="String"/>
         <attribute name="id" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="image" optional="YES" attributeType="Transformable" valueTransformerName="UIImageTransformer" customClassName="UIImage"/>
         <attribute name="name" attributeType="String"/>
         <relationship name="friends" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="CDFriend" inverseName="user" inverseEntity="CDFriend"/>
         <relationship name="rooms" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CDRoom" inverseName="user" inverseEntity="CDRoom"/>

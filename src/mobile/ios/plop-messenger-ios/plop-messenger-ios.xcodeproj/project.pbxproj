@@ -17,6 +17,20 @@
 		B41E40D229877F6A00BB3126 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41E40D129877F6A00BB3126 /* Message.swift */; };
 		B41E40D9298783AE00BB3126 /* Friend.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41E40D8298783AE00BB3126 /* Friend.swift */; };
 		B41E40F1298792AD00BB3126 /* PlopMessengerModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B41E40EF298792AD00BB3126 /* PlopMessengerModel.xcdatamodeld */; };
+		B41E40F329879D2900BB3126 /* ServiceProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41E40F229879D2900BB3126 /* ServiceProvider.swift */; };
+		B41E40F529879D3B00BB3126 /* CoreDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41E40F429879D3B00BB3126 /* CoreDataService.swift */; };
+		B41E40F72987A66900BB3126 /* NSManagedObjectContext+Combine.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41E40F62987A66900BB3126 /* NSManagedObjectContext+Combine.swift */; };
+		B41E40FD2987B07C00BB3126 /* UIImageTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41E40FC2987B07C00BB3126 /* UIImageTransformer.swift */; };
+		B4E8D6602987B123003B946D /* CDMember+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4E8D6562987B123003B946D /* CDMember+CoreDataClass.swift */; };
+		B4E8D6612987B123003B946D /* CDMember+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4E8D6572987B123003B946D /* CDMember+CoreDataProperties.swift */; };
+		B4E8D6622987B123003B946D /* CDUser+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4E8D6582987B123003B946D /* CDUser+CoreDataClass.swift */; };
+		B4E8D6632987B123003B946D /* CDUser+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4E8D6592987B123003B946D /* CDUser+CoreDataProperties.swift */; };
+		B4E8D6642987B123003B946D /* CDMessage+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4E8D65A2987B123003B946D /* CDMessage+CoreDataClass.swift */; };
+		B4E8D6652987B123003B946D /* CDMessage+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4E8D65B2987B123003B946D /* CDMessage+CoreDataProperties.swift */; };
+		B4E8D6662987B123003B946D /* CDFriend+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4E8D65C2987B123003B946D /* CDFriend+CoreDataClass.swift */; };
+		B4E8D6672987B123003B946D /* CDFriend+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4E8D65D2987B123003B946D /* CDFriend+CoreDataProperties.swift */; };
+		B4E8D6682987B123003B946D /* CDRoom+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4E8D65E2987B123003B946D /* CDRoom+CoreDataClass.swift */; };
+		B4E8D6692987B123003B946D /* CDRoom+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4E8D65F2987B123003B946D /* CDRoom+CoreDataProperties.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +46,20 @@
 		B41E40D129877F6A00BB3126 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		B41E40D8298783AE00BB3126 /* Friend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Friend.swift; sourceTree = "<group>"; };
 		B41E40F0298792AD00BB3126 /* PlopMessengerModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = PlopMessengerModel.xcdatamodel; sourceTree = "<group>"; };
+		B41E40F229879D2900BB3126 /* ServiceProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceProvider.swift; sourceTree = "<group>"; };
+		B41E40F429879D3B00BB3126 /* CoreDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataService.swift; sourceTree = "<group>"; };
+		B41E40F62987A66900BB3126 /* NSManagedObjectContext+Combine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSManagedObjectContext+Combine.swift"; sourceTree = "<group>"; };
+		B41E40FC2987B07C00BB3126 /* UIImageTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageTransformer.swift; sourceTree = "<group>"; };
+		B4E8D6562987B123003B946D /* CDMember+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDMember+CoreDataClass.swift"; sourceTree = "<group>"; };
+		B4E8D6572987B123003B946D /* CDMember+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDMember+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		B4E8D6582987B123003B946D /* CDUser+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDUser+CoreDataClass.swift"; sourceTree = "<group>"; };
+		B4E8D6592987B123003B946D /* CDUser+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDUser+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		B4E8D65A2987B123003B946D /* CDMessage+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDMessage+CoreDataClass.swift"; sourceTree = "<group>"; };
+		B4E8D65B2987B123003B946D /* CDMessage+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDMessage+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		B4E8D65C2987B123003B946D /* CDFriend+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDFriend+CoreDataClass.swift"; sourceTree = "<group>"; };
+		B4E8D65D2987B123003B946D /* CDFriend+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDFriend+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		B4E8D65E2987B123003B946D /* CDRoom+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDRoom+CoreDataClass.swift"; sourceTree = "<group>"; };
+		B4E8D65F2987B123003B946D /* CDRoom+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDRoom+CoreDataProperties.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,6 +129,7 @@
 				B41E40ED2987927800BB3126 /* ImageLoader */,
 				B41E40EC2987927300BB3126 /* CoreData */,
 				B41E40EB2987927000BB3126 /* Network */,
+				B41E40F229879D2900BB3126 /* ServiceProvider.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -115,7 +144,11 @@
 		B41E40EC2987927300BB3126 /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
+				B4E8D66A2987B126003B946D /* Entities */,
+				B41E40F429879D3B00BB3126 /* CoreDataService.swift */,
 				B41E40EF298792AD00BB3126 /* PlopMessengerModel.xcdatamodeld */,
+				B41E40F62987A66900BB3126 /* NSManagedObjectContext+Combine.swift */,
+				B41E40FC2987B07C00BB3126 /* UIImageTransformer.swift */,
 			);
 			path = CoreData;
 			sourceTree = "<group>";
@@ -125,6 +158,23 @@
 			children = (
 			);
 			path = ImageLoader;
+			sourceTree = "<group>";
+		};
+		B4E8D66A2987B126003B946D /* Entities */ = {
+			isa = PBXGroup;
+			children = (
+				B4E8D6562987B123003B946D /* CDMember+CoreDataClass.swift */,
+				B4E8D6572987B123003B946D /* CDMember+CoreDataProperties.swift */,
+				B4E8D6582987B123003B946D /* CDUser+CoreDataClass.swift */,
+				B4E8D6592987B123003B946D /* CDUser+CoreDataProperties.swift */,
+				B4E8D65A2987B123003B946D /* CDMessage+CoreDataClass.swift */,
+				B4E8D65B2987B123003B946D /* CDMessage+CoreDataProperties.swift */,
+				B4E8D65C2987B123003B946D /* CDFriend+CoreDataClass.swift */,
+				B4E8D65D2987B123003B946D /* CDFriend+CoreDataProperties.swift */,
+				B4E8D65E2987B123003B946D /* CDRoom+CoreDataClass.swift */,
+				B4E8D65F2987B123003B946D /* CDRoom+CoreDataProperties.swift */,
+			);
+			path = Entities;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -199,12 +249,26 @@
 			files = (
 				B41E40CE29877F5E00BB3126 /* User.swift in Sources */,
 				B41E40D9298783AE00BB3126 /* Friend.swift in Sources */,
+				B4E8D6622987B123003B946D /* CDUser+CoreDataClass.swift in Sources */,
+				B4E8D6692987B123003B946D /* CDRoom+CoreDataProperties.swift in Sources */,
+				B41E40F529879D3B00BB3126 /* CoreDataService.swift in Sources */,
+				B4E8D6652987B123003B946D /* CDMessage+CoreDataProperties.swift in Sources */,
+				B41E40F72987A66900BB3126 /* NSManagedObjectContext+Combine.swift in Sources */,
+				B4E8D6612987B123003B946D /* CDMember+CoreDataProperties.swift in Sources */,
 				B41E40BC2987797C00BB3126 /* ViewController.swift in Sources */,
+				B4E8D6602987B123003B946D /* CDMember+CoreDataClass.swift in Sources */,
+				B41E40F329879D2900BB3126 /* ServiceProvider.swift in Sources */,
+				B4E8D6672987B123003B946D /* CDFriend+CoreDataProperties.swift in Sources */,
 				B41E40B82987797C00BB3126 /* AppDelegate.swift in Sources */,
 				B41E40F1298792AD00BB3126 /* PlopMessengerModel.xcdatamodeld in Sources */,
+				B4E8D6632987B123003B946D /* CDUser+CoreDataProperties.swift in Sources */,
 				B41E40D229877F6A00BB3126 /* Message.swift in Sources */,
+				B4E8D6662987B123003B946D /* CDFriend+CoreDataClass.swift in Sources */,
 				B41E40BA2987797C00BB3126 /* SceneDelegate.swift in Sources */,
 				B41E40D029877F6500BB3126 /* Room.swift in Sources */,
+				B4E8D6682987B123003B946D /* CDRoom+CoreDataClass.swift in Sources */,
+				B41E40FD2987B07C00BB3126 /* UIImageTransformer.swift in Sources */,
+				B4E8D6642987B123003B946D /* CDMessage+CoreDataClass.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
