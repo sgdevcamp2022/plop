@@ -2,7 +2,7 @@
 //  CDRoom+CoreDataProperties.swift
 //  plop-messenger-ios
 //
-//  Created by 김호준 on 2023/01/30.
+//  Created by 김호준 on 2023/01/31.
 //
 //
 
@@ -20,6 +20,7 @@ extension CDRoom {
     @NSManaged public var lastMessage: String?
     @NSManaged public var title: String?
     @NSManaged public var unread: Int16
+    @NSManaged public var lastModified: String?
     @NSManaged public var members: NSSet?
     @NSManaged public var messages: NSSet?
     @NSManaged public var user: CDUser?

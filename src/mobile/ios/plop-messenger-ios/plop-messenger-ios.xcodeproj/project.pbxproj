@@ -16,6 +16,20 @@
 		B40193152988297300217AEB /* FetchedResultsControllerObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = B40193142988297300217AEB /* FetchedResultsControllerObserver.swift */; };
 		B4019317298829E700217AEB /* NSManagedObjectContext+Rx.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4019316298829E700217AEB /* NSManagedObjectContext+Rx.swift */; };
 		B401931929882D4000217AEB /* CoreDataRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B401931829882D4000217AEB /* CoreDataRepository.swift */; };
+		B401931C29882E4000217AEB /* CDUsersUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B401931B29882E4000217AEB /* CDUsersUseCase.swift */; };
+		B401931E29882FDE00217AEB /* CDUser+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = B401931D29882FDE00217AEB /* CDUser+Ext.swift */; };
+		B401932B2988342400217AEB /* CDRoom+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B401931F2988342400217AEB /* CDRoom+CoreDataClass.swift */; };
+		B401932C2988342400217AEB /* CDRoom+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B40193202988342400217AEB /* CDRoom+CoreDataProperties.swift */; };
+		B401932D2988342400217AEB /* CDMember+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B40193212988342400217AEB /* CDMember+CoreDataClass.swift */; };
+		B401932E2988342400217AEB /* CDMember+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B40193222988342400217AEB /* CDMember+CoreDataProperties.swift */; };
+		B401932F2988342400217AEB /* CDUser+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B40193232988342400217AEB /* CDUser+CoreDataClass.swift */; };
+		B40193302988342400217AEB /* CDUser+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B40193242988342400217AEB /* CDUser+CoreDataProperties.swift */; };
+		B40193312988342400217AEB /* CDMessage+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B40193252988342400217AEB /* CDMessage+CoreDataClass.swift */; };
+		B40193322988342400217AEB /* CDMessage+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B40193262988342400217AEB /* CDMessage+CoreDataProperties.swift */; };
+		B40193332988342400217AEB /* CDProfile+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B40193272988342400217AEB /* CDProfile+CoreDataClass.swift */; };
+		B40193342988342400217AEB /* CDProfile+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B40193282988342400217AEB /* CDProfile+CoreDataProperties.swift */; };
+		B40193352988342400217AEB /* CDFriend+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B40193292988342400217AEB /* CDFriend+CoreDataClass.swift */; };
+		B40193362988342400217AEB /* CDFriend+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B401932A2988342400217AEB /* CDFriend+CoreDataProperties.swift */; };
 		B41E40B82987797C00BB3126 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41E40B72987797C00BB3126 /* AppDelegate.swift */; };
 		B41E40BA2987797C00BB3126 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41E40B92987797C00BB3126 /* SceneDelegate.swift */; };
 		B41E40BC2987797C00BB3126 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41E40BB2987797C00BB3126 /* ViewController.swift */; };
@@ -28,16 +42,6 @@
 		B41E40F1298792AD00BB3126 /* PlopMessengerModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B41E40EF298792AD00BB3126 /* PlopMessengerModel.xcdatamodeld */; };
 		B41E40F329879D2900BB3126 /* ServiceProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41E40F229879D2900BB3126 /* ServiceProvider.swift */; };
 		B41E40FD2987B07C00BB3126 /* UIImageTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41E40FC2987B07C00BB3126 /* UIImageTransformer.swift */; };
-		B4E8D6602987B123003B946D /* CDMember+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4E8D6562987B123003B946D /* CDMember+CoreDataClass.swift */; };
-		B4E8D6612987B123003B946D /* CDMember+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4E8D6572987B123003B946D /* CDMember+CoreDataProperties.swift */; };
-		B4E8D6622987B123003B946D /* CDUser+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4E8D6582987B123003B946D /* CDUser+CoreDataClass.swift */; };
-		B4E8D6632987B123003B946D /* CDUser+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4E8D6592987B123003B946D /* CDUser+CoreDataProperties.swift */; };
-		B4E8D6642987B123003B946D /* CDMessage+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4E8D65A2987B123003B946D /* CDMessage+CoreDataClass.swift */; };
-		B4E8D6652987B123003B946D /* CDMessage+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4E8D65B2987B123003B946D /* CDMessage+CoreDataProperties.swift */; };
-		B4E8D6662987B123003B946D /* CDFriend+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4E8D65C2987B123003B946D /* CDFriend+CoreDataClass.swift */; };
-		B4E8D6672987B123003B946D /* CDFriend+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4E8D65D2987B123003B946D /* CDFriend+CoreDataProperties.swift */; };
-		B4E8D6682987B123003B946D /* CDRoom+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4E8D65E2987B123003B946D /* CDRoom+CoreDataClass.swift */; };
-		B4E8D6692987B123003B946D /* CDRoom+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4E8D65F2987B123003B946D /* CDRoom+CoreDataProperties.swift */; };
 		B4E8D66F29880E9D003B946D /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = B4E8D66E29880E9D003B946D /* RxCocoa */; };
 		B4E8D67129880E9D003B946D /* RxRelay in Frameworks */ = {isa = PBXBuildFile; productRef = B4E8D67029880E9D003B946D /* RxRelay */; };
 		B4E8D67329880E9D003B946D /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = B4E8D67229880E9D003B946D /* RxSwift */; };
@@ -53,6 +57,20 @@
 		B40193142988297300217AEB /* FetchedResultsControllerObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchedResultsControllerObserver.swift; sourceTree = "<group>"; };
 		B4019316298829E700217AEB /* NSManagedObjectContext+Rx.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSManagedObjectContext+Rx.swift"; sourceTree = "<group>"; };
 		B401931829882D4000217AEB /* CoreDataRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataRepository.swift; sourceTree = "<group>"; };
+		B401931B29882E4000217AEB /* CDUsersUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CDUsersUseCase.swift; sourceTree = "<group>"; };
+		B401931D29882FDE00217AEB /* CDUser+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDUser+Ext.swift"; sourceTree = "<group>"; };
+		B401931F2988342400217AEB /* CDRoom+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDRoom+CoreDataClass.swift"; sourceTree = "<group>"; };
+		B40193202988342400217AEB /* CDRoom+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDRoom+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		B40193212988342400217AEB /* CDMember+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDMember+CoreDataClass.swift"; sourceTree = "<group>"; };
+		B40193222988342400217AEB /* CDMember+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDMember+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		B40193232988342400217AEB /* CDUser+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDUser+CoreDataClass.swift"; sourceTree = "<group>"; };
+		B40193242988342400217AEB /* CDUser+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDUser+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		B40193252988342400217AEB /* CDMessage+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDMessage+CoreDataClass.swift"; sourceTree = "<group>"; };
+		B40193262988342400217AEB /* CDMessage+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDMessage+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		B40193272988342400217AEB /* CDProfile+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDProfile+CoreDataClass.swift"; sourceTree = "<group>"; };
+		B40193282988342400217AEB /* CDProfile+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDProfile+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		B40193292988342400217AEB /* CDFriend+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDFriend+CoreDataClass.swift"; sourceTree = "<group>"; };
+		B401932A2988342400217AEB /* CDFriend+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDFriend+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		B41E40B42987797C00BB3126 /* plop-messenger-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "plop-messenger-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B41E40B72987797C00BB3126 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B41E40B92987797C00BB3126 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -67,16 +85,6 @@
 		B41E40F0298792AD00BB3126 /* PlopMessengerModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = PlopMessengerModel.xcdatamodel; sourceTree = "<group>"; };
 		B41E40F229879D2900BB3126 /* ServiceProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceProvider.swift; sourceTree = "<group>"; };
 		B41E40FC2987B07C00BB3126 /* UIImageTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageTransformer.swift; sourceTree = "<group>"; };
-		B4E8D6562987B123003B946D /* CDMember+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDMember+CoreDataClass.swift"; sourceTree = "<group>"; };
-		B4E8D6572987B123003B946D /* CDMember+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDMember+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		B4E8D6582987B123003B946D /* CDUser+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDUser+CoreDataClass.swift"; sourceTree = "<group>"; };
-		B4E8D6592987B123003B946D /* CDUser+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDUser+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		B4E8D65A2987B123003B946D /* CDMessage+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDMessage+CoreDataClass.swift"; sourceTree = "<group>"; };
-		B4E8D65B2987B123003B946D /* CDMessage+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDMessage+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		B4E8D65C2987B123003B946D /* CDFriend+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDFriend+CoreDataClass.swift"; sourceTree = "<group>"; };
-		B4E8D65D2987B123003B946D /* CDFriend+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDFriend+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		B4E8D65E2987B123003B946D /* CDRoom+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDRoom+CoreDataClass.swift"; sourceTree = "<group>"; };
-		B4E8D65F2987B123003B946D /* CDRoom+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDRoom+CoreDataProperties.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -110,6 +118,14 @@
 				B4019316298829E700217AEB /* NSManagedObjectContext+Rx.swift */,
 			);
 			path = RxCoreData;
+			sourceTree = "<group>";
+		};
+		B401931A29882E3800217AEB /* UseCases */ = {
+			isa = PBXGroup;
+			children = (
+				B401931B29882E4000217AEB /* CDUsersUseCase.swift */,
+			);
+			path = UseCases;
 			sourceTree = "<group>";
 		};
 		B41E40AB2987797C00BB3126 = {
@@ -183,6 +199,7 @@
 		B41E40EC2987927300BB3126 /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
+				B401931A29882E3800217AEB /* UseCases */,
 				B40193112988241900217AEB /* RxCoreData */,
 				B4019308298810C700217AEB /* Extensions */,
 				B4E8D66A2987B126003B946D /* Entities */,
@@ -204,16 +221,19 @@
 		B4E8D66A2987B126003B946D /* Entities */ = {
 			isa = PBXGroup;
 			children = (
-				B4E8D6562987B123003B946D /* CDMember+CoreDataClass.swift */,
-				B4E8D6572987B123003B946D /* CDMember+CoreDataProperties.swift */,
-				B4E8D6582987B123003B946D /* CDUser+CoreDataClass.swift */,
-				B4E8D6592987B123003B946D /* CDUser+CoreDataProperties.swift */,
-				B4E8D65A2987B123003B946D /* CDMessage+CoreDataClass.swift */,
-				B4E8D65B2987B123003B946D /* CDMessage+CoreDataProperties.swift */,
-				B4E8D65C2987B123003B946D /* CDFriend+CoreDataClass.swift */,
-				B4E8D65D2987B123003B946D /* CDFriend+CoreDataProperties.swift */,
-				B4E8D65E2987B123003B946D /* CDRoom+CoreDataClass.swift */,
-				B4E8D65F2987B123003B946D /* CDRoom+CoreDataProperties.swift */,
+				B401931F2988342400217AEB /* CDRoom+CoreDataClass.swift */,
+				B40193202988342400217AEB /* CDRoom+CoreDataProperties.swift */,
+				B40193212988342400217AEB /* CDMember+CoreDataClass.swift */,
+				B40193222988342400217AEB /* CDMember+CoreDataProperties.swift */,
+				B40193232988342400217AEB /* CDUser+CoreDataClass.swift */,
+				B40193242988342400217AEB /* CDUser+CoreDataProperties.swift */,
+				B40193252988342400217AEB /* CDMessage+CoreDataClass.swift */,
+				B40193262988342400217AEB /* CDMessage+CoreDataProperties.swift */,
+				B40193272988342400217AEB /* CDProfile+CoreDataClass.swift */,
+				B40193282988342400217AEB /* CDProfile+CoreDataProperties.swift */,
+				B40193292988342400217AEB /* CDFriend+CoreDataClass.swift */,
+				B401932A2988342400217AEB /* CDFriend+CoreDataProperties.swift */,
+				B401931D29882FDE00217AEB /* CDUser+Ext.swift */,
 				B401930D29881F4800217AEB /* DomainConvertibleType.swift */,
 				B401930F2988230B00217AEB /* Persistable.swift */,
 			);
@@ -302,31 +322,35 @@
 				B41E40CE29877F5E00BB3126 /* User.swift in Sources */,
 				B41E40D9298783AE00BB3126 /* Friend.swift in Sources */,
 				B40193132988242800217AEB /* ContextScheduler.swift in Sources */,
-				B4E8D6622987B123003B946D /* CDUser+CoreDataClass.swift in Sources */,
+				B401932C2988342400217AEB /* CDRoom+CoreDataProperties.swift in Sources */,
+				B40193362988342400217AEB /* CDFriend+CoreDataProperties.swift in Sources */,
 				B4019317298829E700217AEB /* NSManagedObjectContext+Rx.swift in Sources */,
-				B4E8D6692987B123003B946D /* CDRoom+CoreDataProperties.swift in Sources */,
 				B401930E29881F4800217AEB /* DomainConvertibleType.swift in Sources */,
-				B4E8D6652987B123003B946D /* CDMessage+CoreDataProperties.swift in Sources */,
-				B4E8D6612987B123003B946D /* CDMember+CoreDataProperties.swift in Sources */,
+				B401931C29882E4000217AEB /* CDUsersUseCase.swift in Sources */,
+				B40193312988342400217AEB /* CDMessage+CoreDataClass.swift in Sources */,
 				B41E40BC2987797C00BB3126 /* ViewController.swift in Sources */,
-				B4E8D6602987B123003B946D /* CDMember+CoreDataClass.swift in Sources */,
 				B401930C29881E2800217AEB /* Observable+Ext.swift in Sources */,
+				B401932D2988342400217AEB /* CDMember+CoreDataClass.swift in Sources */,
 				B41E40F329879D2900BB3126 /* ServiceProvider.swift in Sources */,
 				B401930A298810D300217AEB /* NSManagedObjectContext+Ext.swift in Sources */,
-				B4E8D6672987B123003B946D /* CDFriend+CoreDataProperties.swift in Sources */,
+				B40193322988342400217AEB /* CDMessage+CoreDataProperties.swift in Sources */,
 				B40193102988230B00217AEB /* Persistable.swift in Sources */,
 				B41E40B82987797C00BB3126 /* AppDelegate.swift in Sources */,
 				B40193152988297300217AEB /* FetchedResultsControllerObserver.swift in Sources */,
 				B41E40F1298792AD00BB3126 /* PlopMessengerModel.xcdatamodeld in Sources */,
-				B4E8D6632987B123003B946D /* CDUser+CoreDataProperties.swift in Sources */,
+				B401931E29882FDE00217AEB /* CDUser+Ext.swift in Sources */,
+				B40193302988342400217AEB /* CDUser+CoreDataProperties.swift in Sources */,
+				B401932E2988342400217AEB /* CDMember+CoreDataProperties.swift in Sources */,
+				B40193332988342400217AEB /* CDProfile+CoreDataClass.swift in Sources */,
+				B40193342988342400217AEB /* CDProfile+CoreDataProperties.swift in Sources */,
+				B401932F2988342400217AEB /* CDUser+CoreDataClass.swift in Sources */,
 				B41E40D229877F6A00BB3126 /* Message.swift in Sources */,
-				B4E8D6662987B123003B946D /* CDFriend+CoreDataClass.swift in Sources */,
+				B40193352988342400217AEB /* CDFriend+CoreDataClass.swift in Sources */,
 				B41E40BA2987797C00BB3126 /* SceneDelegate.swift in Sources */,
 				B41E40D029877F6500BB3126 /* Room.swift in Sources */,
-				B4E8D6682987B123003B946D /* CDRoom+CoreDataClass.swift in Sources */,
+				B401932B2988342400217AEB /* CDRoom+CoreDataClass.swift in Sources */,
 				B41E40FD2987B07C00BB3126 /* UIImageTransformer.swift in Sources */,
 				B401931929882D4000217AEB /* CoreDataRepository.swift in Sources */,
-				B4E8D6642987B123003B946D /* CDMessage+CoreDataClass.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
