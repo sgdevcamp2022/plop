@@ -1,3 +1,11 @@
+//
+//  CDProfile+CoreDataProperties.swift
+//  plop-messenger-ios
+//
+//  Created by 김호준 on 2023/01/31.
+//
+//
+
 import Foundation
 import CoreData
 
@@ -8,9 +16,9 @@ extension CDProfile {
         return NSFetchRequest<CDProfile>(entityName: "CDProfile")
     }
 
+    @NSManaged public var uid: Int64
     @NSManaged public var imageURL: String?
     @NSManaged public var nickname: String?
-    @NSManaged public var id: Int64
     @NSManaged public var user: CDUser?
 
 }

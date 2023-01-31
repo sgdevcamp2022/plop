@@ -6,7 +6,7 @@ extension CDMessage: DomainConvertibleType {
   func toDomain() -> Message {
     //TODO : - content type 수정
     return Message(
-      id: id,
+      id: uid,
       from: from ?? "",
       type: .text,
       content: content ?? "",
@@ -28,7 +28,7 @@ extension Message: CoreDataRepresentable {
   typealias CoreDataType = CDMessage
   
   func update(entity: CDMessage) {
-    entity.id = id
+    entity.uid = id
     entity.from = from
     entity.unread = unread
     entity.content = content

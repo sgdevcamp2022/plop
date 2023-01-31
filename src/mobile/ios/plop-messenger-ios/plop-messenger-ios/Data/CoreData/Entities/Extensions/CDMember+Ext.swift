@@ -6,7 +6,7 @@ import RxSwift
 extension CDMember: DomainConvertibleType {
   func toDomain() -> Member {
     return Member(
-      id: id,
+      id: uid,
       name: name ?? "",
       image: image ?? "",
       room: room!.toDomain()
@@ -24,7 +24,7 @@ extension Member: CoreDataRepresentable {
   typealias CoreDataType = CDMember
 
   func update(entity: CDMember) {
-    entity.id = id
+    entity.uid = id
     entity.name = name
     entity.image = image
   }

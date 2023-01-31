@@ -3,7 +3,7 @@ import Foundation
 extension CDFriend: DomainConvertibleType {
   func toDomain() -> Friend {
     return Friend(
-      id: id,
+      id: uid,
       senderID: nil,
       status: .offline,
       block: block,
@@ -23,7 +23,7 @@ extension Friend: CoreDataRepresentable {
   typealias CoreDataType = CDFriend
   
   func update(entity: CDFriend) {
-    entity.id = id
+    entity.uid = id
     entity.block = block
     entity.image = imageURL
     entity.name = name

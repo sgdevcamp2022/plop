@@ -16,7 +16,7 @@ extension CDRoom {
         return NSFetchRequest<CDRoom>(entityName: "CDRoom")
     }
 
-    @NSManaged public var id: Int64
+    @NSManaged public var uid: Int64
     @NSManaged public var lastMessage: String?
     @NSManaged public var lastModified: String?
     @NSManaged public var title: String?

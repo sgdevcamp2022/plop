@@ -1,5 +1,14 @@
+//
+//  CDUser+CoreDataProperties.swift
+//  plop-messenger-ios
+//
+//  Created by 김호준 on 2023/01/31.
+//
+//
+
 import Foundation
 import CoreData
+
 
 extension CDUser {
 
@@ -7,16 +16,16 @@ extension CDUser {
         return NSFetchRequest<CDUser>(entityName: "CDUser")
     }
 
+    @NSManaged public var accessAt: String?
+    @NSManaged public var createdAt: String?
     @NSManaged public var email: String?
-    @NSManaged public var id: Int64
+    @NSManaged public var uid: Int64
+    @NSManaged public var loginAt: String?
     @NSManaged public var name: String?
     @NSManaged public var state: Int16
-    @NSManaged public var createdAt: String?
-    @NSManaged public var loginAt: String?
-    @NSManaged public var accessAt: String?
     @NSManaged public var friends: NSSet?
-    @NSManaged public var rooms: NSSet?
     @NSManaged public var profile: CDProfile?
+    @NSManaged public var rooms: NSSet?
 
 }
 
