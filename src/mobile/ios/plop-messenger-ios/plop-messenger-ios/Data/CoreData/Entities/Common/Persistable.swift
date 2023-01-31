@@ -9,6 +9,6 @@ protocol Persistable: NSFetchRequestResult, DomainConvertibleType {
 
 extension Persistable {
   static var primaryAttributeName: String {
-    return "id"
+    return "uid"
   }
 }

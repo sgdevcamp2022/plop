@@ -7,7 +7,7 @@ struct Message {
     case video
   }
   
-  let id: Int64
+  let uid: Int64
   let from: String
   let type: ContentType
   let content: String

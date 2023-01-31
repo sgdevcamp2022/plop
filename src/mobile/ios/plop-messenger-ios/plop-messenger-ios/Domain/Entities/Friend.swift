@@ -6,7 +6,7 @@ struct Friend {
     case offline
   }
   
-  let id: Int64
+  let uid: Int64
   let senderID: Int64?
   let status: Status
   let block: Bool

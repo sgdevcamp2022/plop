@@ -5,7 +5,7 @@ import RxSwift
 extension CDRoom: DomainConvertibleType {
   func toDomain() -> Room {
     return Room(
-      id: uid,
+      uid: uid,
       title: title ?? "",
       unreadMessagesCount: Int(unread),
       lastMessage: lastMessage ?? "",
@@ -69,7 +69,7 @@ extension Room: CoreDataRepresentable {
   }
   
   func update(entity: CDRoom) {
-    entity.uid = id
+    entity.uid = uid
     entity.title = title
     entity.unread = Int16(unreadMessagesCount)
     entity.lastMessage = lastMessage

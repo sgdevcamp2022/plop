@@ -43,9 +43,8 @@ final class Repository<T: CoreDataRepresentable>: AbstractRepository where T == 
   }
   
   func delete(entity: T) -> Observable<Void> {
-    return entity
-      .sync(in: context)
-      .map({$0 as! NSManagedObject})
+    return entity.sync(in: context)
+      .map({ $0 as! NSManagedObject })
       .flatMapLatest(context.rx.delete)
   }
 }

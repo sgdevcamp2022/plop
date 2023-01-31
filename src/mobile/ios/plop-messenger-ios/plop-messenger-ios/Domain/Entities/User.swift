@@ -12,7 +12,7 @@ struct User {
     case user
   }
   
-  let id: Int64
+  let uid: Int64
   let name: String
   let email: String
   let profile: Profile
@@ -28,7 +28,7 @@ struct User {
 }
 
 struct Profile {
-  let id: Int64
+  let uid: Int64
   let nickname: String
   let image: String
 }

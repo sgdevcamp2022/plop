@@ -1,7 +1,7 @@
 import Foundation
 
 struct Room {
-  let id: Int64
+  let uid: Int64
   let title: String
   let unreadMessagesCount: Int
   let lastMessage: String

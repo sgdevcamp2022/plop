@@ -11,9 +11,9 @@ extension Observable where Element: Sequence, Element.Iterator.Element: DomainCo
   typealias DomainType = Element.Iterator.Element.DomainType
   
   func mapToDomain() -> Observable<[DomainType]> {
-    return map { sequence -> [DomainType] in
+    return map({ sequence in
       return sequence.mapToDomain()
-    }
+    })
   }
 }
 

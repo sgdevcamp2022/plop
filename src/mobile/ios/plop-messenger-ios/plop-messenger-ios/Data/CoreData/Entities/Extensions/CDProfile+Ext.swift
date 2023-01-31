@@ -3,7 +3,7 @@ import CoreData
 extension CDProfile: DomainConvertibleType {
   func toDomain() -> Profile {
     return Profile(
-      id: uid,
+      uid: uid,
       nickname: nickname ?? "",
       image: imageURL ?? ""
     )
@@ -20,7 +20,7 @@ extension Profile: CoreDataRepresentable {
   typealias CoreDataType = CDProfile
   
   func update(entity: CDProfile) {
-    entity.uid = id
+    entity.uid = uid
     entity.nickname = nickname
     entity.imageURL = image
   }

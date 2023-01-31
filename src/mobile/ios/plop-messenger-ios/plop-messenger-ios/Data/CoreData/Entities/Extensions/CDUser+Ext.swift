@@ -4,10 +4,10 @@ import RxSwift
 extension CDUser: DomainConvertibleType {
   func toDomain() -> User {
     return User(
-      id: uid,
+      uid: uid,
       name: name ?? "",
       email: email ?? "",
-      profile: profile!.toDomain(),
+      profile: Profile(uid: 0, nickname: "", image: ""),
       state: User.State(rawValue: Int(state)) ?? .nocertified,
       role: .user,
       device: Device(ios: nil, aos: nil, pc: nil),
@@ -70,7 +70,8 @@ extension User: CoreDataRepresentable {
   }
   
   func update(entity: CDUser) {
-    entity.uid = id
+    print(entity)
+    entity.uid = uid
     entity.name = name
     entity.email = email
     entity.loginAt = loginAt

@@ -10,7 +10,7 @@ protocol DomainConvertibleType {
 protocol CoreDataRepresentable {
   associatedtype CoreDataType: Persistable
   
-  var id: Int64 { get }
+  var uid: Int64 { get }
   
   func update(entity: CoreDataType)
 }
