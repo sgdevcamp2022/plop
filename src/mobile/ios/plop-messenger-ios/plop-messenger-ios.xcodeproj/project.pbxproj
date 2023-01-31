@@ -52,7 +52,6 @@
 		B41E40D9298783AE00BB3126 /* Friend.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41E40D8298783AE00BB3126 /* Friend.swift */; };
 		B41E40F1298792AD00BB3126 /* PlopMessengerModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B41E40EF298792AD00BB3126 /* PlopMessengerModel.xcdatamodeld */; };
 		B41E40F329879D2900BB3126 /* ServiceProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41E40F229879D2900BB3126 /* ServiceProvider.swift */; };
-		B41E40FD2987B07C00BB3126 /* UIImageTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41E40FC2987B07C00BB3126 /* UIImageTransformer.swift */; };
 		B4E8D66F29880E9D003B946D /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = B4E8D66E29880E9D003B946D /* RxCocoa */; };
 		B4E8D67129880E9D003B946D /* RxRelay in Frameworks */ = {isa = PBXBuildFile; productRef = B4E8D67029880E9D003B946D /* RxRelay */; };
 		B4E8D67329880E9D003B946D /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = B4E8D67229880E9D003B946D /* RxSwift */; };
@@ -106,7 +105,6 @@
 		B41E40D8298783AE00BB3126 /* Friend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Friend.swift; sourceTree = "<group>"; };
 		B41E40F0298792AD00BB3126 /* PlopMessengerModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = PlopMessengerModel.xcdatamodel; sourceTree = "<group>"; };
 		B41E40F229879D2900BB3126 /* ServiceProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceProvider.swift; sourceTree = "<group>"; };
-		B41E40FC2987B07C00BB3126 /* UIImageTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageTransformer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -262,7 +260,6 @@
 				B4019308298810C700217AEB /* Extensions */,
 				B4E8D66A2987B126003B946D /* Entities */,
 				B41E40EF298792AD00BB3126 /* PlopMessengerModel.xcdatamodeld */,
-				B41E40FC2987B07C00BB3126 /* UIImageTransformer.swift */,
 				B401930629880F7200217AEB /* CoreDataStack.swift */,
 				B401931829882D4000217AEB /* CoreDataRepository.swift */,
 			);
@@ -416,7 +413,6 @@
 				B415246829897051006B86FF /* CDMessagesUseCase.swift in Sources */,
 				B401933C2988BEBE00217AEB /* Member.swift in Sources */,
 				B41E40D029877F6500BB3126 /* Room.swift in Sources */,
-				B41E40FD2987B07C00BB3126 /* UIImageTransformer.swift in Sources */,
 				B401931929882D4000217AEB /* CoreDataRepository.swift in Sources */,
 				B401933E2988BF1F00217AEB /* CDRoom+Ext.swift in Sources */,
 			);
