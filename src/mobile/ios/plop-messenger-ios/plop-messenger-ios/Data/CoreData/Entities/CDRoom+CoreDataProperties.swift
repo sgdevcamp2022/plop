@@ -18,9 +18,9 @@ extension CDRoom {
 
     @NSManaged public var id: Int64
     @NSManaged public var lastMessage: String?
+    @NSManaged public var lastModified: String?
     @NSManaged public var title: String?
     @NSManaged public var unread: Int16
-    @NSManaged public var lastModified: String?
     @NSManaged public var members: NSSet?
     @NSManaged public var messages: NSSet?
     @NSManaged public var user: CDUser?

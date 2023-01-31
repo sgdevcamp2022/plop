@@ -67,7 +67,7 @@ extension Reactive where Base: NSManagedObjectContext {
     let predicate = NSPredicate(
       format: "%K = %@",
       P.primaryAttributeName,
-      entity.uid
+      entity.id
     )
 
     return first(ofType: P.self, with: predicate)

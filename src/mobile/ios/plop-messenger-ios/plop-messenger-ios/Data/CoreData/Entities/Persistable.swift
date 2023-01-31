@@ -2,7 +2,13 @@ import Foundation
 import CoreData
 
 protocol Persistable: NSFetchRequestResult, DomainConvertibleType {
-  static var entityName: String {get}
+  static var entityName: String { get }
+  
   static func fetchRequest() -> NSFetchRequest<Self>
-  static var primaryAttributeName: String { get }
+}
+
+extension Persistable {
+  static var primaryAttributeName: String {
+    return "id"
+  }
 }

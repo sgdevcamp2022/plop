@@ -7,10 +7,12 @@ struct Message {
     case video
   }
   
-  let id: Int
+  let id: Int64
   let from: String
   let type: ContentType
   let content: String
   let senderID: String
   let createdAt: String
+  let unread: Bool
+  let roomID: Int64
 }

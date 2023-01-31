@@ -23,9 +23,12 @@ struct User {
   let updatedAt: String
   let accessAt: String
   let loginAt: String
+  let rooms: [Room]
+  let friends: [Friend]
 }
 
 struct Profile {
+  let id: Int64
   let nickname: String
   let image: String
 }
