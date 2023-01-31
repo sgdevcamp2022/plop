@@ -21,16 +21,19 @@ public class ChatMessageDto {
     private LocalDateTime created_at;
 
     @Builder
-    public ChatMessageDto(MessageType message_type, String room_id, String sender_id, String content, String message_to) {
+    public ChatMessageDto(String message_id, MessageType message_type, String room_id, String sender_id, String content, String message_to,LocalDateTime created_at) {
+        this.message_id = message_id;
         this.message_type = message_type;
         this.room_id = room_id;
         this.sender_id = sender_id;
         this.content = content;
         this.message_to = message_to;
+        this.created_at = created_at;
     }
 
     @Override
     public String toString() {
-        return "Type: "+message_type+", message_to: "+message_to+", sender: " + sender_id+", Content: "+content;
+        return "M_id: "+message_id+", room: "+room_id+ ", Type: "+message_type+"\n"+
+        ", sender: " + sender_id+", Content: "+content;
     }
 }
