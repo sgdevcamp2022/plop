@@ -17,17 +17,18 @@ import java.time.LocalDateTime;
 @Document(collection = "messages")
 public class MessageCollection {
     @Id
-    private ObjectId objMessageId;
+    private String _id;
     private String roomId;
     private MessageType type;
-    private String userId;
+    private String senderId;
     private String content;
     private LocalDateTime createAt;
 
     @Builder
-    public MessageCollection(MessageType type, String userId, String content, LocalDateTime createAt) {
+    public MessageCollection(MessageType type, String roomId, String senderId, String content, LocalDateTime createAt) {
         this.type = type;
-        this.userId = userId;
+        this.roomId = roomId;
+        this.senderId = senderId;
         this.content = content;
         this.createAt = createAt;
     }
