@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import smilegate.plop.chat.domain.room.Member;
 import smilegate.plop.chat.domain.room.RoomCollection;
+import smilegate.plop.chat.domain.room.RoomIdCreator;
 import smilegate.plop.chat.domain.room.RoomRepository;
 import smilegate.plop.chat.dto.*;
 
@@ -39,17 +40,18 @@ public class ChatRoomService {
         List<Member> members = new ArrayList<>();
         String title = convertMembersListToString(reqGroupDto.getMembers());
 
-        reqGroupDto.getMembers().stream().forEach(m -> members.add(new Member(m,LocalDateTime.now())));
+        reqGroupDto.getMembers().forEach(m -> members.add(new Member(m,LocalDateTime.now())));
         members.add(new Member(reqGroupDto.getCreator(), LocalDateTime.now()));
 
         RoomCollection savedRoom = roomRepository.save(RoomCollection.builder()
                 .title(title)
                 .members(members)
                 .managers(Collections.singletonList(reqGroupDto.getCreator()))
+                .roomId(RoomIdCreator.createRoomId())
                 .build()
         );
 
-        return new RespRoomDto(savedRoom.get_id(),savedRoom.getTitle(),savedRoom.getMembers(),savedRoom.getManagers());
+        return new RespRoomDto(savedRoom.getRoomId(),savedRoom.getTitle(),savedRoom.getMembers(),savedRoom.getManagers());
     }
 
     public boolean inviteMembers(ReqInviteDto reqInviteDto){
