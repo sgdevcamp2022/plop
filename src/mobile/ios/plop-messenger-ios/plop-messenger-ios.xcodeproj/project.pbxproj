@@ -36,6 +36,11 @@
 		B415245D2988FD76006B86FF /* CDProfile+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41524512988FD76006B86FF /* CDProfile+CoreDataProperties.swift */; };
 		B415245E2988FD76006B86FF /* CDRoom+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41524522988FD76006B86FF /* CDRoom+CoreDataClass.swift */; };
 		B415245F2988FD76006B86FF /* CDRoom+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41524532988FD76006B86FF /* CDRoom+CoreDataProperties.swift */; };
+		B415246129896CD5006B86FF /* CDRoomsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B415246029896CD5006B86FF /* CDRoomsUseCase.swift */; };
+		B415246429896F75006B86FF /* CDFriendsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B415246329896F75006B86FF /* CDFriendsUseCase.swift */; };
+		B41524662989701D006B86FF /* CDMemebersUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41524652989701D006B86FF /* CDMemebersUseCase.swift */; };
+		B415246829897051006B86FF /* CDMessagesUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B415246729897051006B86FF /* CDMessagesUseCase.swift */; };
+		B415246A2989714E006B86FF /* CDProfileUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41524692989714E006B86FF /* CDProfileUseCase.swift */; };
 		B41E40B82987797C00BB3126 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41E40B72987797C00BB3126 /* AppDelegate.swift */; };
 		B41E40BA2987797C00BB3126 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41E40B92987797C00BB3126 /* SceneDelegate.swift */; };
 		B41E40BC2987797C00BB3126 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41E40BB2987797C00BB3126 /* ViewController.swift */; };
@@ -83,6 +88,11 @@
 		B41524512988FD76006B86FF /* CDProfile+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDProfile+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		B41524522988FD76006B86FF /* CDRoom+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDRoom+CoreDataClass.swift"; sourceTree = "<group>"; };
 		B41524532988FD76006B86FF /* CDRoom+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDRoom+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		B415246029896CD5006B86FF /* CDRoomsUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CDRoomsUseCase.swift; sourceTree = "<group>"; };
+		B415246329896F75006B86FF /* CDFriendsUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CDFriendsUseCase.swift; sourceTree = "<group>"; };
+		B41524652989701D006B86FF /* CDMemebersUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CDMemebersUseCase.swift; sourceTree = "<group>"; };
+		B415246729897051006B86FF /* CDMessagesUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CDMessagesUseCase.swift; sourceTree = "<group>"; };
+		B41524692989714E006B86FF /* CDProfileUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CDProfileUseCase.swift; sourceTree = "<group>"; };
 		B41E40B42987797C00BB3126 /* plop-messenger-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "plop-messenger-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B41E40B72987797C00BB3126 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B41E40B92987797C00BB3126 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -136,6 +146,11 @@
 			isa = PBXGroup;
 			children = (
 				B401931B29882E4000217AEB /* CDUsersUseCase.swift */,
+				B415246029896CD5006B86FF /* CDRoomsUseCase.swift */,
+				B415246329896F75006B86FF /* CDFriendsUseCase.swift */,
+				B41524652989701D006B86FF /* CDMemebersUseCase.swift */,
+				B415246729897051006B86FF /* CDMessagesUseCase.swift */,
+				B41524692989714E006B86FF /* CDProfileUseCase.swift */,
 			);
 			path = UseCases;
 			sourceTree = "<group>";
@@ -160,6 +175,13 @@
 				B401930F2988230B00217AEB /* Persistable.swift */,
 			);
 			path = Common;
+			sourceTree = "<group>";
+		};
+		B415246229896D17006B86FF /* Repositories */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Repositories;
 			sourceTree = "<group>";
 		};
 		B41E40AB2987797C00BB3126 = {
@@ -234,6 +256,7 @@
 		B41E40EC2987927300BB3126 /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
+				B415246229896D17006B86FF /* Repositories */,
 				B401931A29882E3800217AEB /* UseCases */,
 				B40193112988241900217AEB /* RxCoreData */,
 				B4019308298810C700217AEB /* Extensions */,
@@ -370,6 +393,7 @@
 				B415245F2988FD76006B86FF /* CDRoom+CoreDataProperties.swift in Sources */,
 				B4019338298835E100217AEB /* CDProfile+Ext.swift in Sources */,
 				B415245B2988FD76006B86FF /* CDFriend+CoreDataProperties.swift in Sources */,
+				B415246429896F75006B86FF /* CDFriendsUseCase.swift in Sources */,
 				B415245C2988FD76006B86FF /* CDProfile+CoreDataClass.swift in Sources */,
 				B41E40F329879D2900BB3126 /* ServiceProvider.swift in Sources */,
 				B401933A2988B80D00217AEB /* CDMember+Ext.swift in Sources */,
@@ -377,15 +401,19 @@
 				B401930A298810D300217AEB /* NSManagedObjectContext+Ext.swift in Sources */,
 				B40193102988230B00217AEB /* Persistable.swift in Sources */,
 				B41524592988FD76006B86FF /* CDMessage+CoreDataProperties.swift in Sources */,
+				B41524662989701D006B86FF /* CDMemebersUseCase.swift in Sources */,
 				B41E40B82987797C00BB3126 /* AppDelegate.swift in Sources */,
 				B40193442988C95700217AEB /* CDMessage+Ext.swift in Sources */,
 				B40193152988297300217AEB /* FetchedResultsControllerObserver.swift in Sources */,
+				B415246A2989714E006B86FF /* CDProfileUseCase.swift in Sources */,
 				B41E40F1298792AD00BB3126 /* PlopMessengerModel.xcdatamodeld in Sources */,
 				B401931E29882FDE00217AEB /* CDUser+Ext.swift in Sources */,
 				B41E40D229877F6A00BB3126 /* Message.swift in Sources */,
+				B415246129896CD5006B86FF /* CDRoomsUseCase.swift in Sources */,
 				B41524452988F331006B86FF /* CDFriend+Ext.swift in Sources */,
 				B415245E2988FD76006B86FF /* CDRoom+CoreDataClass.swift in Sources */,
 				B41E40BA2987797C00BB3126 /* SceneDelegate.swift in Sources */,
+				B415246829897051006B86FF /* CDMessagesUseCase.swift in Sources */,
 				B401933C2988BEBE00217AEB /* Member.swift in Sources */,
 				B41E40D029877F6500BB3126 /* Room.swift in Sources */,
 				B41E40FD2987B07C00BB3126 /* UIImageTransformer.swift in Sources */,
