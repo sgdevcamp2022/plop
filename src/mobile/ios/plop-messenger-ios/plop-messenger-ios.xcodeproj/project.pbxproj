@@ -24,23 +24,14 @@
 		B401933E2988BF1F00217AEB /* CDRoom+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = B401933D2988BF1F00217AEB /* CDRoom+Ext.swift */; };
 		B40193442988C95700217AEB /* CDMessage+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = B40193432988C95700217AEB /* CDMessage+Ext.swift */; };
 		B41524452988F331006B86FF /* CDFriend+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41524442988F331006B86FF /* CDFriend+Ext.swift */; };
-		B41524542988FD76006B86FF /* CDUser+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41524482988FD76006B86FF /* CDUser+CoreDataClass.swift */; };
-		B41524552988FD76006B86FF /* CDUser+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41524492988FD76006B86FF /* CDUser+CoreDataProperties.swift */; };
-		B41524562988FD76006B86FF /* CDMember+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B415244A2988FD76006B86FF /* CDMember+CoreDataClass.swift */; };
-		B41524572988FD76006B86FF /* CDMember+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B415244B2988FD76006B86FF /* CDMember+CoreDataProperties.swift */; };
-		B41524582988FD76006B86FF /* CDMessage+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B415244C2988FD76006B86FF /* CDMessage+CoreDataClass.swift */; };
-		B41524592988FD76006B86FF /* CDMessage+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B415244D2988FD76006B86FF /* CDMessage+CoreDataProperties.swift */; };
-		B415245A2988FD76006B86FF /* CDFriend+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B415244E2988FD76006B86FF /* CDFriend+CoreDataClass.swift */; };
-		B415245B2988FD76006B86FF /* CDFriend+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B415244F2988FD76006B86FF /* CDFriend+CoreDataProperties.swift */; };
-		B415245C2988FD76006B86FF /* CDProfile+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41524502988FD76006B86FF /* CDProfile+CoreDataClass.swift */; };
-		B415245D2988FD76006B86FF /* CDProfile+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41524512988FD76006B86FF /* CDProfile+CoreDataProperties.swift */; };
-		B415245E2988FD76006B86FF /* CDRoom+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41524522988FD76006B86FF /* CDRoom+CoreDataClass.swift */; };
-		B415245F2988FD76006B86FF /* CDRoom+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41524532988FD76006B86FF /* CDRoom+CoreDataProperties.swift */; };
 		B415246129896CD5006B86FF /* CDRoomsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B415246029896CD5006B86FF /* CDRoomsUseCase.swift */; };
 		B415246429896F75006B86FF /* CDFriendsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B415246329896F75006B86FF /* CDFriendsUseCase.swift */; };
 		B41524662989701D006B86FF /* CDMemebersUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41524652989701D006B86FF /* CDMemebersUseCase.swift */; };
 		B415246829897051006B86FF /* CDMessagesUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B415246729897051006B86FF /* CDMessagesUseCase.swift */; };
 		B415246A2989714E006B86FF /* CDProfileUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41524692989714E006B86FF /* CDProfileUseCase.swift */; };
+		B4152471298977F4006B86FF /* UsersNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4152470298977F4006B86FF /* UsersNetwork.swift */; };
+		B415247329897D05006B86FF /* RoomsNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = B415247229897D05006B86FF /* RoomsNetwork.swift */; };
+		B415247629898737006B86FF /* LoginResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B415247529898737006B86FF /* LoginResponse.swift */; };
 		B41E40B82987797C00BB3126 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41E40B72987797C00BB3126 /* AppDelegate.swift */; };
 		B41E40BA2987797C00BB3126 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41E40B92987797C00BB3126 /* SceneDelegate.swift */; };
 		B41E40BC2987797C00BB3126 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41E40BB2987797C00BB3126 /* ViewController.swift */; };
@@ -52,6 +43,31 @@
 		B41E40D9298783AE00BB3126 /* Friend.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41E40D8298783AE00BB3126 /* Friend.swift */; };
 		B41E40F1298792AD00BB3126 /* PlopMessengerModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B41E40EF298792AD00BB3126 /* PlopMessengerModel.xcdatamodeld */; };
 		B41E40F329879D2900BB3126 /* ServiceProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41E40F229879D2900BB3126 /* ServiceProvider.swift */; };
+		B460829F298A217700BABC97 /* NetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B460829E298A217700BABC97 /* NetworkError.swift */; };
+		B46082A1298A259300BABC97 /* SignupRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46082A0298A259300BABC97 /* SignupRequest.swift */; };
+		B46082A3298A29C900BABC97 /* NetworkHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46082A2298A29C900BABC97 /* NetworkHelper.swift */; };
+		B46082A5298A2BE900BABC97 /* AuthNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46082A4298A2BE900BABC97 /* AuthNetwork.swift */; };
+		B46082A7298A2EDE00BABC97 /* ProfileResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46082A6298A2EDE00BABC97 /* ProfileResponse.swift */; };
+		B46082A9298A33F600BABC97 /* FriendsNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46082A8298A33F600BABC97 /* FriendsNetwork.swift */; };
+		B46082AB298A344A00BABC97 /* FriendsListResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46082AA298A344A00BABC97 /* FriendsListResponse.swift */; };
+		B46082AD298A345100BABC97 /* FriendResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46082AC298A345100BABC97 /* FriendResponse.swift */; };
+		B46082AF298A3ED000BABC97 /* RoomResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46082AE298A3ED000BABC97 /* RoomResponse.swift */; };
+		B46082B1298A3EEF00BABC97 /* MemberResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46082B0298A3EEF00BABC97 /* MemberResponse.swift */; };
+		B46082B3298A40F800BABC97 /* RoomInviteResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46082B2298A40F800BABC97 /* RoomInviteResponse.swift */; };
+		B46082B5298A437B00BABC97 /* RoomsListResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46082B4298A437B00BABC97 /* RoomsListResponse.swift */; };
+		B46082B7298A46FF00BABC97 /* MessageResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46082B6298A46FF00BABC97 /* MessageResponse.swift */; };
+		B46082DF298AAC9200BABC97 /* CDFriend+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46082D3298AAC9200BABC97 /* CDFriend+CoreDataClass.swift */; };
+		B46082E0298AAC9200BABC97 /* CDFriend+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46082D4298AAC9200BABC97 /* CDFriend+CoreDataProperties.swift */; };
+		B46082E1298AAC9200BABC97 /* CDMember+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46082D5298AAC9200BABC97 /* CDMember+CoreDataClass.swift */; };
+		B46082E2298AAC9200BABC97 /* CDMember+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46082D6298AAC9200BABC97 /* CDMember+CoreDataProperties.swift */; };
+		B46082E3298AAC9200BABC97 /* CDMessage+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46082D7298AAC9200BABC97 /* CDMessage+CoreDataClass.swift */; };
+		B46082E4298AAC9200BABC97 /* CDMessage+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46082D8298AAC9200BABC97 /* CDMessage+CoreDataProperties.swift */; };
+		B46082E5298AAC9200BABC97 /* CDProfile+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46082D9298AAC9200BABC97 /* CDProfile+CoreDataClass.swift */; };
+		B46082E6298AAC9200BABC97 /* CDProfile+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46082DA298AAC9200BABC97 /* CDProfile+CoreDataProperties.swift */; };
+		B46082E7298AAC9200BABC97 /* CDRoom+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46082DB298AAC9200BABC97 /* CDRoom+CoreDataClass.swift */; };
+		B46082E8298AAC9200BABC97 /* CDRoom+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46082DC298AAC9200BABC97 /* CDRoom+CoreDataProperties.swift */; };
+		B46082E9298AAC9200BABC97 /* CDUser+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46082DD298AAC9200BABC97 /* CDUser+CoreDataClass.swift */; };
+		B46082EA298AAC9200BABC97 /* CDUser+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46082DE298AAC9200BABC97 /* CDUser+CoreDataProperties.swift */; };
 		B4E8D66F29880E9D003B946D /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = B4E8D66E29880E9D003B946D /* RxCocoa */; };
 		B4E8D67129880E9D003B946D /* RxRelay in Frameworks */ = {isa = PBXBuildFile; productRef = B4E8D67029880E9D003B946D /* RxRelay */; };
 		B4E8D67329880E9D003B946D /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = B4E8D67229880E9D003B946D /* RxSwift */; };
@@ -75,23 +91,14 @@
 		B401933D2988BF1F00217AEB /* CDRoom+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDRoom+Ext.swift"; sourceTree = "<group>"; };
 		B40193432988C95700217AEB /* CDMessage+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDMessage+Ext.swift"; sourceTree = "<group>"; };
 		B41524442988F331006B86FF /* CDFriend+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDFriend+Ext.swift"; sourceTree = "<group>"; };
-		B41524482988FD76006B86FF /* CDUser+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDUser+CoreDataClass.swift"; sourceTree = "<group>"; };
-		B41524492988FD76006B86FF /* CDUser+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDUser+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		B415244A2988FD76006B86FF /* CDMember+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDMember+CoreDataClass.swift"; sourceTree = "<group>"; };
-		B415244B2988FD76006B86FF /* CDMember+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDMember+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		B415244C2988FD76006B86FF /* CDMessage+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDMessage+CoreDataClass.swift"; sourceTree = "<group>"; };
-		B415244D2988FD76006B86FF /* CDMessage+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDMessage+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		B415244E2988FD76006B86FF /* CDFriend+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDFriend+CoreDataClass.swift"; sourceTree = "<group>"; };
-		B415244F2988FD76006B86FF /* CDFriend+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDFriend+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		B41524502988FD76006B86FF /* CDProfile+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDProfile+CoreDataClass.swift"; sourceTree = "<group>"; };
-		B41524512988FD76006B86FF /* CDProfile+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDProfile+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		B41524522988FD76006B86FF /* CDRoom+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDRoom+CoreDataClass.swift"; sourceTree = "<group>"; };
-		B41524532988FD76006B86FF /* CDRoom+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDRoom+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		B415246029896CD5006B86FF /* CDRoomsUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CDRoomsUseCase.swift; sourceTree = "<group>"; };
 		B415246329896F75006B86FF /* CDFriendsUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CDFriendsUseCase.swift; sourceTree = "<group>"; };
 		B41524652989701D006B86FF /* CDMemebersUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CDMemebersUseCase.swift; sourceTree = "<group>"; };
 		B415246729897051006B86FF /* CDMessagesUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CDMessagesUseCase.swift; sourceTree = "<group>"; };
 		B41524692989714E006B86FF /* CDProfileUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CDProfileUseCase.swift; sourceTree = "<group>"; };
+		B4152470298977F4006B86FF /* UsersNetwork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersNetwork.swift; sourceTree = "<group>"; };
+		B415247229897D05006B86FF /* RoomsNetwork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomsNetwork.swift; sourceTree = "<group>"; };
+		B415247529898737006B86FF /* LoginResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginResponse.swift; sourceTree = "<group>"; };
 		B41E40B42987797C00BB3126 /* plop-messenger-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "plop-messenger-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B41E40B72987797C00BB3126 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B41E40B92987797C00BB3126 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -105,6 +112,31 @@
 		B41E40D8298783AE00BB3126 /* Friend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Friend.swift; sourceTree = "<group>"; };
 		B41E40F0298792AD00BB3126 /* PlopMessengerModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = PlopMessengerModel.xcdatamodel; sourceTree = "<group>"; };
 		B41E40F229879D2900BB3126 /* ServiceProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceProvider.swift; sourceTree = "<group>"; };
+		B460829E298A217700BABC97 /* NetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkError.swift; sourceTree = "<group>"; };
+		B46082A0298A259300BABC97 /* SignupRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupRequest.swift; sourceTree = "<group>"; };
+		B46082A2298A29C900BABC97 /* NetworkHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkHelper.swift; sourceTree = "<group>"; };
+		B46082A4298A2BE900BABC97 /* AuthNetwork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthNetwork.swift; sourceTree = "<group>"; };
+		B46082A6298A2EDE00BABC97 /* ProfileResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileResponse.swift; sourceTree = "<group>"; };
+		B46082A8298A33F600BABC97 /* FriendsNetwork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsNetwork.swift; sourceTree = "<group>"; };
+		B46082AA298A344A00BABC97 /* FriendsListResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsListResponse.swift; sourceTree = "<group>"; };
+		B46082AC298A345100BABC97 /* FriendResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendResponse.swift; sourceTree = "<group>"; };
+		B46082AE298A3ED000BABC97 /* RoomResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomResponse.swift; sourceTree = "<group>"; };
+		B46082B0298A3EEF00BABC97 /* MemberResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberResponse.swift; sourceTree = "<group>"; };
+		B46082B2298A40F800BABC97 /* RoomInviteResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomInviteResponse.swift; sourceTree = "<group>"; };
+		B46082B4298A437B00BABC97 /* RoomsListResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomsListResponse.swift; sourceTree = "<group>"; };
+		B46082B6298A46FF00BABC97 /* MessageResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageResponse.swift; sourceTree = "<group>"; };
+		B46082D3298AAC9200BABC97 /* CDFriend+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDFriend+CoreDataClass.swift"; sourceTree = "<group>"; };
+		B46082D4298AAC9200BABC97 /* CDFriend+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDFriend+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		B46082D5298AAC9200BABC97 /* CDMember+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDMember+CoreDataClass.swift"; sourceTree = "<group>"; };
+		B46082D6298AAC9200BABC97 /* CDMember+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDMember+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		B46082D7298AAC9200BABC97 /* CDMessage+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDMessage+CoreDataClass.swift"; sourceTree = "<group>"; };
+		B46082D8298AAC9200BABC97 /* CDMessage+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDMessage+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		B46082D9298AAC9200BABC97 /* CDProfile+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDProfile+CoreDataClass.swift"; sourceTree = "<group>"; };
+		B46082DA298AAC9200BABC97 /* CDProfile+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDProfile+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		B46082DB298AAC9200BABC97 /* CDRoom+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDRoom+CoreDataClass.swift"; sourceTree = "<group>"; };
+		B46082DC298AAC9200BABC97 /* CDRoom+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDRoom+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		B46082DD298AAC9200BABC97 /* CDUser+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDUser+CoreDataClass.swift"; sourceTree = "<group>"; };
+		B46082DE298AAC9200BABC97 /* CDUser+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDUser+CoreDataProperties.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -182,6 +214,34 @@
 			path = Repositories;
 			sourceTree = "<group>";
 		};
+		B415246F298977EC006B86FF /* API */ = {
+			isa = PBXGroup;
+			children = (
+				B4152470298977F4006B86FF /* UsersNetwork.swift */,
+				B415247229897D05006B86FF /* RoomsNetwork.swift */,
+				B46082A4298A2BE900BABC97 /* AuthNetwork.swift */,
+				B46082A8298A33F600BABC97 /* FriendsNetwork.swift */,
+			);
+			path = API;
+			sourceTree = "<group>";
+		};
+		B415247429898730006B86FF /* Entities */ = {
+			isa = PBXGroup;
+			children = (
+				B415247529898737006B86FF /* LoginResponse.swift */,
+				B46082A0298A259300BABC97 /* SignupRequest.swift */,
+				B46082A6298A2EDE00BABC97 /* ProfileResponse.swift */,
+				B46082AA298A344A00BABC97 /* FriendsListResponse.swift */,
+				B46082AC298A345100BABC97 /* FriendResponse.swift */,
+				B46082AE298A3ED000BABC97 /* RoomResponse.swift */,
+				B46082B2298A40F800BABC97 /* RoomInviteResponse.swift */,
+				B46082B0298A3EEF00BABC97 /* MemberResponse.swift */,
+				B46082B4298A437B00BABC97 /* RoomsListResponse.swift */,
+				B46082B6298A46FF00BABC97 /* MessageResponse.swift */,
+			);
+			path = Entities;
+			sourceTree = "<group>";
+		};
 		B41E40AB2987797C00BB3126 = {
 			isa = PBXGroup;
 			children = (
@@ -216,6 +276,7 @@
 		B41E40CB29877F0100BB3126 /* Domain */ = {
 			isa = PBXGroup;
 			children = (
+				B46082B8298AA46E00BABC97 /* UseCases */,
 				B41E40CC29877F0300BB3126 /* Entities */,
 			);
 			path = Domain;
@@ -247,6 +308,9 @@
 		B41E40EB2987927000BB3126 /* Network */ = {
 			isa = PBXGroup;
 			children = (
+				B460829D298A216F00BABC97 /* Common */,
+				B415247429898730006B86FF /* Entities */,
+				B415246F298977EC006B86FF /* API */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -273,21 +337,37 @@
 			path = ImageLoader;
 			sourceTree = "<group>";
 		};
+		B460829D298A216F00BABC97 /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				B460829E298A217700BABC97 /* NetworkError.swift */,
+				B46082A2298A29C900BABC97 /* NetworkHelper.swift */,
+			);
+			path = Common;
+			sourceTree = "<group>";
+		};
+		B46082B8298AA46E00BABC97 /* UseCases */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = UseCases;
+			sourceTree = "<group>";
+		};
 		B4E8D66A2987B126003B946D /* Entities */ = {
 			isa = PBXGroup;
 			children = (
-				B41524482988FD76006B86FF /* CDUser+CoreDataClass.swift */,
-				B41524492988FD76006B86FF /* CDUser+CoreDataProperties.swift */,
-				B415244A2988FD76006B86FF /* CDMember+CoreDataClass.swift */,
-				B415244B2988FD76006B86FF /* CDMember+CoreDataProperties.swift */,
-				B415244C2988FD76006B86FF /* CDMessage+CoreDataClass.swift */,
-				B415244D2988FD76006B86FF /* CDMessage+CoreDataProperties.swift */,
-				B415244E2988FD76006B86FF /* CDFriend+CoreDataClass.swift */,
-				B415244F2988FD76006B86FF /* CDFriend+CoreDataProperties.swift */,
-				B41524502988FD76006B86FF /* CDProfile+CoreDataClass.swift */,
-				B41524512988FD76006B86FF /* CDProfile+CoreDataProperties.swift */,
-				B41524522988FD76006B86FF /* CDRoom+CoreDataClass.swift */,
-				B41524532988FD76006B86FF /* CDRoom+CoreDataProperties.swift */,
+				B46082D3298AAC9200BABC97 /* CDFriend+CoreDataClass.swift */,
+				B46082D4298AAC9200BABC97 /* CDFriend+CoreDataProperties.swift */,
+				B46082D5298AAC9200BABC97 /* CDMember+CoreDataClass.swift */,
+				B46082D6298AAC9200BABC97 /* CDMember+CoreDataProperties.swift */,
+				B46082D7298AAC9200BABC97 /* CDMessage+CoreDataClass.swift */,
+				B46082D8298AAC9200BABC97 /* CDMessage+CoreDataProperties.swift */,
+				B46082D9298AAC9200BABC97 /* CDProfile+CoreDataClass.swift */,
+				B46082DA298AAC9200BABC97 /* CDProfile+CoreDataProperties.swift */,
+				B46082DB298AAC9200BABC97 /* CDRoom+CoreDataClass.swift */,
+				B46082DC298AAC9200BABC97 /* CDRoom+CoreDataProperties.swift */,
+				B46082DD298AAC9200BABC97 /* CDUser+CoreDataClass.swift */,
+				B46082DE298AAC9200BABC97 /* CDUser+CoreDataProperties.swift */,
 				B41524472988FD4A006B86FF /* Common */,
 				B41524462988FD38006B86FF /* Extensions */,
 			);
@@ -372,48 +452,64 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B415245D2988FD76006B86FF /* CDProfile+CoreDataProperties.swift in Sources */,
+				B415247329897D05006B86FF /* RoomsNetwork.swift in Sources */,
 				B401930729880F7200217AEB /* CoreDataStack.swift in Sources */,
 				B41E40CE29877F5E00BB3126 /* User.swift in Sources */,
+				B415247629898737006B86FF /* LoginResponse.swift in Sources */,
 				B41E40D9298783AE00BB3126 /* Friend.swift in Sources */,
-				B41524542988FD76006B86FF /* CDUser+CoreDataClass.swift in Sources */,
+				B46082E6298AAC9200BABC97 /* CDProfile+CoreDataProperties.swift in Sources */,
 				B40193132988242800217AEB /* ContextScheduler.swift in Sources */,
 				B4019317298829E700217AEB /* NSManagedObjectContext+Rx.swift in Sources */,
 				B401930E29881F4800217AEB /* DomainConvertibleType.swift in Sources */,
+				B46082E0298AAC9200BABC97 /* CDFriend+CoreDataProperties.swift in Sources */,
 				B401931C29882E4000217AEB /* CDUsersUseCase.swift in Sources */,
-				B415245A2988FD76006B86FF /* CDFriend+CoreDataClass.swift in Sources */,
-				B41524582988FD76006B86FF /* CDMessage+CoreDataClass.swift in Sources */,
-				B41524552988FD76006B86FF /* CDUser+CoreDataProperties.swift in Sources */,
+				B46082B7298A46FF00BABC97 /* MessageResponse.swift in Sources */,
 				B41E40BC2987797C00BB3126 /* ViewController.swift in Sources */,
-				B41524562988FD76006B86FF /* CDMember+CoreDataClass.swift in Sources */,
 				B401930C29881E2800217AEB /* Observable+Ext.swift in Sources */,
-				B415245F2988FD76006B86FF /* CDRoom+CoreDataProperties.swift in Sources */,
+				B46082A9298A33F600BABC97 /* FriendsNetwork.swift in Sources */,
 				B4019338298835E100217AEB /* CDProfile+Ext.swift in Sources */,
-				B415245B2988FD76006B86FF /* CDFriend+CoreDataProperties.swift in Sources */,
 				B415246429896F75006B86FF /* CDFriendsUseCase.swift in Sources */,
-				B415245C2988FD76006B86FF /* CDProfile+CoreDataClass.swift in Sources */,
 				B41E40F329879D2900BB3126 /* ServiceProvider.swift in Sources */,
+				B46082E8298AAC9200BABC97 /* CDRoom+CoreDataProperties.swift in Sources */,
 				B401933A2988B80D00217AEB /* CDMember+Ext.swift in Sources */,
-				B41524572988FD76006B86FF /* CDMember+CoreDataProperties.swift in Sources */,
+				B46082E2298AAC9200BABC97 /* CDMember+CoreDataProperties.swift in Sources */,
 				B401930A298810D300217AEB /* NSManagedObjectContext+Ext.swift in Sources */,
 				B40193102988230B00217AEB /* Persistable.swift in Sources */,
-				B41524592988FD76006B86FF /* CDMessage+CoreDataProperties.swift in Sources */,
+				B460829F298A217700BABC97 /* NetworkError.swift in Sources */,
 				B41524662989701D006B86FF /* CDMemebersUseCase.swift in Sources */,
 				B41E40B82987797C00BB3126 /* AppDelegate.swift in Sources */,
 				B40193442988C95700217AEB /* CDMessage+Ext.swift in Sources */,
 				B40193152988297300217AEB /* FetchedResultsControllerObserver.swift in Sources */,
+				B46082EA298AAC9200BABC97 /* CDUser+CoreDataProperties.swift in Sources */,
 				B415246A2989714E006B86FF /* CDProfileUseCase.swift in Sources */,
 				B41E40F1298792AD00BB3126 /* PlopMessengerModel.xcdatamodeld in Sources */,
+				B46082DF298AAC9200BABC97 /* CDFriend+CoreDataClass.swift in Sources */,
 				B401931E29882FDE00217AEB /* CDUser+Ext.swift in Sources */,
 				B41E40D229877F6A00BB3126 /* Message.swift in Sources */,
+				B46082E1298AAC9200BABC97 /* CDMember+CoreDataClass.swift in Sources */,
+				B46082AF298A3ED000BABC97 /* RoomResponse.swift in Sources */,
+				B46082E9298AAC9200BABC97 /* CDUser+CoreDataClass.swift in Sources */,
 				B415246129896CD5006B86FF /* CDRoomsUseCase.swift in Sources */,
+				B46082B3298A40F800BABC97 /* RoomInviteResponse.swift in Sources */,
 				B41524452988F331006B86FF /* CDFriend+Ext.swift in Sources */,
-				B415245E2988FD76006B86FF /* CDRoom+CoreDataClass.swift in Sources */,
+				B46082AD298A345100BABC97 /* FriendResponse.swift in Sources */,
+				B46082A7298A2EDE00BABC97 /* ProfileResponse.swift in Sources */,
+				B4152471298977F4006B86FF /* UsersNetwork.swift in Sources */,
+				B46082A3298A29C900BABC97 /* NetworkHelper.swift in Sources */,
+				B46082E4298AAC9200BABC97 /* CDMessage+CoreDataProperties.swift in Sources */,
 				B41E40BA2987797C00BB3126 /* SceneDelegate.swift in Sources */,
 				B415246829897051006B86FF /* CDMessagesUseCase.swift in Sources */,
+				B46082B5298A437B00BABC97 /* RoomsListResponse.swift in Sources */,
+				B46082A1298A259300BABC97 /* SignupRequest.swift in Sources */,
+				B46082A5298A2BE900BABC97 /* AuthNetwork.swift in Sources */,
 				B401933C2988BEBE00217AEB /* Member.swift in Sources */,
+				B46082AB298A344A00BABC97 /* FriendsListResponse.swift in Sources */,
 				B41E40D029877F6500BB3126 /* Room.swift in Sources */,
+				B46082E3298AAC9200BABC97 /* CDMessage+CoreDataClass.swift in Sources */,
 				B401931929882D4000217AEB /* CoreDataRepository.swift in Sources */,
+				B46082B1298A3EEF00BABC97 /* MemberResponse.swift in Sources */,
+				B46082E7298AAC9200BABC97 /* CDRoom+CoreDataClass.swift in Sources */,
+				B46082E5298AAC9200BABC97 /* CDProfile+CoreDataClass.swift in Sources */,
 				B401933E2988BF1F00217AEB /* CDRoom+Ext.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

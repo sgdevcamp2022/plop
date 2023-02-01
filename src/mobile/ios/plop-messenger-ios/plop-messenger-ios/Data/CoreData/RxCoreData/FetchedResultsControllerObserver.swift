@@ -45,7 +45,6 @@ final class FetchedResultsControllerEntityObserver<T: NSFetchRequestResult> : NS
   private func sendNextElement() {
     self.frc.managedObjectContext.perform {
       let entities = self.frc.fetchedObjects ?? []
-      print(entities.first)
       self.observer.on(.next(entities))
     }
   }

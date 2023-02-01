@@ -1,15 +1,9 @@
 import Foundation
 
-struct Message {
-  enum ContentType {
-    case text
-    case image
-    case video
-  }
-  
+struct Message: Codable {
   let uid: Int64
   let from: String
-  let type: ContentType
+  let type: String
   let content: String
   let senderID: String
   let createdAt: String

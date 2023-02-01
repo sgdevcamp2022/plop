@@ -1,6 +1,6 @@
 import Foundation
 
-struct Member {
+struct Member: Codable {
   let uid: Int64
   let name: String
   let image: String

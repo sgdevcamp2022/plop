@@ -10,9 +10,9 @@ extension CDRoom: DomainConvertibleType {
       unreadMessagesCount: Int(unread),
       lastMessage: lastMessage ?? "",
       lastModified: lastModified ?? "\(Date())",
-      members: (members!.allObjects as! [CDMember]).mapToDomain(),
-      messages: (messages?.allObjects as? [CDMessage] ?? []).mapToDomain(),
-      user: user!.toDomain()
+      members: (members.allObjects as! [CDMember]).mapToDomain(),
+      messages: (messages.allObjects as? [CDMessage] ?? []).mapToDomain(),
+      user: user.toDomain()
     )
   }
 }

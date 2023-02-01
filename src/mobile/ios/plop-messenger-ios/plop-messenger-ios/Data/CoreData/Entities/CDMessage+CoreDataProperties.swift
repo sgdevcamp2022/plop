@@ -1,7 +1,6 @@
 import Foundation
 import CoreData
 
-
 extension CDMessage {
 
     @nonobjc public class func fetchRequest() -> NSFetchRequest<CDMessage> {
@@ -12,8 +11,8 @@ extension CDMessage {
     @NSManaged public var contentType: String?
     @NSManaged public var createdAt: Date?
     @NSManaged public var from: String?
-    @NSManaged public var uid: Int64
     @NSManaged public var roomID: Int64
+    @NSManaged public var uid: Int64
     @NSManaged public var unread: Bool
     @NSManaged public var room: CDRoom?
 

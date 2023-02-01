@@ -4,11 +4,10 @@ extension CDFriend: DomainConvertibleType {
   func toDomain() -> Friend {
     return Friend(
       uid: uid,
-      senderID: nil,
       status: .offline,
       block: block,
       imageURL: image,
-      name: name ?? ""
+      name: name ?? "unknown"
     )
   }
 }

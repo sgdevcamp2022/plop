@@ -5,18 +5,12 @@ extension CDUser: DomainConvertibleType {
   func toDomain() -> User {
     return User(
       uid: uid,
-      name: name ?? "",
+      userid: userid ?? "unknown",
       email: email ?? "",
-      profile: Profile(uid: 0, nickname: "", image: ""),
-      state: User.State(rawValue: Int(state)) ?? .nocertified,
-      role: .user,
-      device: Device(ios: nil, aos: nil, pc: nil),
-      createdAt: createdAt ?? "",
-      updatedAt: "",
-      accessAt: accessAt ?? "",
-      loginAt: loginAt ?? "",
-      rooms: (rooms?.allObjects as? [CDRoom])?.mapToDomain() ?? [],
-      friends: (friends?.allObjects as? [CDFriend])?.mapToDomain() ?? []
+      profile: profile.toDomain(),
+      device: device ?? "",
+      rooms: (rooms.allObjects as? [CDRoom])?.mapToDomain() ?? [],
+      friends: (friends.allObjects as? [CDFriend])?.mapToDomain() ?? []
     )
   }
 }
@@ -70,12 +64,8 @@ extension User: CoreDataRepresentable {
   }
   
   func update(entity: CDUser) {
-    print(entity)
     entity.uid = uid
-    entity.name = name
+    entity.userid = userid
     entity.email = email
-    entity.loginAt = loginAt
-    entity.accessAt = accessAt
-    entity.createdAt = createdAt
   }
 }

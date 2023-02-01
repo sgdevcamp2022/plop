@@ -7,10 +7,10 @@ extension CDMessage: DomainConvertibleType {
     //TODO : - content type 수정
     return Message(
       uid: uid,
-      from: from ?? "",
-      type: .text,
+      from: from ?? "unknown",
+      type: contentType ?? "TEXT",
       content: content ?? "",
-      senderID: from ?? "",
+      senderID: from ?? "unknown",
       createdAt: "\(createdAt ?? Date())",
       unread: unread,
       roomID: roomID
