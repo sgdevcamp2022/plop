@@ -92,4 +92,12 @@ public class ChatRoomService {
         return String.join(", ",list);
     }
 
+    public RespRoomDto getChatRoomInfo(String roomId) {
+        RoomCollection roomCollection = roomRepository.findByRoomId(roomId).get();
+
+        return new RespRoomDto(roomCollection.getRoomId(),
+                roomCollection.getTitle(),
+                roomCollection.getMembers(),
+                roomCollection.getManagers());
+    }
 }
