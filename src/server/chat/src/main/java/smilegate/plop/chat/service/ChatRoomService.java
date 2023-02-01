@@ -2,6 +2,8 @@ package smilegate.plop.chat.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import smilegate.plop.chat.domain.chat.ChatMessageRepository;
+import smilegate.plop.chat.domain.chat.MessageCollection;
 import smilegate.plop.chat.domain.room.Member;
 import smilegate.plop.chat.domain.room.RoomCollection;
 import smilegate.plop.chat.domain.room.RoomIdCreator;
@@ -17,9 +19,11 @@ import java.util.List;
 @Service
 public class ChatRoomService {
     private final RoomRepository roomRepository;
+    private final ChatMessageRepository chatMessageRepository;
 
-    public ChatRoomService(RoomRepository roomRepository ) {
+    public ChatRoomService(RoomRepository roomRepository, ChatMessageRepository chatMessageRepository) {
         this.roomRepository = roomRepository;
+        this.chatMessageRepository = chatMessageRepository;
     }
 
     public RoomCollection createDmRoom(ChatMessageDto chatMessageDto){
@@ -64,6 +68,14 @@ public class ChatRoomService {
 
     public APIMessage findMyRoomsByUserId(String userId){
         List<RoomCollection> roomCollectionList = roomRepository.findMyRoomsByUserId(userId);
+
+        // 방마다 최신 메시지 받기
+        // 1. roomid 에 해당하는 메시지 중
+        // 2. 가장 최신 sort
+        // 3. limit 1 개
+        List<String> roomIds = null;
+        List<MessageCollection> messageCollectionList = chatMessageRepository.getAllLastMessage(roomIds);
+
         return new APIMessage(APIMessage.ResultEnum.success,roomCollectionList);
     }
 
