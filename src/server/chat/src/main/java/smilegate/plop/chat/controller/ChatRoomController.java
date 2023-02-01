@@ -63,4 +63,9 @@ public class ChatRoomController {
             put("room_id",roomId);
         }}), HttpStatus.OK);
     }
+
+    @GetMapping("/v1/info/{roomid}")
+    public ResponseEntity<RespRoomDto> chatRoomInfo(@PathVariable(value = "roomid") String roomId){
+        return new ResponseEntity<>(chatRoomMongoService.getChatRoomInfo(roomId),HttpStatus.OK);
+    }
 }
