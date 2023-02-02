@@ -1,6 +1,7 @@
 package com.plop.plopmessenger.presentation.component
 
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
@@ -93,14 +94,21 @@ fun PeopleWithSingleBtnItem(
 
 @Composable
 fun PeopleWithCheckItem(
-    imageURL: String = "",
-    nickname: String = "nickname",
+    onClick: () -> Unit,
+    imageURL: String,
+    nickname: String,
     modifier: Modifier = Modifier,
-    isChecked: Boolean = false,
+    isChecked: Boolean,
     onBtnColor: Color = MaterialTheme.colors.background,
     btnColor: Color = MaterialTheme.colors.primary
 ) {
-    Box(modifier = modifier) {
+
+    Box(
+        modifier = modifier
+            .clickable {
+                onClick()
+            }
+    ) {
         PeopleItem(imageURL, nickname)
 
         if(isChecked){

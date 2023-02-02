@@ -88,7 +88,7 @@ class MainNavigationAction(val navController: NavController) {
     }
 
     //그룹채팅에 멤버가 추가되었을 때?
-    val navigateToUpdateGroupChat: (Int, NavBackStackEntry) -> Unit = { chatId, from ->
+    val navigateToUpdateGroupChat: (String, NavBackStackEntry) -> Unit = { chatId, from ->
         navController.navigate("${MainDestinations.CHAT_ROUTE}/$chatId") {
             popUpTo(BottomBarDestinations.CHATS_ROUTE)
         }

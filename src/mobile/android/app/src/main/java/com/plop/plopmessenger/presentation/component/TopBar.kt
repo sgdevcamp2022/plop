@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 object TopBarValue {
-    val HorizontalPadding = 19.dp
+    val HorizontalPadding = 3.dp
     val TopBarHeight = 46.dp
     val IconSize = 26.dp
     val IconBtnSize = 38.dp
@@ -78,9 +78,9 @@ fun TopBarWithProfile(
 
 @Composable
 fun MainTopBarWithLeftBtn(
-    onLeftBtnClick: () -> Unit = {},
-    content: String = "",
-    leftContent: String = "",
+    onLeftBtnClick: () -> Unit,
+    content: String,
+    leftContent: String,
     btnColor: Color = MaterialTheme.colors.primary,
     modifier: Modifier = Modifier
 ) {
@@ -112,11 +112,12 @@ fun MainTopBarWithLeftBtn(
 
 @Composable
 fun MainTopBarWithBothBtn(
-    onLeftBtnClick: () -> Unit = {},
-    onRightBtnClick: () -> Unit = {},
-    content: String = "",
-    leftContent: String = "",
-    rightContent: String = "",
+    onLeftBtnClick: () -> Unit,
+    onRightBtnClick: () -> Unit,
+    content: String,
+    leftContent: String,
+    rightContent: String,
+    rightVisible: Boolean,
     btnColor: Color = MaterialTheme.colors.primary,
     modifier: Modifier = Modifier
 ) {
@@ -144,14 +145,16 @@ fun MainTopBarWithBothBtn(
                 .clickable { onLeftBtnClick() }
         )
 
-        Text(
-            text = rightContent,
-            fontSize = 17.sp,
-            color = btnColor,
-            modifier = Modifier
-                .align(Alignment.CenterEnd)
-                .clickable { onRightBtnClick() }
-        )
+        if(rightVisible) {
+            Text(
+                text = rightContent,
+                fontSize = 17.sp,
+                color = btnColor,
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .clickable { onRightBtnClick() }
+            )
+        }
     }
 }
 

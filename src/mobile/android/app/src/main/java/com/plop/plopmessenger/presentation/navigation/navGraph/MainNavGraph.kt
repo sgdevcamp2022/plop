@@ -88,6 +88,7 @@ private fun NavGraphBuilder.chatGraph(
         route = "${MainDestinations.ADD_CHAT_MEMBER_ROUTE}/{${DestinationID.CHAT_ID}}"
     ) { from ->
         AddChatMemberScreen(
+            upPress = navigationAction.upPress,
             navigateToNewChat = { navigationAction.navigateToNewChat() },
             navigateToUpdateGroupChat = { chatId -> navigationAction.navigateToUpdateGroupChat(chatId, from)}
         )
