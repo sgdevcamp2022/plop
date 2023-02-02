@@ -23,6 +23,7 @@ object MainDestinations {
     const val CHAT_INFO_ROUTE = "chatInfo"
     const val ADD_CHAT_MEMBER_ROUTE = "addChatMemberRoute"
     const val ADD_CHAT_ROUTE = "addChat"
+    const val ADD_CHAT_GROUP_ROUTE = "addGroupChat"
     const val ADD_PEOPLE_ROUTE = "addPeople"
 }
 
@@ -97,6 +98,11 @@ class MainNavigationAction(val navController: NavController) {
     val navigateToAddChat: () -> Unit = {
         navController.navigate(MainDestinations.ADD_CHAT_ROUTE)
     }
+
+    val navigateToAddGroupChat: () -> Unit = {
+        navController.navigate(MainDestinations.ADD_CHAT_GROUP_ROUTE)
+    }
+
 
     val navigateToAddPeople: () -> Unit = {
         navController.navigate(MainDestinations.ADD_PEOPLE_ROUTE)

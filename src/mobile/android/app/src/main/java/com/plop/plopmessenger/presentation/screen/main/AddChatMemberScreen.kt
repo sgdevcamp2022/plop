@@ -22,10 +22,8 @@ import com.plop.plopmessenger.domain.model.People
 import com.plop.plopmessenger.presentation.component.*
 import com.plop.plopmessenger.presentation.viewmodel.AddChatMemberViewModel
 import com.plop.plopmessenger.util.KeyLine
+import com.plop.plopmessenger.util.SearchDisplay
 
-enum class SearchDisplay {
-    Default, Results, NoResults
-}
 
 object AddChatMemberValue {
     val BetweenFriendPaddingSize = 10.dp

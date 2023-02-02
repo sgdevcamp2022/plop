@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.sp
 import com.plop.plopmessenger.util.KeyLine
 
 object PeopleItemValue {
-    val ItemHeight = 56.dp
+    const val ItemHeight = 56
     const val ProfileSize = 56
     val CheckCircleSize = 14.dp
 }
@@ -109,7 +109,10 @@ fun PeopleWithCheckItem(
                 onClick()
             }
     ) {
-        PeopleItem(imageURL, nickname)
+        PeopleItem(
+            imageURL = imageURL,
+            nickname = nickname
+        )
 
         if(isChecked){
             Surface(
@@ -142,20 +145,23 @@ fun PeopleWithCheckItem(
 
 @Composable
 fun PeopleItem(
+    onClick: () -> Unit = {},
     imageURL: String = "",
     nickname: String = "nickname",
-    modifier: Modifier = Modifier
-) {
+    modifier: Modifier = Modifier,
+    profileSize: Int = PeopleItemValue.ItemHeight
+){
     Row(
         modifier = modifier
+            .clickable { onClick() }
             .fillMaxWidth()
-            .height(PeopleItemValue.ItemHeight),
+            .height(profileSize.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         ProfileImage(
             imageURL = imageURL,
-            profileSize = PeopleItemValue.ProfileSize
+            profileSize = profileSize
         )
 
         Text(
