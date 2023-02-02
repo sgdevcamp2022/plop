@@ -3,20 +3,18 @@ package com.plop.plopmessenger.presentation.screen.main
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.plop.plopmessenger.R
 import com.plop.plopmessenger.domain.model.People
 import com.plop.plopmessenger.presentation.component.PeopleItem
 import com.plop.plopmessenger.presentation.component.PeopleWithTwoBtnItem
+import com.plop.plopmessenger.presentation.component.SubTitle
 import com.plop.plopmessenger.presentation.component.TopBarWithProfile
-import com.plop.plopmessenger.presentation.theme.Gray400
 import com.plop.plopmessenger.util.KeyLine
 
 
@@ -86,17 +84,4 @@ fun People(
             }
         }
     }
-}
-
-@Composable
-fun SubTitle(
-    content: String,
-    modifier: Modifier = Modifier
-) {
-    Text(
-        text = content,
-        fontSize = 13.sp,
-        color = Gray400,
-        modifier = modifier
-    )
 }
