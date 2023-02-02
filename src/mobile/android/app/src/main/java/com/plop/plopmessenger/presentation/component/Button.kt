@@ -24,7 +24,7 @@ object ButtonValue {
 }
 
 @Composable
-fun SmgButton(
+fun PlopButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,

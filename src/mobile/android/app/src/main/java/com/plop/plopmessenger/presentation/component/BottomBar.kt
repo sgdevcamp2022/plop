@@ -20,7 +20,7 @@ import com.plop.plopmessenger.presentation.navigation.BottomBarDestinations
 
 
 @Composable
-fun SmgBottomBar(
+fun PlopBottomBar(
     tabs: Array<BottomBarTabs>,
     currentRoute: String? = null,
     navigateToRoute: (String) -> Unit = {},

@@ -2,7 +2,7 @@ package com.plop.plopmessenger.presentation.screen.main
 
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
-import com.plop.plopmessenger.presentation.component.SmgBottomBar
+import com.plop.plopmessenger.presentation.component.PlopBottomBar
 import com.plop.plopmessenger.presentation.navigation.MainDestinations
 import com.plop.plopmessenger.presentation.navigation.navGraph.MainNavGraph
 import com.plop.plopmessenger.presentation.state.rememberAppState
@@ -18,7 +18,7 @@ fun MainRootScreen() {
             scaffoldState = appState.scaffoldState,
             bottomBar = {
                 if(appState.shouldShowBottomBar) {
-                    SmgBottomBar(
+                    PlopBottomBar(
                         tabs = appState.bottomBarTabs,
                         currentRoute = appState.currentRoute,
                         navigateToRoute = navigationAction.navigateToBottomRoute
