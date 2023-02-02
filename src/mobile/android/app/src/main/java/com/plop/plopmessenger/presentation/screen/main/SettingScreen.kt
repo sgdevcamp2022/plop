@@ -4,6 +4,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 
 @Composable
-fun Chats() {
-    Text("Chats")
+fun SettingScreen() {
+    Text("Setting")
 }
