@@ -7,8 +7,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.smilegateblog.smilegateteamprojecttest.ui.component.ProfileImageValue
-import com.smilegateblog.smilegateteamprojecttest.ui.component.ProfileImages
 
 @Composable
 fun ChatTitle(

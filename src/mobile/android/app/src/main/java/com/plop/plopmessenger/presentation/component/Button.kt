@@ -13,7 +13,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
 
 object ButtonValue {
-    val ButtonShape = RoundedCornerShape(16.dp)
+    val ButtonShape = RoundedCornerShape(12.dp)
     val LargeButtonHeight = 45.dp
 
     val MediumButtonHeight = 36.dp

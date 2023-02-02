@@ -1,4 +1,4 @@
-package com.smilegateblog.smilegateteamprojecttest.ui.component
+package com.plop.plopmessenger.presentation.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
