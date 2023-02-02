@@ -41,12 +41,15 @@ android {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion '1.1.1'
+        kotlinCompilerExtensionVersion compose_ui_version
     }
     packagingOptions {
         resources {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
+    }
+    task wrapper(type: Wrapper) {
+        gradleVersion = '7.0'
     }
 }
 
@@ -100,3 +103,5 @@ dependencies {
     implementation "io.coil-kt:coil-compose:$coil_version"
 
 }
+
+tasks.register("prepareKotlinBuildScriptModel"){}
