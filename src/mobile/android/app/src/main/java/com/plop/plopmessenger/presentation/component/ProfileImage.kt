@@ -33,18 +33,18 @@ object ProfileImageValue {
     const val ReadLocationImageSize = 16
     val ImageWithDeleteBtnSize = 56.dp
     val DeleteBtnSize = 16.dp
-    val ProfileWithStateSize = 56.dp
+    const val ProfileWithStateSize = 56
     val StateSize = 16.dp
 }
 
 @Composable
 fun ProfileImageWithState(
     imageURL: String,
-    profileSize: Dp = ProfileImageValue.ProfileWithStateSize,
+    profileSize: Int = ProfileImageValue.ProfileWithStateSize,
     isActivate: Boolean = false
 ) {
     Box() {
-        ProfileImage(imageURL = imageURL, modifier = Modifier.size(profileSize))
+        ProfileImage(imageURL = imageURL, modifier = Modifier.size(profileSize.dp))
         if(isActivate) {
             Surface(
                 shape = CircleShape,
@@ -111,12 +111,12 @@ fun DoubleProfileImage(
     val widthValue = (profileSize / 1.75).toInt().dp
 
     Box(
-        modifier = Modifier.width(profileSize.dp)
+        modifier = modifier.width(profileSize.dp)
     ) {
-        ProfileImage(images[0]?: "", modifier = modifier
+        ProfileImage(images[0]?: "", modifier = Modifier
             .size(widthValue)
             .align(Alignment.CenterStart))
-        ProfileImage(images[1]?: "", modifier = modifier
+        ProfileImage(images[1]?: "", modifier = Modifier
             .size(widthValue)
             .align(Alignment.CenterEnd))
     }
@@ -131,15 +131,15 @@ fun TripleProfileImage(
     val widthValue = (profileSize / 1.75).toInt().dp
 
     Box(
-        modifier = Modifier.size(profileSize.dp)
+        modifier = modifier.size(profileSize.dp)
     ) {
-        ProfileImage(images[0]?: "", modifier = modifier
+        ProfileImage(images[0]?: "", modifier = Modifier
             .size(widthValue)
             .align(Alignment.TopStart))
-        ProfileImage(images[1]?: "", modifier = modifier
+        ProfileImage(images[1]?: "", modifier = Modifier
             .size(widthValue)
             .align(Alignment.TopEnd))
-        ProfileImage(images[2]?: "", modifier = modifier
+        ProfileImage(images[2]?: "", modifier = Modifier
             .size(widthValue)
             .align(Alignment.BottomCenter))
     }

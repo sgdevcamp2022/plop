@@ -23,6 +23,7 @@ object MainDestinations {
     const val CHAT_INFO_ROUTE = "chatInfo"
     const val ADD_CHAT_MEMBER_ROUTE = "addChatMemberRoute"
     const val ADD_CHAT_ROUTE = "addChat"
+    const val ADD_CHAT_GROUP_ROUTE = "addGroupChat"
     const val ADD_PEOPLE_ROUTE = "addPeople"
 }
 
@@ -62,19 +63,19 @@ class MainNavigationAction(val navController: NavController) {
         }
     }
 
-    val navigateToChat: (Int, NavBackStackEntry) -> Unit = { chatId, from ->
+    val navigateToChat: (String, NavBackStackEntry) -> Unit = { chatId, from ->
         if (from.lifecycleIsResumed()) {
             navController.navigate("${MainDestinations.CHAT_ROUTE}/$chatId")
         }
     }
 
-    val navigateToChatInfo: (Int, NavBackStackEntry) -> Unit = { chatId, from ->
+    val navigateToChatInfo: (String, NavBackStackEntry) -> Unit = { chatId, from ->
         if (from.lifecycleIsResumed()) {
             navController.navigate("${MainDestinations.CHAT_INFO_ROUTE}/$chatId")
         }
     }
 
-    val navigateToAddMember: (Int, NavBackStackEntry) -> Unit = { chatId, from ->
+    val navigateToAddMember: (String, NavBackStackEntry) -> Unit = { chatId, from ->
         if (from.lifecycleIsResumed()) {
             navController.navigate("${MainDestinations.ADD_CHAT_MEMBER_ROUTE}/$chatId")
         }
@@ -88,7 +89,7 @@ class MainNavigationAction(val navController: NavController) {
     }
 
     //그룹채팅에 멤버가 추가되었을 때?
-    val navigateToUpdateGroupChat: (Int, NavBackStackEntry) -> Unit = { chatId, from ->
+    val navigateToUpdateGroupChat: (String, NavBackStackEntry) -> Unit = { chatId, from ->
         navController.navigate("${MainDestinations.CHAT_ROUTE}/$chatId") {
             popUpTo(BottomBarDestinations.CHATS_ROUTE)
         }
@@ -97,6 +98,11 @@ class MainNavigationAction(val navController: NavController) {
     val navigateToAddChat: () -> Unit = {
         navController.navigate(MainDestinations.ADD_CHAT_ROUTE)
     }
+
+    val navigateToAddGroupChat: () -> Unit = {
+        navController.navigate(MainDestinations.ADD_CHAT_GROUP_ROUTE)
+    }
+
 
     val navigateToAddPeople: () -> Unit = {
         navController.navigate(MainDestinations.ADD_PEOPLE_ROUTE)

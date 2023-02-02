@@ -1,6 +1,7 @@
 package com.plop.plopmessenger.presentation.component
 
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
@@ -18,27 +19,26 @@ import androidx.compose.ui.unit.sp
 import com.plop.plopmessenger.util.KeyLine
 
 object PeopleItemValue {
-    val ItemHeight = 64.dp
-    const val ProfileSize = 42
+    const val ItemHeight = 56
+    const val ProfileSize = 56
     val CheckCircleSize = 14.dp
 }
 
 @Composable
 fun PeopleWithTwoBtnItem(
-    onLeftClick: () -> Unit = {},
-    onRightClick: () -> Unit = {},
-    leftBtnContent: String = "첫번째",
-    rightBtnContent: String = "두번째",
-    imageURL: String = "",
-    nickname: String = "nickname",
+    onLeftClick: () -> Unit,
+    onRightClick: () -> Unit,
+    leftBtnContent: String,
+    rightBtnContent: String,
+    imageURL: String,
+    nickname: String,
     modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier) {
         PeopleItem(imageURL = imageURL, nickname = nickname)
         Row(
             modifier = Modifier
-                .align(Alignment.CenterEnd)
-                .padding(KeyLine),
+                .align(Alignment.CenterEnd),
             horizontalArrangement = Arrangement.spacedBy(5.dp)
         ) {
             PlopButton(
@@ -69,17 +69,22 @@ fun PeopleWithTwoBtnItem(
 
 @Composable
 fun PeopleWithSingleBtnItem(
-    onClick: () -> Unit = {},
-    btnContent: String = "수락",
-    imageURL: String = "",
-    nickname: String = "nickname",
-    modifier: Modifier = Modifier
+    onClick: () -> Unit,
+    onClickedClick: () -> Unit,
+    btnContent: String,
+    imageURL: String,
+    nickname: String,
+    modifier: Modifier = Modifier,
+    clickedContent: String,
+    isClicked: Boolean
 ) {
     Box(modifier = modifier) {
         PeopleItem(imageURL = imageURL, nickname = nickname)
         PlopButton(
-            onClick = onClick,
+            onClick = if(isClicked) onClickedClick else onClick,
             content = btnContent,
+            clickedContent = clickedContent,
+            isClicked = isClicked,
             modifier = Modifier
                 .padding(KeyLine)
                 .align(Alignment.CenterEnd)
@@ -94,15 +99,25 @@ fun PeopleWithSingleBtnItem(
 
 @Composable
 fun PeopleWithCheckItem(
-    imageURL: String = "",
-    nickname: String = "nickname",
+    onClick: () -> Unit,
+    imageURL: String,
+    nickname: String,
     modifier: Modifier = Modifier,
-    isChecked: Boolean = false,
+    isChecked: Boolean,
     onBtnColor: Color = MaterialTheme.colors.background,
     btnColor: Color = MaterialTheme.colors.primary
 ) {
-    Box(modifier = modifier) {
-        PeopleItem(imageURL, nickname)
+
+    Box(
+        modifier = modifier
+            .clickable {
+                onClick()
+            }
+    ) {
+        PeopleItem(
+            imageURL = imageURL,
+            nickname = nickname
+        )
 
         if(isChecked){
             Surface(
@@ -135,21 +150,22 @@ fun PeopleWithCheckItem(
 
 @Composable
 fun PeopleItem(
+    onClick: () -> Unit = {},
     imageURL: String = "",
     nickname: String = "nickname",
-    modifier: Modifier = Modifier
-) {
+    modifier: Modifier = Modifier,
+    profileSize: Int = PeopleItemValue.ItemHeight
+){
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .height(PeopleItemValue.ItemHeight)
-            .padding(horizontal = KeyLine),
+            .height(profileSize.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         ProfileImage(
             imageURL = imageURL,
-            profileSize = PeopleItemValue.ProfileSize
+            profileSize = profileSize
         )
 
         Text(

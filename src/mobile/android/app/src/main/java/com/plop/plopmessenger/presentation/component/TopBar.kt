@@ -1,7 +1,9 @@
 package com.plop.plopmessenger.presentation.component
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -12,20 +14,73 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 object TopBarValue {
-    val HorizontalPadding = 19.dp
+    val HorizontalPadding = 3.dp
     val TopBarHeight = 46.dp
     val IconSize = 26.dp
+    val IconBtnSize = 38.dp
+    val SmallIconBtnSize = 18.dp
+    val TopBarWithProfileHeight = 82.dp
+    val SpacerBetweenProfileAndTitle = 14.dp
 }
 
 @Composable
+fun TopBarWithProfile(
+    onClick:() -> Unit,
+    profileImage: String,
+    content: String,
+    icon: ImageVector,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(TopBarValue.TopBarWithProfileHeight),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        ProfileImage(
+            imageURL = profileImage
+        )
+
+        Spacer(modifier = Modifier.size(TopBarValue.SpacerBetweenProfileAndTitle))
+
+        Text(
+            text = content,
+            modifier = Modifier.weight(1f),
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold
+        )
+
+        IconButton(
+            onClick = onClick,
+            modifier = modifier
+                .background(
+                    MaterialTheme.colors.secondary,
+                    CircleShape
+                )
+                .size(TopBarValue.IconBtnSize)
+        ) {
+            Icon(
+                modifier = Modifier.size(TopBarValue.SmallIconBtnSize),
+                imageVector = icon,
+                contentDescription = null
+            )
+        }
+
+    }
+}
+
+
+@Composable
 fun MainTopBarWithLeftBtn(
-    onLeftBtnClick: () -> Unit = {},
-    content: String = "",
-    leftContent: String = "",
+    onLeftBtnClick: () -> Unit,
+    content: String,
+    leftContent: String,
     btnColor: Color = MaterialTheme.colors.primary,
     modifier: Modifier = Modifier
 ) {
@@ -57,11 +112,12 @@ fun MainTopBarWithLeftBtn(
 
 @Composable
 fun MainTopBarWithBothBtn(
-    onLeftBtnClick: () -> Unit = {},
-    onRightBtnClick: () -> Unit = {},
-    content: String = "",
-    leftContent: String = "",
-    rightContent: String = "",
+    onLeftBtnClick: () -> Unit,
+    onRightBtnClick: () -> Unit,
+    content: String,
+    leftContent: String,
+    rightContent: String,
+    rightVisible: Boolean,
     btnColor: Color = MaterialTheme.colors.primary,
     modifier: Modifier = Modifier
 ) {
@@ -89,22 +145,26 @@ fun MainTopBarWithBothBtn(
                 .clickable { onLeftBtnClick() }
         )
 
-        Text(
-            text = rightContent,
-            fontSize = 17.sp,
-            color = btnColor,
-            modifier = Modifier
-                .align(Alignment.CenterEnd)
-                .clickable { onRightBtnClick() }
-        )
+        if(rightVisible) {
+            Text(
+                text = rightContent,
+                fontSize = 17.sp,
+                color = btnColor,
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .clickable { onRightBtnClick() }
+            )
+        }
     }
 }
 
 
 @Composable
 fun ChatTopBar(
-    upPress: () -> Unit = {},
-    chatroomTitle: String = "",
+    onClick: (String) -> Unit,
+    upPress: () -> Unit,
+    chatroomTitle: String,
+    chatId: String,
     images: List<String?>,
     btnColor: Color = MaterialTheme.colors.primary,
     modifier: Modifier = Modifier
@@ -114,7 +174,8 @@ fun ChatTopBar(
             .fillMaxWidth()
             .statusBarsPadding()
             .padding(horizontal = TopBarValue.HorizontalPadding)
-            .height(TopBarValue.TopBarHeight),
+            .height(TopBarValue.TopBarHeight)
+            .clickable { onClick(chatId) },
         verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(

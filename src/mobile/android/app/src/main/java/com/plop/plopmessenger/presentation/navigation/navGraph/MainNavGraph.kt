@@ -63,7 +63,9 @@ private fun NavGraphBuilder.chatGraph(
         route = MainDestinations.CHAT_ROUTE
     ) { from ->
         ChatScreen(
-            navigateToChatInfo = { chatId -> navigationAction.navigateToChatInfo(chatId, from)}
+            upPress = navigationAction.upPress,
+            navigateToChatInfo = { chatId -> navigationAction.navigateToChatInfo(chatId, from)},
+            navigateToAddMember = { chatId -> navigationAction.navigateToAddMember(chatId, from)}
         )
     }
 
@@ -71,7 +73,9 @@ private fun NavGraphBuilder.chatGraph(
         route = "${MainDestinations.CHAT_ROUTE}/{${DestinationID.CHAT_ID}}"
     ) { from ->
         ChatScreen(
-            navigateToChatInfo = { chatId -> navigationAction.navigateToChatInfo(chatId, from)}
+            upPress = navigationAction.upPress,
+            navigateToChatInfo = { chatId -> navigationAction.navigateToChatInfo(chatId, from)},
+            navigateToAddMember = { chatId -> navigationAction.navigateToAddMember(chatId, from)}
         )
     }
 
@@ -79,7 +83,8 @@ private fun NavGraphBuilder.chatGraph(
         route = "${MainDestinations.CHAT_INFO_ROUTE}/{${DestinationID.CHAT_ID}}"
     ) { from ->
         ChatInfoScreen(
-            navigateToAddMember = { chatId -> navigationAction.navigateToAddMember(chatId, from)}
+            navigateToAddMember = { chatId -> navigationAction.navigateToAddMember(chatId, from)},
+            upPress = navigationAction.upPress
         )
     }
 
@@ -87,6 +92,7 @@ private fun NavGraphBuilder.chatGraph(
         route = "${MainDestinations.ADD_CHAT_MEMBER_ROUTE}/{${DestinationID.CHAT_ID}}"
     ) { from ->
         AddChatMemberScreen(
+            upPress = navigationAction.upPress,
             navigateToNewChat = { navigationAction.navigateToNewChat() },
             navigateToUpdateGroupChat = { chatId -> navigationAction.navigateToUpdateGroupChat(chatId, from)}
         )
@@ -96,7 +102,18 @@ private fun NavGraphBuilder.chatGraph(
         route = MainDestinations.ADD_CHAT_ROUTE
     ) { from ->
         AddChatScreen(
-            navigateToNewChat = { navigationAction.navigateToNewChat() }
+            upPress = navigationAction.upPress,
+            navigateToNewChat = { navigationAction.navigateToNewChat() },
+            navigateToAddGroupChat = { navigationAction.navigateToAddGroupChat() }
+        )
+    }
+
+    composable(
+        route = MainDestinations.ADD_CHAT_GROUP_ROUTE
+    ) { from ->
+        AddGroupChatScreen(
+            upPress = navigationAction.upPress,
+            navigateToNewChat = { navigationAction.navigateToNewChat() },
         )
     }
 }
@@ -110,6 +127,8 @@ private fun NavGraphBuilder.peopleGraph(
         )
     }
     composable(MainDestinations.ADD_PEOPLE_ROUTE) { from ->
-        AddPeopleScreen()
+        AddPeopleScreen(
+            upPress = navigationAction.upPress
+        )
     }
 }

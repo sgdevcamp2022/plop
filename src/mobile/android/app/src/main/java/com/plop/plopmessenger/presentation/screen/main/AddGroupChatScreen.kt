@@ -1,68 +1,55 @@
 package com.plop.plopmessenger.presentation.screen.main
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.runtime.Composable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Divider
-import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.plop.plopmessenger.R
-import com.plop.plopmessenger.domain.model.Member
 import com.plop.plopmessenger.domain.model.People
 import com.plop.plopmessenger.presentation.component.*
-import com.plop.plopmessenger.presentation.viewmodel.AddChatMemberViewModel
 import com.plop.plopmessenger.util.KeyLine
 import com.plop.plopmessenger.util.SearchDisplay
+import com.plop.plopmessenger.R
+import com.plop.plopmessenger.presentation.viewmodel.AddGroupChatViewModel
 
-
-object AddChatMemberValue {
+object AddGroupChatValue {
     val BetweenFriendPaddingSize = 10.dp
     val BetweenFriendAndCheckedSize = 10.dp
 }
 
 @Composable
-fun AddChatMemberScreen(
+fun AddGroupChatScreen(
     upPress: () -> Unit,
     navigateToNewChat: () -> Unit,
-    navigateToUpdateGroupChat: (String) -> Unit
 ) {
     var query by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue(""))
     }
 
-    val viewModel = hiltViewModel<AddChatMemberViewModel>()
+    val viewModel = hiltViewModel<AddGroupChatViewModel>()
 
     //검색결과
     val result by remember{ mutableStateOf(listOf<People>()) }
     //모든 친구 목록
-    val default by remember{ mutableStateOf(listOf<People>(
-    )) }
+    val default by remember{ mutableStateOf(listOf<People>()) }
 
     var textFieldFocusState by remember { mutableStateOf(false) }
     var focusManager = LocalFocusManager.current
 
-    //추가되어있는 멤버
-    var members by remember{ mutableStateOf(listOf<Member>(
-    )) }
-
-    var chatId = "chatId"
-
     //추가할 멤버
-    val checkedPeople by viewModel.addChatMemberState.collectAsState()
-
-    //멤버수에 따른 함수
-    val addMember: () -> Unit = if(members.size <= 1) { { navigateToNewChat() } }
-    else { { navigateToUpdateGroupChat(chatId) } }
+    val checkedPeople by viewModel.addGroupChatState.collectAsState()
 
     var searchDisplay : SearchDisplay = when {
         query == TextFieldValue("") -> SearchDisplay.Default
@@ -70,18 +57,17 @@ fun AddChatMemberScreen(
         else -> SearchDisplay.NoResults
     }
 
-
     Column(
         modifier = Modifier
             .padding(horizontal = KeyLine)
     ) {
         MainTopBarWithBothBtn(
             onLeftBtnClick = upPress,
-            onRightBtnClick = addMember,
-            content = stringResource(id = R.string.add_chat_member_top_bar),
-            leftContent = stringResource(id = R.string.add_chat_member_cancel_btn),
-            rightContent = stringResource(id = R.string.add_chat_member_add_btn),
-            rightVisible = checkedPeople.checkedPeople.isNotEmpty()
+            onRightBtnClick = navigateToNewChat,
+            content = stringResource(id = R.string.add_chat_group_top_bar),
+            leftContent = stringResource(id = R.string.add_chat_group_cancel_btn),
+            rightContent = stringResource(id = R.string.add_chat_group_add_btn),
+            rightVisible = checkedPeople.checkedPeople.size >= 2
         )
 
         SearchBar(
@@ -97,7 +83,7 @@ fun AddChatMemberScreen(
         )
 
         LazyRow(
-            modifier = Modifier.padding(vertical = AddChatMemberValue.BetweenFriendAndCheckedSize),
+            modifier = Modifier.padding(vertical = AddGroupChatValue.BetweenFriendAndCheckedSize),
             horizontalArrangement = Arrangement.spacedBy(2.dp)
         ) {
             items(checkedPeople.checkedPeople) { friend ->
@@ -114,10 +100,10 @@ fun AddChatMemberScreen(
             }
             SearchDisplay.Default -> {
                 LazyColumn(
-                    verticalArrangement = Arrangement.spacedBy(AddChatMemberValue.BetweenFriendPaddingSize)
+                    verticalArrangement = Arrangement.spacedBy(AddGroupChatValue.BetweenFriendPaddingSize)
                 ) {
                     item {
-                        SubTitle(content = stringResource(id = R.string.add_chat_member_friend_subtitle))
+                        SubTitle(content = stringResource(id = R.string.add_chat_group_friend_subtitle))
                     }
                     items(default) { friend ->
                         PeopleWithCheckItem(
@@ -141,7 +127,7 @@ fun AddChatMemberScreen(
             }
             SearchDisplay.Results -> {
                 LazyColumn(
-                    verticalArrangement = Arrangement.spacedBy(AddChatMemberValue.BetweenFriendPaddingSize)
+                    verticalArrangement = Arrangement.spacedBy(AddGroupChatValue.BetweenFriendPaddingSize)
                 ) {
                     items(result) { friend ->
                         PeopleWithCheckItem(
@@ -166,15 +152,4 @@ fun AddChatMemberScreen(
         }
     }
 
-}
-
-
-@Composable
-fun NoResultScreen() {
-    Box(modifier = Modifier.fillMaxSize()) {
-        Text(
-            "No Result",
-            modifier = Modifier.align(Alignment.Center)
-        )
-    }
 }
