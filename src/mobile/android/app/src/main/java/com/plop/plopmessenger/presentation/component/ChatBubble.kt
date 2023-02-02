@@ -9,12 +9,15 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.plop.plopmessenger.domain.model.Message
@@ -22,13 +25,21 @@ import com.plop.plopmessenger.domain.model.MessageType
 import com.plop.plopmessenger.util.SymbolAnnotationType
 import com.plop.plopmessenger.util.messageFormatter
 import com.plop.plopmessenger.R
+import com.plop.plopmessenger.domain.model.Member
 
 
 object ChatItemBubbleValue {
     val firstBubbleShape = RoundedCornerShape(18.dp, 18.dp, 18.dp, 4.dp)
+    val firstMyBubbleShape = RoundedCornerShape(18.dp, 18.dp, 4.dp, 18.dp)
     val lastBubbleShape = RoundedCornerShape(4.dp, 18.dp, 18.dp, 18.dp)
+    val lastMyBubbleShape = RoundedCornerShape(18.dp, 4.dp, 18.dp, 18.dp)
     val defaultBubbleShape = RoundedCornerShape(4.dp, 18.dp, 18.dp, 4.dp)
+    val defaultMyBubbleShape = RoundedCornerShape(18.dp, 4.dp, 4.dp, 18.dp)
     val betweenBubbleShape = RoundedCornerShape(4.dp, 18.dp, 18.dp, 4.dp)
+    val betweenMyBubbleShape = RoundedCornerShape(4.dp, 18.dp, 18.dp, 4.dp)
+    val chatBubblePadding = 10.dp
+    val betweenContentAndChat = 44.dp
+    val betweenImageAndChat = 12.dp
 }
 
 /**
@@ -38,26 +49,35 @@ object ChatItemBubbleValue {
 @Composable
 fun Messages(
     messages: List<Message>,
-    onAuthorClick: (Long) -> Unit,
+    onAuthorClick: (String) -> Unit,
     onImageClick: (String) -> Unit,
     onVideoClick: (String) -> Unit,
     isGroupChat: Boolean,
-    modifier: Modifier
+    member: Map<String, Member>,
+    modifier: Modifier = Modifier,
+    userId : String,
+    content: @Composable () -> Unit
 ) {
-    val userId = ""
 
     LazyColumn(
         reverseLayout = true,
         contentPadding =
         WindowInsets.statusBars.add(WindowInsets(top = 90.dp)).asPaddingValues(),
-        modifier = modifier.fillMaxSize()
+        modifier = modifier
+            .padding(bottom = 4.dp)
+            .fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(2.dp)
     ) {
-        for(index in messages.indices) {
+        for(index in messages.indices.reversed()) {
             val prevAuthor = messages.getOrNull(index - 1)?.messageFromId
             val nextAuthor = messages.getOrNull(index + 1)?.messageFromId
             val content = messages[index]
-            val isFirstMessageByAuthor = prevAuthor != content.messageFromId
-            val isLastMessageByAuthor = nextAuthor != content.messageFromId
+            val prevTimeDiffIsOverMin = if(messages.getOrNull(index - 1) == null) false
+            else (content.createdAt.time/60000 - messages.getOrNull(index - 1)?.createdAt!!.time/60000) >= 1
+            val nextTimeDiffIsOverMin = if(messages.getOrNull(index + 1) == null) false
+            else (messages.getOrNull(index + 1)?.createdAt!!.time/60000 - content.createdAt.time/60000) >= 1
+            val isFirstMessageByAuthor = (prevAuthor != content.messageFromId || prevTimeDiffIsOverMin)
+            val isLastMessageByAuthor = (nextAuthor != content.messageFromId || nextTimeDiffIsOverMin)
 
             item {
                 Message(
@@ -68,9 +88,15 @@ fun Messages(
                     isLastMessageByAuthor = isLastMessageByAuthor,
                     onImageClick = onImageClick,
                     onVideoClick = onVideoClick,
-                    isGroupChat = isGroupChat
+                    isGroupChat = isGroupChat,
+                    member = member,
+                    modifier = Modifier
                 )
             }
+        }
+        item {
+            Spacer(modifier = Modifier.size(ChatItemBubbleValue.betweenContentAndChat))
+            content()
         }
     }
 }
@@ -80,19 +106,23 @@ fun Messages(
  */
 @Composable
 fun Message(
-    onAuthorClick: (Long) -> Unit,
+    onAuthorClick: (String) -> Unit,
     message: Message,
     isUserMe: Boolean,
     isFirstMessageByAuthor: Boolean,
     isLastMessageByAuthor: Boolean,
     onImageClick: (String) -> Unit,
     onVideoClick: (String) -> Unit,
-    isGroupChat: Boolean
+    isGroupChat: Boolean,
+    member: Map<String, Member>,
+    modifier: Modifier = Modifier
 ) {
-    Row() {
-        if (isLastMessageByAuthor) {
+    Row(
+        verticalAlignment = Alignment.Bottom
+    ) {
+        if (isLastMessageByAuthor && !isUserMe) {
             ProfileImage(
-                imageURL = message.messageFromId,
+                imageURL = member[message.messageFromId]?.profileImg?: "",
                 profileSize = ProfileImageValue.MessageAuthorImageSize,
                 modifier = Modifier.clickable { onAuthorClick(message.messageFromId) }
             )
@@ -100,6 +130,7 @@ fun Message(
             Spacer(modifier = Modifier
                 .size(ProfileImageValue.MessageAuthorImageSize.dp))
         }
+        Spacer(modifier = Modifier.size(ChatItemBubbleValue.betweenImageAndChat))
 
         AuthorAndTextMessage(
             message = message,
@@ -108,7 +139,9 @@ fun Message(
             isLastMessageByAuthor = isLastMessageByAuthor,
             isGroupChat = isGroupChat,
             onImageClick = onImageClick,
-            onVideoClick = onVideoClick
+            onVideoClick = onVideoClick,
+            members = member,
+            modifier = modifier
         )
     }
 }
@@ -122,12 +155,16 @@ fun AuthorAndTextMessage(
     isGroupChat: Boolean,
     onImageClick: (String) -> Unit,
     onVideoClick: (String) -> Unit,
+    members: Map<String, Member>,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier) {
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        horizontalAlignment = if(isUserMe) Alignment.End else Alignment.Start
+    ) {
         if(isFirstMessageByAuthor && isGroupChat) {
             Text(
-                text = message.messageFromId
+                text = members[message.messageFromId]?.nickname?: ""
             )
         }
         ChatItemBubble(
@@ -136,7 +173,8 @@ fun AuthorAndTextMessage(
             isFirstMessageByAuthor = isFirstMessageByAuthor,
             isLastMessageByAuthor = isLastMessageByAuthor,
             onImageClick = onImageClick,
-            onVideoClick = onVideoClick
+            onVideoClick = onVideoClick,
+            members = members
         )
     }
 
@@ -149,6 +187,7 @@ fun ChatItemBubble(
     isUserMe: Boolean,
     isFirstMessageByAuthor: Boolean,
     isLastMessageByAuthor: Boolean,
+    members: Map<String, Member>,
     onImageClick: (String) -> Unit,
     onVideoClick: (String) -> Unit
 ) {
@@ -159,18 +198,22 @@ fun ChatItemBubble(
     }
 
     val chatBubbleShape = if(isFirstMessageByAuthor && isLastMessageByAuthor) {
-        ChatItemBubbleValue.defaultBubbleShape
-    } else if (isFirstMessageByAuthor) (
-            ChatItemBubbleValue.firstBubbleShape
-            ) else if (isLastMessageByAuthor) {
-        ChatItemBubbleValue.lastBubbleShape
+        if(isUserMe) ChatItemBubbleValue.defaultMyBubbleShape
+        else ChatItemBubbleValue.defaultBubbleShape
+    } else if (isFirstMessageByAuthor) {
+        if(isUserMe) ChatItemBubbleValue.firstMyBubbleShape
+        else ChatItemBubbleValue.firstBubbleShape
+    } else if (isLastMessageByAuthor) {
+        if(isUserMe) ChatItemBubbleValue.lastMyBubbleShape
+        else ChatItemBubbleValue.lastBubbleShape
     } else {
-        ChatItemBubbleValue.betweenBubbleShape
+        if(isUserMe) ChatItemBubbleValue.betweenMyBubbleShape
+        else ChatItemBubbleValue.betweenBubbleShape
     }
 
     Surface(
         color = backgroundColor,
-        shape = chatBubbleShape
+        shape = chatBubbleShape,
     ) {
         when(message.type) {
             MessageType.TEXT -> {
@@ -196,7 +239,9 @@ fun ChatItemBubble(
                  * Todo
                  */
             }
-            else -> {}
+            MessageType.ENTER -> {
+
+            }
         }
     }
 
@@ -226,6 +271,8 @@ fun ClickableMessage(
                         uriHandler.openUri(it.item)
                     } else Unit
                 }
-        }
+        },
+        modifier = Modifier.padding(ChatItemBubbleValue.chatBubblePadding),
+        style = TextStyle(fontSize = 17.sp)
     )
 }
