@@ -27,6 +27,7 @@ import com.plop.plopmessenger.presentation.component.PeopleItem
 import com.plop.plopmessenger.presentation.component.SearchBar
 import com.plop.plopmessenger.presentation.component.SubTitle
 import com.plop.plopmessenger.util.KeyLine
+import com.plop.plopmessenger.util.SearchDisplay
 
 object AddChatScreenValue {
     val BetweenFriendPaddingSize = 10.dp
@@ -85,7 +86,7 @@ fun AddChatScreen(
                 NoResultScreen()
             }
             SearchDisplay.Default -> {
-                ChatList(
+                PeopleList(
                     result = default,
                     onClick = { navigateToNewChat() }
                 ) {
@@ -130,7 +131,7 @@ fun AddChatScreen(
                 }
             }
             SearchDisplay.Results -> {
-                ChatList(
+                PeopleList(
                     result = result,
                     onClick = navigateToNewChat
                 ){}
@@ -140,7 +141,7 @@ fun AddChatScreen(
 }
 
 @Composable
-private fun ChatList(
+private fun PeopleList(
     result: List<People>,
     onClick: () -> Unit,
     content: @Composable () -> Unit
@@ -155,7 +156,7 @@ private fun ChatList(
             PeopleItem(
                 imageURL = friend.profileImg,
                 nickname = friend.nickname,
-                onClick = { onClick() },
+                modifier = Modifier.clickable { onClick() },
                 profileSize = AddChatScreenValue.ProfileSize
             )
             Divider(
