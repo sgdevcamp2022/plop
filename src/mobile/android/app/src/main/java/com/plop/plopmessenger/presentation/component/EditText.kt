@@ -6,7 +6,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActionScope
 import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -18,9 +20,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.plop.plopmessenger.presentation.theme.Gray400
+import com.plop.plopmessenger.presentation.theme.Gray600
 
 object SearchBarValue {
     val IconSize = 18.dp
@@ -36,6 +42,11 @@ object ChatTextBarValue {
     val EditTextHorizontalPaddingSize = 16.dp
     val EditTextVerticalPaddingSize = 9.dp
 }
+
+object LoginEditTextValue {
+    val EditTextHeight = 42.dp
+}
+
 
 @Composable
 fun SearchBar(
@@ -143,12 +154,52 @@ fun ChatTextBar(
                     vertical = ChatTextBarValue.EditTextVerticalPaddingSize
                 )
                 .onFocusChanged {
-                    if(lastFocusState != it.isFocused) {
+                    if (lastFocusState != it.isFocused) {
                         onTextFieldFocused(it.isFocused)
                     }
 
                     lastFocusState = it.isFocused
                 }
         )
+    }
+}
+
+@Composable
+fun LoginEditText(
+    query: TextFieldValue,
+    onQueryChange: (TextFieldValue) -> Unit,
+    onSearchFocusChange: (Boolean) -> Unit,
+    onDone: (KeyboardActionScope.() -> Unit)?,
+    searchFocused: Boolean,
+    modifier: Modifier = Modifier,
+    placeholder: String = ""
+) {
+
+    Box(modifier = modifier) {
+        if(!searchFocused && query == TextFieldValue("")) {
+            Text(
+                text = placeholder,
+                modifier = Modifier
+                    .align(Alignment.CenterStart),
+                color = Gray600
+            )
+        }
+
+        BasicTextField(
+            value = query,
+            onValueChange = onQueryChange,
+            textStyle = TextStyle(
+                fontSize = 16.sp
+            ),
+            modifier = Modifier
+                .align(Alignment.CenterStart)
+                .fillMaxWidth()
+                .onFocusChanged { onSearchFocusChange(it.isFocused) },
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+            singleLine = true,
+            keyboardActions = KeyboardActions(onDone = onDone),
+        )
+
+
     }
 }

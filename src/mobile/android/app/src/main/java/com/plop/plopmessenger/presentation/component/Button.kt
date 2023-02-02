@@ -45,6 +45,9 @@ fun PlopButton(
             disabledContentColor = disabledContentColor,
             contentColor = if(isClicked) disabledContentColor else contentColor
         ),
+        elevation = ButtonDefaults.elevation(
+            defaultElevation = 0.dp
+        ),
         border = border,
         shape = shape,
         modifier = modifier,
