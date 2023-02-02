@@ -54,7 +54,6 @@ spring:
 token:
   # 1분
   access_expired_time: 60000
-  access_secret: plip
+  secret_key: plip
   # 1시간
   refresh_expired_time: 3600000
-  refresh_secret: plop
