@@ -68,6 +68,8 @@
 		B46082E8298AAC9200BABC97 /* CDRoom+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46082DC298AAC9200BABC97 /* CDRoom+CoreDataProperties.swift */; };
 		B46082E9298AAC9200BABC97 /* CDUser+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46082DD298AAC9200BABC97 /* CDUser+CoreDataClass.swift */; };
 		B46082EA298AAC9200BABC97 /* CDUser+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46082DE298AAC9200BABC97 /* CDUser+CoreDataProperties.swift */; };
+		B4D6814A298BADE5000D8920 /* KeychainRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D68149298BADE5000D8920 /* KeychainRepository.swift */; };
+		B4D6814C298BAE7D000D8920 /* Token.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D6814B298BAE7D000D8920 /* Token.swift */; };
 		B4E8D66F29880E9D003B946D /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = B4E8D66E29880E9D003B946D /* RxCocoa */; };
 		B4E8D67129880E9D003B946D /* RxRelay in Frameworks */ = {isa = PBXBuildFile; productRef = B4E8D67029880E9D003B946D /* RxRelay */; };
 		B4E8D67329880E9D003B946D /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = B4E8D67229880E9D003B946D /* RxSwift */; };
@@ -137,6 +139,8 @@
 		B46082DC298AAC9200BABC97 /* CDRoom+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDRoom+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		B46082DD298AAC9200BABC97 /* CDUser+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDUser+CoreDataClass.swift"; sourceTree = "<group>"; };
 		B46082DE298AAC9200BABC97 /* CDUser+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDUser+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		B4D68149298BADE5000D8920 /* KeychainRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainRepository.swift; sourceTree = "<group>"; };
+		B4D6814B298BAE7D000D8920 /* Token.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Token.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -290,6 +294,7 @@
 				B41E40D129877F6A00BB3126 /* Message.swift */,
 				B41E40D8298783AE00BB3126 /* Friend.swift */,
 				B401933B2988BEBE00217AEB /* Member.swift */,
+				B4D6814B298BAE7D000D8920 /* Token.swift */,
 			);
 			path = Entities;
 			sourceTree = "<group>";
@@ -297,6 +302,7 @@
 		B41E40EA2987926A00BB3126 /* Data */ = {
 			isa = PBXGroup;
 			children = (
+				B4D68148298BADC2000D8920 /* Keychain */,
 				B41E40ED2987927800BB3126 /* ImageLoader */,
 				B41E40EC2987927300BB3126 /* CoreData */,
 				B41E40EB2987927000BB3126 /* Network */,
@@ -351,6 +357,14 @@
 			children = (
 			);
 			path = UseCases;
+			sourceTree = "<group>";
+		};
+		B4D68148298BADC2000D8920 /* Keychain */ = {
+			isa = PBXGroup;
+			children = (
+				B4D68149298BADE5000D8920 /* KeychainRepository.swift */,
+			);
+			path = Keychain;
 			sourceTree = "<group>";
 		};
 		B4E8D66A2987B126003B946D /* Entities */ = {
@@ -454,6 +468,7 @@
 			files = (
 				B415247329897D05006B86FF /* RoomsNetwork.swift in Sources */,
 				B401930729880F7200217AEB /* CoreDataStack.swift in Sources */,
+				B4D6814C298BAE7D000D8920 /* Token.swift in Sources */,
 				B41E40CE29877F5E00BB3126 /* User.swift in Sources */,
 				B415247629898737006B86FF /* LoginResponse.swift in Sources */,
 				B41E40D9298783AE00BB3126 /* Friend.swift in Sources */,
@@ -507,6 +522,7 @@
 				B41E40D029877F6500BB3126 /* Room.swift in Sources */,
 				B46082E3298AAC9200BABC97 /* CDMessage+CoreDataClass.swift in Sources */,
 				B401931929882D4000217AEB /* CoreDataRepository.swift in Sources */,
+				B4D6814A298BADE5000D8920 /* KeychainRepository.swift in Sources */,
 				B46082B1298A3EEF00BABC97 /* MemberResponse.swift in Sources */,
 				B46082E7298AAC9200BABC97 /* CDRoom+CoreDataClass.swift in Sources */,
 				B46082E5298AAC9200BABC97 /* CDProfile+CoreDataClass.swift in Sources */,
