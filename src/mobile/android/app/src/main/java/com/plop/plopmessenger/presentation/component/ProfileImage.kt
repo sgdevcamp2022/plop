@@ -33,18 +33,18 @@ object ProfileImageValue {
     const val ReadLocationImageSize = 16
     val ImageWithDeleteBtnSize = 56.dp
     val DeleteBtnSize = 16.dp
-    val ProfileWithStateSize = 56.dp
+    const val ProfileWithStateSize = 56
     val StateSize = 16.dp
 }
 
 @Composable
 fun ProfileImageWithState(
     imageURL: String,
-    profileSize: Dp = ProfileImageValue.ProfileWithStateSize,
+    profileSize: Int = ProfileImageValue.ProfileWithStateSize,
     isActivate: Boolean = false
 ) {
     Box() {
-        ProfileImage(imageURL = imageURL, modifier = Modifier.size(profileSize))
+        ProfileImage(imageURL = imageURL, modifier = Modifier.size(profileSize.dp))
         if(isActivate) {
             Surface(
                 shape = CircleShape,

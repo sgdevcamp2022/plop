@@ -62,7 +62,7 @@ class MainNavigationAction(val navController: NavController) {
         }
     }
 
-    val navigateToChat: (Int, NavBackStackEntry) -> Unit = { chatId, from ->
+    val navigateToChat: (String, NavBackStackEntry) -> Unit = { chatId, from ->
         if (from.lifecycleIsResumed()) {
             navController.navigate("${MainDestinations.CHAT_ROUTE}/$chatId")
         }
