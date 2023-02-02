@@ -1,4 +1,4 @@
-package com.plop.plopmessenger.ui.theme
+package com.plop.plopmessenger.presentation.theme
 
 import androidx.compose.ui.graphics.Color
 
