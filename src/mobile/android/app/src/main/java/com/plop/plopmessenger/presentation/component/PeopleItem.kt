@@ -69,17 +69,22 @@ fun PeopleWithTwoBtnItem(
 
 @Composable
 fun PeopleWithSingleBtnItem(
-    onClick: () -> Unit = {},
-    btnContent: String = "수락",
-    imageURL: String = "",
-    nickname: String = "nickname",
-    modifier: Modifier = Modifier
+    onClick: () -> Unit,
+    onClickedClick: () -> Unit,
+    btnContent: String,
+    imageURL: String,
+    nickname: String,
+    modifier: Modifier = Modifier,
+    clickedContent: String,
+    isClicked: Boolean
 ) {
     Box(modifier = modifier) {
         PeopleItem(imageURL = imageURL, nickname = nickname)
         PlopButton(
-            onClick = onClick,
+            onClick = if(isClicked) onClickedClick else onClick,
             content = btnContent,
+            clickedContent = clickedContent,
+            isClicked = isClicked,
             modifier = Modifier
                 .padding(KeyLine)
                 .align(Alignment.CenterEnd)
