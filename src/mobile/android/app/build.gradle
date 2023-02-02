@@ -48,6 +48,9 @@ android {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
+    task wrapper(type: Wrapper) {
+        gradleVersion = '7.0'
+    }
 }
 
 dependencies {
@@ -100,3 +103,5 @@ dependencies {
     implementation "io.coil-kt:coil-compose:$coil_version"
 
 }
+
+tasks.register("prepareKotlinBuildScriptModel"){}
