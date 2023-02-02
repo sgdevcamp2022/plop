@@ -41,7 +41,7 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
 
             log.error("jwt:"+jwt);
 
-            validateJwtToken(jwt, env.getProperty("token.access_secret"));
+            validateJwtToken(jwt);
 //            if (!isJwtValid(jwt))
 //            {
 //                return onError(exchange, "JWT token is not valid.", HttpStatus.UNAUTHORIZED);
@@ -50,10 +50,11 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
         };
     }
 
-    public void validateJwtToken(String token, String key) {
+    public void validateJwtToken(String token) {
         try {
             Claims claims = Jwts.parser()
-                    .setSigningKey(key)
+                    .setSigningKey(env.getProperty("token.secret_key"))
+
                     .parseClaimsJws(token)
                     .getBody();
             log.error(claims.toString());
