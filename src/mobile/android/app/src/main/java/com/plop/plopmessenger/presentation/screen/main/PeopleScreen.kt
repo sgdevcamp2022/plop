@@ -25,7 +25,7 @@ object PeopleScreenValue {
 
 
 @Composable
-fun People(
+fun PeopleScreen(
     navigateToAddPeople: () -> Unit
 ) {
     var friendsRequest by remember{ mutableStateOf(listOf<People>(

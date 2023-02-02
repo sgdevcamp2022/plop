@@ -29,7 +29,7 @@ object UserInputValue {
 
 @Composable
 fun ChatScreen(
-    navigateToChatInfo: (Int) -> Unit
+    navigateToChatInfo: (String) -> Unit
 ) {
     var textState by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue())
@@ -44,7 +44,7 @@ fun ChatScreen(
 
     ) {
         Text("Chat")
-        Button(onClick = { navigateToChatInfo(1) }) {
+        Button(onClick = { navigateToChatInfo("chatId") }) {
             Text("go to chatInfo ")
         }
 

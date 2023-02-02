@@ -68,13 +68,13 @@ class MainNavigationAction(val navController: NavController) {
         }
     }
 
-    val navigateToChatInfo: (Int, NavBackStackEntry) -> Unit = { chatId, from ->
+    val navigateToChatInfo: (String, NavBackStackEntry) -> Unit = { chatId, from ->
         if (from.lifecycleIsResumed()) {
             navController.navigate("${MainDestinations.CHAT_INFO_ROUTE}/$chatId")
         }
     }
 
-    val navigateToAddMember: (Int, NavBackStackEntry) -> Unit = { chatId, from ->
+    val navigateToAddMember: (String, NavBackStackEntry) -> Unit = { chatId, from ->
         if (from.lifecycleIsResumed()) {
             navController.navigate("${MainDestinations.ADD_CHAT_MEMBER_ROUTE}/$chatId")
         }
