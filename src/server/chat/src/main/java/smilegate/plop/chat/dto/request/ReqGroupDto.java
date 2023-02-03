@@ -1,4 +1,4 @@
-package smilegate.plop.chat.dto;
+package smilegate.plop.chat.dto.request;
 
 import lombok.NoArgsConstructor;
 
