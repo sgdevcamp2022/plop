@@ -10,6 +10,7 @@ import smilegate.plop.chat.dto.request.ReqDmDto;
 import smilegate.plop.chat.dto.request.ReqGroupDto;
 import smilegate.plop.chat.dto.request.ReqInviteDto;
 import smilegate.plop.chat.dto.response.RespRoomDto;
+import smilegate.plop.chat.model.jwt.JwtTokenProvider;
 import smilegate.plop.chat.service.ChatRoomService;
 
 import java.util.HashMap;
@@ -21,17 +22,18 @@ import java.util.HashMap;
 public class ChatRoomController {
 
     private final ChatRoomService chatRoomMongoService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/v1/dm-creation")
     public ResponseEntity<RespRoomDto> dmCreation(@RequestHeader("Authorization") String jwt, @RequestBody ReqDmDto reqDmDto){
-        String userId = "test";
+        String userId = jwtTokenProvider.getUserInfo(jwtTokenProvider.removeBearer(jwt)).getUserId();
         reqDmDto.setCreator(userId);
         return new ResponseEntity<>(chatRoomMongoService.createDmRoom(reqDmDto),HttpStatus.CREATED);
     }
 
     @PostMapping("/v1/group-creation")
     public ResponseEntity<RespRoomDto> groupCreation(@RequestHeader("Authorization") String jwt, @RequestBody ReqGroupDto reqGroupDto){
-        String userId = "test";
+        String userId = jwtTokenProvider.getUserInfo(jwtTokenProvider.removeBearer(jwt)).getUserId();
         reqGroupDto.setCreator(userId);
         return new ResponseEntity<>(chatRoomMongoService.createGroup(reqGroupDto),HttpStatus.CREATED);
     }
@@ -48,14 +50,14 @@ public class ChatRoomController {
     @GetMapping("/v1/my-rooms")
     public ResponseEntity<APIMessage> myChatRooms(@RequestHeader("Authorization") String jwt){
         //jwt를 auth 서버를 통해 사용자 id 가져온다.
-        String userId="member id 1";
+        String userId = jwtTokenProvider.getUserInfo(jwtTokenProvider.removeBearer(jwt)).getUserId();
         return new ResponseEntity<>(chatRoomMongoService.findMyRoomsByUserId(userId),HttpStatus.OK);
     }
 
     // 채팅방 나가기
     @DeleteMapping("/v1/out/{roomid}")
     public ResponseEntity<APIMessage> outOfTheRoom(@RequestHeader("Authorization") String jwt, @PathVariable(value = "roomid") String roomId){
-        String userId="member id 1";
+        String userId = jwtTokenProvider.getUserInfo(jwtTokenProvider.removeBearer(jwt)).getUserId();
         if(chatRoomMongoService.outOfTheRoom(roomId, userId)){
             return new ResponseEntity<>(new APIMessage(APIMessage.ResultEnum.success, new HashMap<String,String>() {{
                 put("room_id",roomId);
