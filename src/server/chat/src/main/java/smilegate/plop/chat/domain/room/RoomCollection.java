@@ -2,12 +2,16 @@ package smilegate.plop.chat.domain.room;
 
 
 import lombok.Builder;
+import lombok.Getter;
+import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Getter
+@ToString
 //@QueryEntity
 @Document(collection = "rooms")
 public class RoomCollection {
@@ -15,19 +19,19 @@ public class RoomCollection {
     private String _id;
     private String roomId;
     private String title;
-    private LocalDateTime lastModifiedAt;
-    // embedded document
+    private RoomType type;
     private List<Member> members;
     private List<String> managers;
-
+    private LocalDateTime createdAt;
 
     @Builder
-    public RoomCollection(String roomId, String title, List<Member> members, List<String> managers) {
+    public RoomCollection(String roomId, String title, RoomType type, List<Member> members, List<String> managers) {
         this.roomId = roomId;
         this.title = title;
-        this.lastModifiedAt = LocalDateTime.now();
+        this.type = type;
         this.members = members;
         this.managers = managers;
+        this.createdAt = LocalDateTime.now();
     }
 
     public String makeTempRoomId(){
@@ -36,29 +40,5 @@ public class RoomCollection {
 
     public void setMembers(List<Member> members) {
         this.members = members;
-    }
-
-    public String get_id() {
-        return _id;
-    }
-
-    public String getRoomId() {
-        return roomId;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public LocalDateTime getLastModifiedAt() {
-        return lastModifiedAt;
-    }
-
-    public List<Member> getMembers() {
-        return members;
-    }
-
-    public List<String> getManagers() {
-        return managers;
     }
 }
