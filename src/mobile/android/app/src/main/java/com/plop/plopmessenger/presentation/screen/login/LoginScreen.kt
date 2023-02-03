@@ -18,10 +18,12 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.plop.plopmessenger.R
 import com.plop.plopmessenger.presentation.component.ButtonValue
 import com.plop.plopmessenger.presentation.component.LoginEditText
 import com.plop.plopmessenger.presentation.component.PlopButton
+import com.plop.plopmessenger.presentation.viewmodel.LoginViewModel
 import com.plop.plopmessenger.util.KeyLine
 
 object LoginScreenValue {
@@ -39,6 +41,16 @@ fun LoginScreen(
     navigateToSignUp:() -> Unit = {},
     navigateToMain:() -> Unit = {}
 ) {
+    val viewModel = hiltViewModel<LoginViewModel>()
+    val state by viewModel.loginState.collectAsState()
+
+    LaunchedEffect(key1 = state.isLogin) {
+        if (state.isLogin) {
+            navigateToMain()
+        }
+    }
+
+
     var query by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue())
     }

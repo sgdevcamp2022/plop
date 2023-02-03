@@ -17,10 +17,12 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.plop.plopmessenger.R
 import com.plop.plopmessenger.presentation.component.ProfileImage
 import com.plop.plopmessenger.presentation.component.SubTitle
 import com.plop.plopmessenger.presentation.theme.Gray400
+import com.plop.plopmessenger.presentation.viewmodel.SettingViewModel
 import com.plop.plopmessenger.util.KeyLine
 
 object SettingValue{
@@ -34,6 +36,10 @@ object SettingValue{
 @Composable
 fun SettingScreen() {
 
+    val viewModel = hiltViewModel<SettingViewModel>()
+    val state by viewModel.settingState.collectAsState()
+
+
     var state1 by remember { mutableStateOf(false) }
     var state2 by remember { mutableStateOf(false) }
     var state3 by remember { mutableStateOf(false) }
@@ -42,20 +48,20 @@ fun SettingScreen() {
         modifier = Modifier.padding(horizontal = KeyLine)
     ) {
         ProfileImage(
-            imageURL = "",
+            imageURL = state.image,
             profileSize = SettingValue.ProfileImageSize,
             modifier = Modifier
-                .padding(top= SettingValue.ProfileImageTopPadding)
+                .padding(top = SettingValue.ProfileImageTopPadding)
                 .align(Alignment.CenterHorizontally)
         )
 
         Text(
-            text = "userName",
+            text = state.nickname,
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             maxLines = 1,
             modifier = Modifier
-                .padding(bottom= SettingValue.ProfileImageBottomPadding)
+                .padding(bottom = SettingValue.ProfileImageBottomPadding)
                 .align(Alignment.CenterHorizontally)
         )
 
@@ -65,22 +71,22 @@ fun SettingScreen() {
         SettingComponentToggle(
             content = stringResource(id = R.string.setting_dark_mode_btn),
             image = ImageVector.vectorResource(id = R.drawable.ic_set_mode),
-            onClick = { state1 = !state1 },
-            isChecked = state1
+            onClick = { viewModel.setThemeMode(!state.themeMode) },
+            isChecked = state.themeMode
         )
 
         SettingComponentToggle(
             content = stringResource(id = R.string.setting_alarm_btn),
             image = ImageVector.vectorResource(id = R.drawable.ic_set_bell),
-            onClick = { state2 = !state2 },
-            isChecked = state2
+            onClick = { viewModel.setAlarm(!state.alarmMode) },
+            isChecked = state.alarmMode
         )
 
         SettingComponentToggle(
             content = stringResource(id = R.string.setting_active_btn),
             image = ImageVector.vectorResource(id = R.drawable.ic_set_active),
-            onClick = { state3 = !state3 },
-            isChecked = state3
+            onClick = { viewModel.setActiveMode(!state.activeMode) },
+            isChecked = state.activeMode
         )
 
         SubTitle(content = stringResource(id = R.string.setting_account_subtitle))
