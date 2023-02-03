@@ -17,30 +17,13 @@ import smilegate.plop.chat.dto.ChatMessageDto;
 @RequiredArgsConstructor
 public class Producers {
     private final KafkaTemplate<String, ChatMessageDto> kafkaTemplate;
-    @Value("${kafka.topic.dm.name}")
+    @Value("${kafka.topic.name}")
     private String topicDmName;
-    @Value("${kafka.topic.group.name}")
-    private String topicGroupName;
-
 
     public void sendMessage(ChatMessageDto chatMessageDto){
-        log.info("토픽 : {}, 메시지 : {}", topicDmName,chatMessageDto.getContent());
+        log.info("토픽 : {}", topicDmName);
 
         ListenableFuture<SendResult<String, ChatMessageDto>> listenable = kafkaTemplate.send(topicDmName,chatMessageDto); // 보낼 메시지 포맷 변경 해야됨
-        listenable.addCallback(new ListenableFutureCallback<SendResult<String, ChatMessageDto>>() {
-            @Override
-            public void onSuccess(SendResult<String, ChatMessageDto> result) {
-                log.info("Sent message=[" + chatMessageDto.getContent() + "] with offset=[" + result.getRecordMetadata().offset() + "]");
-            }
-            @Override
-            public void onFailure(Throwable ex) {
-                log.info("Unable to send message=[" + chatMessageDto.getContent() + "] due to : " + ex.getMessage());
-            }
-        });
-    }
-
-    public void sendGroupMessage(ChatMessageDto chatMessageDto) {
-        ListenableFuture<SendResult<String, ChatMessageDto>> listenable = kafkaTemplate.send(topicGroupName,chatMessageDto); // 보낼 메시지 포맷 변경 해야됨
         listenable.addCallback(new ListenableFutureCallback<SendResult<String, ChatMessageDto>>() {
             @Override
             public void onSuccess(SendResult<String, ChatMessageDto> result) {
