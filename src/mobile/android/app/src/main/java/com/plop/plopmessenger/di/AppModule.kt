@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.room.Room
 import com.plop.plopmessenger.data.local.AppDatabase
 import com.plop.plopmessenger.data.pref.PrefDataSource
+import com.plop.plopmessenger.data.remote.stomp.WebSocketListener
 import com.plop.plopmessenger.data.repository.*
 import com.plop.plopmessenger.domain.repository.*
 import com.plop.plopmessenger.util.Constants
@@ -50,6 +51,14 @@ object AppModule {
             .addInterceptor(loggingInterceptor)
             .addNetworkInterceptor(networkInterceptor)
             .build()
+    }
+
+    @Singleton
+    @Provides
+    fun provideWebSocketListener(
+        okHttpClient: OkHttpClient
+    ) : WebSocketListener {
+        return WebSocketListener(okHttpClient)
     }
 
     @AuthInterceptor
@@ -154,6 +163,14 @@ object AppModule {
     fun provideUserRepository(pref: PrefDataSource): UserRepository {
         return UserRepositoryImpl(
             pref = pref
+        )
+    }
+
+    @Singleton
+    @Provides
+    fun provideSocketRepository(webSocketListener: WebSocketListener): SocketRepository {
+        return SocketRepositoryImpl(
+            webSocketListener = webSocketListener
         )
     }
 }
