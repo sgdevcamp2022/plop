@@ -21,6 +21,7 @@ import com.plop.plopmessenger.domain.model.ChatRoomType
 import com.plop.plopmessenger.domain.model.Member
 import com.plop.plopmessenger.domain.model.People
 import com.plop.plopmessenger.presentation.component.*
+import com.plop.plopmessenger.presentation.navigation.PeopleParcelableModel
 import com.plop.plopmessenger.presentation.viewmodel.AddChatMemberViewModel
 import com.plop.plopmessenger.util.KeyLine
 import com.plop.plopmessenger.util.SearchDisplay
@@ -34,8 +35,8 @@ object AddChatMemberValue {
 @Composable
 fun AddChatMemberScreen(
     upPress: () -> Unit,
-    navigateToNewChat: () -> Unit,
-    navigateToUpdateGroupChat: (String) -> Unit
+    navigateToNewChat: (PeopleParcelableModel) -> Unit,
+    navigateToUpdateGroupChat: (String,  PeopleParcelableModel) -> Unit
 ) {
     val viewModel = hiltViewModel<AddChatMemberViewModel>()
     val state by viewModel.addChatMemberState.collectAsState()
@@ -44,8 +45,13 @@ fun AddChatMemberScreen(
     var focusManager = LocalFocusManager.current
 
     //멤버수에 따른 함수
-    val addMember: () -> Unit = if(state.chatRoomType == ChatRoomType.DM) { { navigateToNewChat() } }
-    else { { navigateToUpdateGroupChat(state.chatId?: "") } }
+    val addMember: () -> Unit = if(state.chatRoomType == ChatRoomType.DM) {
+        {
+            navigateToNewChat(PeopleParcelableModel(state.checkedPeople + state.members))}
+    }
+    else {
+        { navigateToUpdateGroupChat(state.chatId?: "", PeopleParcelableModel(state.checkedPeople)) }
+    }
 
     var searchDisplay : SearchDisplay = when {
         query == TextFieldValue("") -> SearchDisplay.Default
@@ -103,22 +109,24 @@ fun AddChatMemberScreen(
                         SubTitle(content = stringResource(id = R.string.add_chat_member_friend_subtitle))
                     }
                     items(state.friends) { friend ->
-                        PeopleWithCheckItem(
-                            onClick = {
-                                if(friend in state.checkedPeople) viewModel.deletePeople(people = friend)
-                                else viewModel.addPeople(people = friend)
-                            },
-                            imageURL = friend.profileImg,
-                            nickname = friend.nickname,
-                            isChecked = state.checkedPeople.contains(friend)
-                        )
-                        Divider(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(
-                                    start = PeopleItemValue.ProfileSize.dp
-                                )
-                        )
+                        if(!state.members.map { it.peopleId }.contains(friend.peopleId)) {
+                            PeopleWithCheckItem(
+                                onClick = {
+                                    if(friend in state.checkedPeople) viewModel.deletePeople(people = friend)
+                                    else viewModel.addPeople(people = friend)
+                                },
+                                imageURL = friend.profileImg,
+                                nickname = friend.nickname,
+                                isChecked = state.checkedPeople.contains(friend)
+                            )
+                            Divider(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(
+                                        start = PeopleItemValue.ProfileSize.dp
+                                    )
+                            )
+                        }
                     }
                 }
             }

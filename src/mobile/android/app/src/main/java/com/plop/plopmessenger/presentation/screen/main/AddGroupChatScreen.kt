@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.plop.plopmessenger.R
 import com.plop.plopmessenger.presentation.component.*
+import com.plop.plopmessenger.presentation.navigation.PeopleParcelableModel
 import com.plop.plopmessenger.presentation.viewmodel.AddGroupChatViewModel
 import com.plop.plopmessenger.util.KeyLine
 import com.plop.plopmessenger.util.SearchDisplay
@@ -29,7 +30,7 @@ object AddGroupChatValue {
 @Composable
 fun AddGroupChatScreen(
     upPress: () -> Unit,
-    navigateToNewChat: () -> Unit,
+    navigateToNewChat: (PeopleParcelableModel) -> Unit,
 ) {
 
     val viewModel = hiltViewModel<AddGroupChatViewModel>()
@@ -50,7 +51,7 @@ fun AddGroupChatScreen(
     ) {
         MainTopBarWithBothBtn(
             onLeftBtnClick = upPress,
-            onRightBtnClick = navigateToNewChat,
+            onRightBtnClick = { navigateToNewChat(PeopleParcelableModel(state.checkedPeople))},
             content = stringResource(id = R.string.add_chat_group_top_bar),
             leftContent = stringResource(id = R.string.add_chat_group_cancel_btn),
             rightContent = stringResource(id = R.string.add_chat_group_add_btn),

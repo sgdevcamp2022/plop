@@ -1,8 +1,10 @@
 package com.plop.plopmessenger.presentation.navigation
 
+import android.net.Uri
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
+import com.google.gson.Gson
 import com.plop.plopmessenger.presentation.component.BottomBarTabs
 
 object LoginDestinations {
@@ -20,6 +22,7 @@ object MainDestinations {
     const val MAIN_ROUTE = "main"
     const val PEOPLE_GRAPH_ROUTE = "peopleGraph"
     const val CHAT_ROUTE = "chat"
+    const val NEW_CHAT_ROUTE = "newChat"
     const val CHAT_INFO_ROUTE = "chatInfo"
     const val ADD_CHAT_MEMBER_ROUTE = "addChatMemberRoute"
     const val ADD_CHAT_ROUTE = "addChat"
@@ -27,9 +30,9 @@ object MainDestinations {
     const val ADD_PEOPLE_ROUTE = "addPeople"
 }
 
-
 object DestinationID {
     const val CHAT_ID = "chatId"
+    const val PEOPLE_LIST = "peopleList"
 }
 
 class LoginNavigationAction(navController: NavController) {
@@ -41,6 +44,7 @@ class LoginNavigationAction(navController: NavController) {
         navController.navigate(LoginDestinations.SIGN_UP_ROUTE)
     }
 }
+
 
 
 class MainNavigationAction(val navController: NavController) {
@@ -63,12 +67,6 @@ class MainNavigationAction(val navController: NavController) {
         }
     }
 
-    val navigateToChat: (String, NavBackStackEntry) -> Unit = { chatId, from ->
-        if (from.lifecycleIsResumed()) {
-            navController.navigate("${MainDestinations.CHAT_ROUTE}/$chatId")
-        }
-    }
-
     val navigateToChatInfo: (String, NavBackStackEntry) -> Unit = { chatId, from ->
         if (from.lifecycleIsResumed()) {
             navController.navigate("${MainDestinations.CHAT_INFO_ROUTE}/$chatId")
@@ -81,16 +79,24 @@ class MainNavigationAction(val navController: NavController) {
         }
     }
 
+    val navigateToChat: (String, NavBackStackEntry) -> Unit = { chatId, from ->
+        if (from.lifecycleIsResumed()) {
+            navController.navigate("${MainDestinations.CHAT_ROUTE}/$chatId")
+        }
+    }
+
     //새로 생성된 Chat
-    val navigateToNewChat: () -> Unit = {
-        navController.navigate(MainDestinations.CHAT_ROUTE){
+    val navigateToNewChat: (PeopleParcelableModel) -> Unit = {
+        val peopleList = Uri.encode(Gson().toJson(it))
+        navController.navigate("${MainDestinations.NEW_CHAT_ROUTE}/${peopleList}"){
             popUpTo(BottomBarDestinations.CHATS_ROUTE)
         }
     }
 
     //그룹채팅에 멤버가 추가되었을 때?
-    val navigateToUpdateGroupChat: (String, NavBackStackEntry) -> Unit = { chatId, from ->
-        navController.navigate("${MainDestinations.CHAT_ROUTE}/$chatId") {
+    val navigateToUpdateGroupChat: (String, PeopleParcelableModel) -> Unit = { chatId, people->
+        val peopleList = Uri.encode(Gson().toJson(people))
+        navController.navigate("${MainDestinations.CHAT_ROUTE}/$chatId/${peopleList}") {
             popUpTo(BottomBarDestinations.CHATS_ROUTE)
         }
     }
@@ -102,7 +108,6 @@ class MainNavigationAction(val navController: NavController) {
     val navigateToAddGroupChat: () -> Unit = {
         navController.navigate(MainDestinations.ADD_CHAT_GROUP_ROUTE)
     }
-
 
     val navigateToAddPeople: () -> Unit = {
         navController.navigate(MainDestinations.ADD_PEOPLE_ROUTE)
