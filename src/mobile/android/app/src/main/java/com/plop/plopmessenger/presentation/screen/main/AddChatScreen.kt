@@ -20,12 +20,14 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.plop.plopmessenger.R
 import com.plop.plopmessenger.domain.model.People
 import com.plop.plopmessenger.presentation.component.MainTopBarWithLeftBtn
 import com.plop.plopmessenger.presentation.component.PeopleItem
 import com.plop.plopmessenger.presentation.component.SearchBar
 import com.plop.plopmessenger.presentation.component.SubTitle
+import com.plop.plopmessenger.presentation.viewmodel.AddChatViewModel
 import com.plop.plopmessenger.util.KeyLine
 import com.plop.plopmessenger.util.SearchDisplay
 
@@ -43,14 +45,12 @@ fun AddChatScreen(
     navigateToNewChat: () -> Unit,
     navigateToAddGroupChat: () -> Unit
 ) {
-    var query by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue(""))
-    }
-    //검색결과
-    val result by remember{ mutableStateOf(listOf<People>()) }
-    //모든 친구 목록
-    val default by remember{ mutableStateOf(listOf<People>()) }
-    var textFieldFocusState by remember { mutableStateOf(false) }
+    val viewModel = hiltViewModel<AddChatViewModel>()
+    val state by viewModel.addChatState.collectAsState()
+    var query = state.query
+    val result = state.result
+    val friends = state.friends
+    var textFieldFocusState = state.textFieldFocusState
     var focusManager = LocalFocusManager.current
     var searchDisplay : SearchDisplay = when {
         query == TextFieldValue("") -> SearchDisplay.Default
@@ -71,15 +71,16 @@ fun AddChatScreen(
 
         SearchBar(
             query = query,
-            onQueryChange = { query = it },
+            onQueryChange = viewModel::setQuery,
             searchFocused = textFieldFocusState,
-            onSearchFocusChange = { textFieldFocusState = it },
+            onSearchFocusChange = viewModel::setFocusState,
             onClearQuery = {
                 focusManager.clearFocus()
-                query = TextFieldValue("")
+                viewModel.setQuery(TextFieldValue(""))
             },
             modifier = Modifier.padding(vertical = 8.dp)
         )
+
 
         when(searchDisplay) {
             SearchDisplay.NoResults -> {
@@ -87,7 +88,7 @@ fun AddChatScreen(
             }
             SearchDisplay.Default -> {
                 PeopleList(
-                    result = default,
+                    result = friends,
                     onClick = { navigateToNewChat() }
                 ) {
                     Row(
