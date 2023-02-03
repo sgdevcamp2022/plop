@@ -16,11 +16,9 @@ public class KafkaTopicConfig {
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapAddress;
 
-    @Value("${kafka.topic.dm.name}")
+    @Value("${kafka.topic.name}")
     private String topicName;
 
-    @Value("${kafka.topic.group.name}")
-    private String groupTopicName;
 
     @Bean
     public KafkaAdmin kafkaAdmin(){
@@ -34,11 +32,4 @@ public class KafkaTopicConfig {
         return new NewTopic(topicName,1,(short)1);
     }
 
-    @Bean
-    public NewTopic groupTopic(){
-        return TopicBuilder.name(groupTopicName)
-                .partitions(1)
-                .replicas(1)
-                .build();
-    }
 }
