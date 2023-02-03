@@ -45,7 +45,7 @@ fun AddChatMemberScreen(
 
     //멤버수에 따른 함수
     val addMember: () -> Unit = if(state.chatRoomType == ChatRoomType.DM) { { navigateToNewChat() } }
-    else { { navigateToUpdateGroupChat(state.chatId) } }
+    else { { navigateToUpdateGroupChat(state.chatId?: "") } }
 
     var searchDisplay : SearchDisplay = when {
         query == TextFieldValue("") -> SearchDisplay.Default
