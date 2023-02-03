@@ -73,6 +73,10 @@
 		B48BF231298C0B07006E2684 /* UserUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B48BF22D298C0B07006E2684 /* UserUseCase.swift */; };
 		B48BF232298C0B07006E2684 /* TokenUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B48BF22E298C0B07006E2684 /* TokenUseCase.swift */; };
 		B48BF234298C0D20006E2684 /* RoomsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B48BF233298C0D20006E2684 /* RoomsUseCase.swift */; };
+		B4C60990298C9C0800FEA42B /* WebSocketService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4C6098F298C9C0800FEA42B /* WebSocketService.swift */; };
+		B4C60993298CC14200FEA42B /* WebSocketConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4C60992298CC14200FEA42B /* WebSocketConnection.swift */; };
+		B4C60995298CC17F00FEA42B /* WebSocketConnectionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4C60994298CC17F00FEA42B /* WebSocketConnectionDelegate.swift */; };
+		B4C60997298CD7A200FEA42B /* URLSessionWebSocketTask+Rx.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4C60996298CD7A200FEA42B /* URLSessionWebSocketTask+Rx.swift */; };
 		B4D6814A298BADE5000D8920 /* KeychainRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D68149298BADE5000D8920 /* KeychainRepository.swift */; };
 		B4D6814C298BAE7D000D8920 /* Token.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D6814B298BAE7D000D8920 /* Token.swift */; };
 		B4E8D66F29880E9D003B946D /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = B4E8D66E29880E9D003B946D /* RxCocoa */; };
@@ -149,6 +153,10 @@
 		B48BF22D298C0B07006E2684 /* UserUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserUseCase.swift; sourceTree = "<group>"; };
 		B48BF22E298C0B07006E2684 /* TokenUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TokenUseCase.swift; sourceTree = "<group>"; };
 		B48BF233298C0D20006E2684 /* RoomsUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomsUseCase.swift; sourceTree = "<group>"; };
+		B4C6098F298C9C0800FEA42B /* WebSocketService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketService.swift; sourceTree = "<group>"; };
+		B4C60992298CC14200FEA42B /* WebSocketConnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketConnection.swift; sourceTree = "<group>"; };
+		B4C60994298CC17F00FEA42B /* WebSocketConnectionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketConnectionDelegate.swift; sourceTree = "<group>"; };
+		B4C60996298CD7A200FEA42B /* URLSessionWebSocketTask+Rx.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLSessionWebSocketTask+Rx.swift"; sourceTree = "<group>"; };
 		B4D68149298BADE5000D8920 /* KeychainRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainRepository.swift; sourceTree = "<group>"; };
 		B4D6814B298BAE7D000D8920 /* Token.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Token.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -317,6 +325,7 @@
 		B41E40EB2987927000BB3126 /* Network */ = {
 			isa = PBXGroup;
 			children = (
+				B4C6098E298C9BE600FEA42B /* WebSockets */,
 				B415246F298977EC006B86FF /* API */,
 				B460829D298A216F00BABC97 /* Common */,
 				B415247429898730006B86FF /* Entities */,
@@ -372,6 +381,25 @@
 				B48BF22C298C0B07006E2684 /* UseCaseError.swift */,
 			);
 			path = Common;
+			sourceTree = "<group>";
+		};
+		B4C6098E298C9BE600FEA42B /* WebSockets */ = {
+			isa = PBXGroup;
+			children = (
+				B4C60991298CC13300FEA42B /* Interfaces */,
+				B4C6098F298C9C0800FEA42B /* WebSocketService.swift */,
+				B4C60996298CD7A200FEA42B /* URLSessionWebSocketTask+Rx.swift */,
+			);
+			path = WebSockets;
+			sourceTree = "<group>";
+		};
+		B4C60991298CC13300FEA42B /* Interfaces */ = {
+			isa = PBXGroup;
+			children = (
+				B4C60992298CC14200FEA42B /* WebSocketConnection.swift */,
+				B4C60994298CC17F00FEA42B /* WebSocketConnectionDelegate.swift */,
+			);
+			path = Interfaces;
 			sourceTree = "<group>";
 		};
 		B4D68148298BADC2000D8920 /* Keychain */ = {
@@ -487,6 +515,7 @@
 				B48BF230298C0B07006E2684 /* UseCaseError.swift in Sources */,
 				B4D6814C298BAE7D000D8920 /* Token.swift in Sources */,
 				B41E40CE29877F5E00BB3126 /* User.swift in Sources */,
+				B4C60997298CD7A200FEA42B /* URLSessionWebSocketTask+Rx.swift in Sources */,
 				B415247629898737006B86FF /* LoginResponse.swift in Sources */,
 				B41E40D9298783AE00BB3126 /* Friend.swift in Sources */,
 				B46082E6298AAC9200BABC97 /* CDProfile+CoreDataProperties.swift in Sources */,
@@ -496,6 +525,7 @@
 				B46082E0298AAC9200BABC97 /* CDFriend+CoreDataProperties.swift in Sources */,
 				B401931C29882E4000217AEB /* CDUsersUseCase.swift in Sources */,
 				B46082B7298A46FF00BABC97 /* MessageResponse.swift in Sources */,
+				B4C60993298CC14200FEA42B /* WebSocketConnection.swift in Sources */,
 				B41E40BC2987797C00BB3126 /* ViewController.swift in Sources */,
 				B401930C29881E2800217AEB /* Observable+Ext.swift in Sources */,
 				B46082A9298A33F600BABC97 /* FriendsNetwork.swift in Sources */,
@@ -526,6 +556,7 @@
 				B46082B3298A40F800BABC97 /* RoomInviteResponse.swift in Sources */,
 				B41524452988F331006B86FF /* CDFriend+Ext.swift in Sources */,
 				B48BF22F298C0B07006E2684 /* AuthUseCase.swift in Sources */,
+				B4C60990298C9C0800FEA42B /* WebSocketService.swift in Sources */,
 				B46082AD298A345100BABC97 /* FriendResponse.swift in Sources */,
 				B46082A7298A2EDE00BABC97 /* ProfileResponse.swift in Sources */,
 				B4152471298977F4006B86FF /* UsersNetwork.swift in Sources */,
@@ -539,6 +570,7 @@
 				B46082A5298A2BE900BABC97 /* AuthNetwork.swift in Sources */,
 				B401933C2988BEBE00217AEB /* Member.swift in Sources */,
 				B46082AB298A344A00BABC97 /* FriendsListResponse.swift in Sources */,
+				B4C60995298CC17F00FEA42B /* WebSocketConnectionDelegate.swift in Sources */,
 				B41E40D029877F6500BB3126 /* Room.swift in Sources */,
 				B46082E3298AAC9200BABC97 /* CDMessage+CoreDataClass.swift in Sources */,
 				B401931929882D4000217AEB /* CoreDataRepository.swift in Sources */,
