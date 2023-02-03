@@ -1,0 +1,59 @@
+server:
+  port: 8000
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+spring:
+  application:
+    name: gateway-service
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/user/v1/**
+          filters:
+#            - AuthenticationFilter
+            - AuthorizationHeaderFilter
+            - RewritePath=/user/v1/(?<segment>.*), /$\{segment}
+
+        - id: auth-service
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/auth/v1/login
+          filters:
+            - RewritePath=/auth/v1/(?<segment>.*), /$\{segment}
+
+        - id: auth-service
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/auth/v1/signup
+          filters:
+            - RewritePath=/auth/v1/(?<segment>.*), /$\{segment}
+        - id: auth-service
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/auth/v1/**
+          filters:
+#            - AuthenticationFilter
+            - AuthorizationHeaderFilter
+            - RewritePath=/auth/v1/(?<segment>.*), /$\{segment}
+
+
+#jwt :
+#  secret: plop
+#  validity: 1
+token:
+  # 1분
+  access_expired_time: 60000
+  secret_key: plip
+  # 1시간
+  refresh_expired_time: 3600000

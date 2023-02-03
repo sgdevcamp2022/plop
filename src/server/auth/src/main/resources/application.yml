@@ -1,0 +1,55 @@
+server:
+  port: 0
+
+spring:
+  application:
+    name: auth-service
+  jpa:
+    show-sql: true
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/plop?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&serverTimezone=Asia/Seoul
+    username: plop_admin
+    password: jeho
+  redis:
+    host: 127.0.0.1
+    port: 6379
+
+eureka:
+  instance:
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
+
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://127.0.0.1:8761/eureka
+
+token:
+  # 1분
+  access_expired_time: 60000
+  secret_key: plip
+  # 1시간
+  refresh_expired_time: 3600000
+
+logging:
+  level:
+    smilegate.plop.auth: DEBUG
+
+#jwt:
+#  security:
+#    access:
+#      key: plip
+#    refresh:
+#      key: plop
+#  response:
+#    header: Authorization
+#  token:
+#    prefix: Bearer
+#  access:
+#    time: 5       #access token ???? 5?
+#  refresh:
+#    time: 1       #refresh token ???? 1??
+
+
+
