@@ -11,3 +11,16 @@ struct RoomResponse: Decodable {
     case title, members, manager
   }
 }
+
+extension RoomResponse {
+  func toDomain() -> Room {
+    return Room(
+      uid: Int64(roomID) ?? 0,
+      title: title,
+      unreadMessagesCount: 0,
+      lastMessage: "",
+      lastModified: "",
+      members: members.map({ $0.toDomain() }),
+      messages: [])
+  }
+}

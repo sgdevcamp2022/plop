@@ -21,3 +21,18 @@ struct MessageData: Decodable {
     case createdAt = "created_at"
   }
 }
+
+extension MessageData {
+  func toDomain() -> Message {
+    return Message(
+      uid: Int64(messageID) ?? 0,
+      from: senderID,
+      type: messageType,
+      content: content,
+      senderID: senderID,
+      createdAt: createdAt,
+      unread: true,
+      roomID: Int64(roomID) ?? 0
+    )
+  }
+}

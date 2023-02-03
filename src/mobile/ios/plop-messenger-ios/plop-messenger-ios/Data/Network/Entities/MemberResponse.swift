@@ -11,3 +11,13 @@ struct MemberResponse: Decodable {
     case enteredAt
   }
 }
+
+extension MemberResponse {
+  func toDomain() -> Member {
+    return Member(
+      uid: Int64(userID) ?? 0,
+      name: userID,
+      image: ""
+    )
+  }
+}

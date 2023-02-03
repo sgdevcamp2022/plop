@@ -8,5 +8,4 @@ struct Room: Codable {
   let lastModified: String
   let members: [Member]
   let messages: [Message]
-  let user: User
 }

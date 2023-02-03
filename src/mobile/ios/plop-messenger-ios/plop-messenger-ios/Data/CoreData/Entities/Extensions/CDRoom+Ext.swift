@@ -11,8 +11,7 @@ extension CDRoom: DomainConvertibleType {
       lastMessage: lastMessage ?? "",
       lastModified: lastModified ?? "\(Date())",
       members: (members.allObjects as! [CDMember]).mapToDomain(),
-      messages: (messages.allObjects as? [CDMessage] ?? []).mapToDomain(),
-      user: user.toDomain()
+      messages: (messages.allObjects as? [CDMessage] ?? []).mapToDomain()
     )
   }
 }
@@ -24,11 +23,9 @@ extension CDRoom: Persistable {
   
   static func synced(
     room: CDRoom,
-    user: CDUser,
     members: [CDMember],
     messages: [CDMessage]
   ) -> CDRoom {
-    room.user = user
     room.members = NSSet(array: members)
     room.messages = NSSet(array: messages)
     return room
@@ -44,8 +41,6 @@ extension Room: CoreDataRepresentable {
     let syncSelf = context.rx.sync(
       entity: self,
       update: update)
-    
-    let syncUser = user.sync(in: context)
 
     let membersObservables = members
       .map({
@@ -62,7 +57,6 @@ extension Room: CoreDataRepresentable {
     
     return Observable.zip(
       syncSelf,
-      syncUser,
       syncMembers,
       syncMessages,
       resultSelector: CDRoom.synced)

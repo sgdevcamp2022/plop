@@ -8,8 +8,7 @@ extension CDMember: DomainConvertibleType {
     return Member(
       uid: uid,
       name: name ?? "",
-      image: image ?? "",
-      room: room!.toDomain()
+      image: image ?? ""
     )
   }
 }
