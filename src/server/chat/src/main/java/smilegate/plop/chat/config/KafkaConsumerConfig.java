@@ -34,7 +34,7 @@ public class KafkaConsumerConfig {
         configurations.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
         configurations.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         configurations.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,JsonDeserializer.class);
-        configurations.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG,"earliest"); // earliest: 전체 , latest: 최신 메시지
+        configurations.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG,"latest"); // earliest: 전체 , latest: 최신 메시지
         return configurations;
     }
 
