@@ -22,14 +22,14 @@ public class MessageCollection {
     private MessageType type;
     private String senderId;
     private String content;
-    private LocalDateTime createAt;
+    private LocalDateTime createdAt;
 
     @Builder
-    public MessageCollection(MessageType type, String roomId, String senderId, String content, LocalDateTime createAt) {
+    public MessageCollection(MessageType type, String roomId, String senderId, String content, LocalDateTime createdAt) {
         this.type = type;
         this.roomId = roomId;
         this.senderId = senderId;
         this.content = content;
-        this.createAt = createAt;
+        this.createdAt = createdAt;
     }
 }
