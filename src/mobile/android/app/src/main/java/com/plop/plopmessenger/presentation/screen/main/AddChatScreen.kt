@@ -27,6 +27,7 @@ import com.plop.plopmessenger.presentation.component.MainTopBarWithLeftBtn
 import com.plop.plopmessenger.presentation.component.PeopleItem
 import com.plop.plopmessenger.presentation.component.SearchBar
 import com.plop.plopmessenger.presentation.component.SubTitle
+import com.plop.plopmessenger.presentation.navigation.PeopleParcelableModel
 import com.plop.plopmessenger.presentation.viewmodel.AddChatViewModel
 import com.plop.plopmessenger.util.KeyLine
 import com.plop.plopmessenger.util.SearchDisplay
@@ -42,7 +43,7 @@ object AddChatScreenValue {
 @Composable
 fun AddChatScreen(
     upPress: () -> Unit,
-    navigateToNewChat: () -> Unit,
+    navigateToNewChat: (PeopleParcelableModel) -> Unit,
     navigateToAddGroupChat: () -> Unit
 ) {
     val viewModel = hiltViewModel<AddChatViewModel>()
@@ -89,7 +90,7 @@ fun AddChatScreen(
             SearchDisplay.Default -> {
                 PeopleList(
                     result = friends,
-                    onClick = { navigateToNewChat() }
+                    onClick = navigateToNewChat
                 ) {
                     Row(
                         modifier = Modifier
@@ -144,7 +145,7 @@ fun AddChatScreen(
 @Composable
 private fun PeopleList(
     result: List<People>,
-    onClick: () -> Unit,
+    onClick: (PeopleParcelableModel) -> Unit,
     content: @Composable () -> Unit
 ){
     LazyColumn(
@@ -157,7 +158,7 @@ private fun PeopleList(
             PeopleItem(
                 imageURL = friend.profileImg,
                 nickname = friend.nickname,
-                modifier = Modifier.clickable { onClick() },
+                modifier = Modifier.clickable { onClick(PeopleParcelableModel(listOf(friend))) },
                 profileSize = AddChatScreenValue.ProfileSize
             )
             Divider(

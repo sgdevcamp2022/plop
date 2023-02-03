@@ -6,11 +6,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import androidx.navigation.navigation
-import com.plop.plopmessenger.presentation.navigation.BottomBarDestinations
-import com.plop.plopmessenger.presentation.navigation.DestinationID
-import com.plop.plopmessenger.presentation.navigation.MainDestinations
-import com.plop.plopmessenger.presentation.navigation.MainNavigationAction
+import com.plop.plopmessenger.presentation.navigation.*
 import com.plop.plopmessenger.presentation.screen.main.*
 
 @Composable
@@ -60,7 +58,7 @@ private fun NavGraphBuilder.chatGraph(
     navigationAction: MainNavigationAction
 ) {
     composable(
-        route = MainDestinations.CHAT_ROUTE
+        route = "${MainDestinations.CHAT_ROUTE}/{${DestinationID.CHAT_ID}}"
     ) { from ->
         ChatScreen(
             upPress = navigationAction.upPress,
@@ -70,12 +68,36 @@ private fun NavGraphBuilder.chatGraph(
     }
 
     composable(
-        route = "${MainDestinations.CHAT_ROUTE}/{${DestinationID.CHAT_ID}}"
+        route = "${MainDestinations.CHAT_ROUTE}/{${DestinationID.CHAT_ID}}/{${DestinationID.PEOPLE_LIST}}",
+        arguments = listOf(
+            navArgument(DestinationID.PEOPLE_LIST) { type = PeopleParcelableModel }
+        )
     ) { from ->
+
+        val arguments = requireNotNull(from.arguments)
+        val peopleList = arguments.getParcelable<PeopleParcelableModel>(DestinationID.PEOPLE_LIST)
         ChatScreen(
             upPress = navigationAction.upPress,
             navigateToChatInfo = { chatId -> navigationAction.navigateToChatInfo(chatId, from)},
-            navigateToAddMember = { chatId -> navigationAction.navigateToAddMember(chatId, from)}
+            navigateToAddMember = { chatId -> navigationAction.navigateToAddMember(chatId, from)},
+            peopleList = peopleList?.peopleList
+        )
+    }
+
+    composable(
+        route = "${MainDestinations.NEW_CHAT_ROUTE}/{${DestinationID.PEOPLE_LIST}}",
+        arguments = listOf(
+            navArgument(DestinationID.PEOPLE_LIST) { type = PeopleParcelableModel }
+        )
+    ) { from ->
+        val arguments = requireNotNull(from.arguments)
+        val peopleList = arguments.getParcelable<PeopleParcelableModel>(DestinationID.PEOPLE_LIST)
+
+        ChatScreen(
+            upPress = navigationAction.upPress,
+            navigateToChatInfo = { chatId -> navigationAction.navigateToChatInfo(chatId, from)},
+            navigateToAddMember = { chatId -> navigationAction.navigateToAddMember(chatId, from)},
+            peopleList = peopleList?.peopleList
         )
     }
 
@@ -93,8 +115,8 @@ private fun NavGraphBuilder.chatGraph(
     ) { from ->
         AddChatMemberScreen(
             upPress = navigationAction.upPress,
-            navigateToNewChat = { navigationAction.navigateToNewChat() },
-            navigateToUpdateGroupChat = { chatId -> navigationAction.navigateToUpdateGroupChat(chatId, from)}
+            navigateToNewChat = navigationAction.navigateToNewChat,
+            navigateToUpdateGroupChat = navigationAction.navigateToUpdateGroupChat
         )
     }
 
@@ -103,8 +125,8 @@ private fun NavGraphBuilder.chatGraph(
     ) { from ->
         AddChatScreen(
             upPress = navigationAction.upPress,
-            navigateToNewChat = { navigationAction.navigateToNewChat() },
-            navigateToAddGroupChat = { navigationAction.navigateToAddGroupChat() }
+            navigateToNewChat = navigationAction.navigateToNewChat,
+            navigateToAddGroupChat = navigationAction.navigateToAddGroupChat
         )
     }
 
@@ -113,7 +135,7 @@ private fun NavGraphBuilder.chatGraph(
     ) { from ->
         AddGroupChatScreen(
             upPress = navigationAction.upPress,
-            navigateToNewChat = { navigationAction.navigateToNewChat() },
+            navigateToNewChat = navigationAction.navigateToNewChat
         )
     }
 }
