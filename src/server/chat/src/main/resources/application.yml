@@ -12,13 +12,16 @@ spring:
     bootstrap-servers: localhost:9092
     consumer:
       group-id: plop
+    room:
+      group-id: room
 kafka:
   topic:
     name: dm-message
+    room-name: chat-room
 
 token:
   # 1분
-  access_expired_time: 600000
+  access_expired_time: 6000000
   secret_key: plip
   # 1시간
   refresh_expired_time: 3600000

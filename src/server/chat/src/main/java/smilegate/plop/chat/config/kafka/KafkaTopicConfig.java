@@ -1,4 +1,4 @@
-package smilegate.plop.chat.config;
+package smilegate.plop.chat.config.kafka;
 
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.NewTopic;
@@ -18,6 +18,8 @@ public class KafkaTopicConfig {
 
     @Value("${kafka.topic.name}")
     private String topicName;
+    @Value("${kafka.topic.room-name}")
+    private String topicRoomName;
 
 
     @Bean
@@ -31,5 +33,11 @@ public class KafkaTopicConfig {
     public NewTopic topic(){
         return new NewTopic(topicName,1,(short)1);
     }
-
+    @Bean
+    public NewTopic roomTopic() {
+        return TopicBuilder.name(topicRoomName)
+                .partitions(1)
+                .replicas(1)
+                .build();
+    }
 }

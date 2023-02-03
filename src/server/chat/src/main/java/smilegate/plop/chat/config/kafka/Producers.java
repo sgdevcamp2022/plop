@@ -1,4 +1,4 @@
-package smilegate.plop.chat.domain.kafka;
+package smilegate.plop.chat.config.kafka;
 
 
 import lombok.RequiredArgsConstructor;
@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 import smilegate.plop.chat.dto.ChatMessageDto;
+import smilegate.plop.chat.dto.response.RespRoomDto;
 
 // 토픽에 메시지전송(이벤트 발행)
 @Slf4j
@@ -19,6 +20,10 @@ public class Producers {
     private final KafkaTemplate<String, ChatMessageDto> kafkaTemplate;
     @Value("${kafka.topic.name}")
     private String topicDmName;
+
+    private final KafkaTemplate<String, RespRoomDto> roomKafkaTemplate;
+    @Value("${kafka.topic.room-name}")
+    private String roomTopicName;
 
     public void sendMessage(ChatMessageDto chatMessageDto){
         log.info("토픽 : {}", topicDmName);
@@ -32,6 +37,20 @@ public class Producers {
             @Override
             public void onFailure(Throwable ex) {
                 log.info("Unable to send message=[" + chatMessageDto.getContent() + "] due to : " + ex.getMessage());
+            }
+        });
+    }
+
+    public void sendRoomMessage(RespRoomDto respRoomDto){
+        ListenableFuture<SendResult<String, RespRoomDto>> listenable = roomKafkaTemplate.send(roomTopicName,respRoomDto);
+        listenable.addCallback(new ListenableFutureCallback<SendResult<String, RespRoomDto>>() {
+            @Override
+            public void onSuccess(SendResult<String, RespRoomDto> result) {
+                log.info("Sent message=[" + respRoomDto.getRoom_id() + "] with offset=[" + result.getRecordMetadata().offset() + "]");
+            }
+            @Override
+            public void onFailure(Throwable ex) {
+                log.info("Unable to send message=[" + respRoomDto.getRoom_id() + "] due to : " + ex.getMessage());
             }
         });
     }

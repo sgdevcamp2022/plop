@@ -1,4 +1,4 @@
-package smilegate.plop.chat.config;
+package smilegate.plop.chat.config.kafka;
 
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -11,6 +11,8 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 import smilegate.plop.chat.dto.ChatMessageDto;
+import smilegate.plop.chat.dto.response.RespMyChatRoom;
+import smilegate.plop.chat.dto.response.RespRoomDto;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -38,5 +40,25 @@ public class KafkaProducerConfig {
     @Bean
     public KafkaTemplate<String, ChatMessageDto> kafkaTemplate(){
         return new KafkaTemplate<>(producerFactory());
+    }
+
+
+    @Bean
+    public ProducerFactory<String, RespRoomDto> roomProducerFactory(){
+        return new DefaultKafkaProducerFactory<>(roomProducerConfigurations());
+    }
+
+    @Bean
+    public Map<String, Object> roomProducerConfigurations(){
+        Map<String, Object> configurations = new HashMap<>();
+        configurations.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
+        configurations.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        configurations.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+        return configurations;
+    }
+
+    @Bean
+    public KafkaTemplate<String, RespRoomDto> roomKafkaTemplate(){
+        return new KafkaTemplate<>(roomProducerFactory());
     }
 }

@@ -1,4 +1,4 @@
-package smilegate.plop.chat.domain.kafka;
+package smilegate.plop.chat.config.kafka;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +9,9 @@ import smilegate.plop.chat.dto.ChatMessageDto;
 import smilegate.plop.chat.dto.MessageType;
 import smilegate.plop.chat.dto.response.RespRoomDto;
 import smilegate.plop.chat.service.ChatRoomService;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -31,5 +34,14 @@ public class Consumers {
         }
         log.info("채팅방: {}, 보낸사람: {}, 메시지: {}", chatMessageDto.getRoom_id(), chatMessageDto.getSender_id(), chatMessageDto.getContent());
         template.convertAndSend("/chatting/topic/room/"+chatMessageDto.getRoom_id(), chatMessageDto);
+    }
+
+    @KafkaListener(groupId = "${spring.kafka.room.group-id}",topics = "${kafka.topic.room-name}", containerFactory = "kafkaListenerContainerFactory")
+    public void listenGroupCreation(RespRoomDto respRoomDto){
+        List<String> userIdList = respRoomDto.getMembers().stream().map(m -> m.getUserId()).collect(Collectors.toList());
+        userIdList.remove(respRoomDto.getManagers().get(0));
+        for(String userId : userIdList){
+            template.convertAndSend("/chatting/topic/new-room/"+userId,respRoomDto);
+        }
     }
 }

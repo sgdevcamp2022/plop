@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import smilegate.plop.chat.config.kafka.Producers;
 import smilegate.plop.chat.dto.APIMessage;
 import smilegate.plop.chat.dto.request.ReqDmDto;
 import smilegate.plop.chat.dto.request.ReqGroupDto;
@@ -23,6 +24,7 @@ public class ChatRoomController {
 
     private final ChatRoomService chatRoomMongoService;
     private final JwtTokenProvider jwtTokenProvider;
+    private final Producers producers;
 
     @PostMapping("/v1/dm-creation")
     public ResponseEntity<RespRoomDto> dmCreation(@RequestHeader("Authorization") String jwt, @RequestBody ReqDmDto reqDmDto){
@@ -35,7 +37,10 @@ public class ChatRoomController {
     public ResponseEntity<RespRoomDto> groupCreation(@RequestHeader("Authorization") String jwt, @RequestBody ReqGroupDto reqGroupDto){
         String userId = jwtTokenProvider.getUserInfo(jwtTokenProvider.removeBearer(jwt)).getUserId();
         reqGroupDto.setCreator(userId);
-        return new ResponseEntity<>(chatRoomMongoService.createGroup(reqGroupDto),HttpStatus.CREATED);
+
+        RespRoomDto respRoomDto = chatRoomMongoService.createGroup(reqGroupDto);
+        producers.sendRoomMessage(respRoomDto);
+        return new ResponseEntity<>(respRoomDto,HttpStatus.CREATED);
     }
 
     @PostMapping("/v1/invitation")
