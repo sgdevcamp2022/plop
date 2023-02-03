@@ -14,7 +14,4 @@ spring:
       group-id: plop
 kafka:
   topic:
-    dm:
-      name: dm-message
-    group:
-      name: group-message
+    name: dm-message
