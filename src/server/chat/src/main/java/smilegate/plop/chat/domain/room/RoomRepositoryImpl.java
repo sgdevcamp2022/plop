@@ -5,7 +5,8 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
-import smilegate.plop.chat.dto.ReqInviteDto;
+import smilegate.plop.chat.dto.request.ReqDmDto;
+import smilegate.plop.chat.dto.request.ReqInviteDto;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -47,10 +48,20 @@ public class RoomRepositoryImpl implements RoomMongoTemplateRepository{
         return mongoTemplate.updateFirst(query,update,"rooms");
     }
 
+    @Override
+    public RoomCollection matchDmMembers(ReqDmDto reqDmDto) {
+        Criteria criteria = new Criteria();
+        criteria.andOperator(Criteria.where("type").is(RoomType.DM),
+                Criteria.where("members").elemMatch(Criteria.where("userId").is(reqDmDto.getCreator())),
+                Criteria.where("members").elemMatch(Criteria.where("userId").is(reqDmDto.getMessage_to())));
+
+        return mongoTemplate.findOne(new Query(criteria),RoomCollection.class);
+    }
+
 
     public List<Member> convertToMembersList(List<String>list){
         List<Member> members = new ArrayList<>();
-        list.stream().forEach(s -> members.add(new Member(s, LocalDateTime.now())));
+        list.forEach(s -> members.add(new Member(s, LocalDateTime.now())));
         return members;
     }
 }

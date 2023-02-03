@@ -4,11 +4,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import smilegate.plop.chat.domain.chat.ChatMessageRepository;
 import smilegate.plop.chat.domain.chat.MessageCollection;
-import smilegate.plop.chat.domain.room.Member;
-import smilegate.plop.chat.domain.room.RoomCollection;
-import smilegate.plop.chat.domain.room.RoomIdCreator;
-import smilegate.plop.chat.domain.room.RoomRepository;
+import smilegate.plop.chat.domain.room.*;
 import smilegate.plop.chat.dto.*;
+import smilegate.plop.chat.dto.request.ReqDmDto;
+import smilegate.plop.chat.dto.request.ReqGroupDto;
+import smilegate.plop.chat.dto.request.ReqInviteDto;
+import smilegate.plop.chat.dto.response.RespRoomDto;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -26,17 +27,30 @@ public class ChatRoomService {
         this.chatMessageRepository = chatMessageRepository;
     }
 
-    public RoomCollection createDmRoom(ChatMessageDto chatMessageDto){
-        List<Member> members = new ArrayList<>();
-        members.add(new Member(chatMessageDto.getSender_id(), LocalDateTime.now()));
-        members.add(new Member(chatMessageDto.getMessage_to(), LocalDateTime.now()));
+    public RoomCollection matchDmMembers(ReqDmDto reqDmDto){
+        return roomRepository.matchDmMembers(reqDmDto);
+    }
 
-        return roomRepository.save(RoomCollection.builder()
-                .roomId(chatMessageDto.getRoom_id())
-                .title(chatMessageDto.getMessage_to())
-                .members(members)
-                .managers(Collections.singletonList(chatMessageDto.getSender_id()))
-                .build());
+    public RespRoomDto createDmRoom(ReqDmDto reqDmDto){
+        // type이 dm이고 멤버가 일치하면 해당 방정보를 전송
+        RoomCollection savedRoom = matchDmMembers(reqDmDto);
+        if(savedRoom == null){
+            List<Member> members = new ArrayList<>();
+            members.add(new Member(reqDmDto.getCreator(),LocalDateTime.now()));
+            members.add(new Member(reqDmDto.getMessage_to(),LocalDateTime.now()));
+
+            savedRoom = roomRepository.save(RoomCollection.builder()
+                    .members(members)
+                    .type(RoomType.DM)
+                    .roomId(RoomIdCreator.createRoomId())
+                    .build());
+        }
+
+        return RespRoomDto.builder()
+                .room_id(savedRoom.getRoomId())
+                .type(savedRoom.getType())
+                .members(savedRoom.getMembers())
+                .build();
     }
 
 
@@ -50,12 +64,13 @@ public class ChatRoomService {
         RoomCollection savedRoom = roomRepository.save(RoomCollection.builder()
                 .title(title)
                 .members(members)
+                .type(RoomType.GROUP)
                 .managers(Collections.singletonList(reqGroupDto.getCreator()))
                 .roomId(RoomIdCreator.createRoomId())
                 .build()
         );
 
-        return new RespRoomDto(savedRoom.getRoomId(),savedRoom.getTitle(),savedRoom.getMembers(),savedRoom.getManagers());
+        return new RespRoomDto(savedRoom.getRoomId(),savedRoom.getTitle(),savedRoom.getType(),savedRoom.getMembers(),savedRoom.getManagers(),savedRoom.getCreatedAt());
     }
 
     public boolean inviteMembers(ReqInviteDto reqInviteDto){
@@ -81,7 +96,6 @@ public class ChatRoomService {
 
     public boolean outOfTheRoom(String roomId, String userId) {
         long count = roomRepository.outOfTheRoom(roomId,userId).getModifiedCount();
-        System.out.println("삭제: "+count);
         if(count >= 1){
             return true;
         }
@@ -97,7 +111,9 @@ public class ChatRoomService {
 
         return new RespRoomDto(roomCollection.getRoomId(),
                 roomCollection.getTitle(),
+                roomCollection.getType(),
                 roomCollection.getMembers(),
-                roomCollection.getManagers());
+                roomCollection.getManagers(),
+                roomCollection.getCreatedAt());
     }
 }
