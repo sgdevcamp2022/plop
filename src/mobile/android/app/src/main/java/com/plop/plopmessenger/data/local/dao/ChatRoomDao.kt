@@ -18,36 +18,36 @@ interface ChatRoomDao {
     fun hasPersonalChatRoomByFriend(friendId: String): Flow<String?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertChatRoom(chatRoom: ChatRoom)
+    suspend fun insertChatRoom(chatRoom: ChatRoom)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAllChatRoom(vararg chatRooms: ChatRoom)
+    suspend fun insertAllChatRoom(vararg chatRooms: ChatRoom)
 
     @Update
-    fun updateChatRoom(chatroom: ChatRoom)
+    suspend fun updateChatRoom(chatroom: ChatRoom)
 
     @Update
-    fun updateChatroomAll(vararg chatrooms: ChatRoom)
+    suspend fun updateChatroomAll(vararg chatrooms: ChatRoom)
 
     @Query(
         "UPDATE chatroom SET title = :title WHERE chatroom_id = :chatroomId"
     )
-    fun updateChatRoomTitleById(chatroomId: String, title: String)
+    suspend fun updateChatRoomTitleById(chatroomId: String, title: String)
 
     @Query(
         "UPDATE chatroom SET unread = :unread WHERE chatroom_id = :chatroomId"
     )
-    fun updateChatRoomUnreadById(chatroomId: String, unread: Int)
+    suspend fun updateChatRoomUnreadById(chatroomId: String, unread: Int)
 
     @Query(
         "UPDATE chatroom SET unread = :unread + unread WHERE chatroom_id = :chatroomId"
     )
-    fun plusChatRoomUnreadById(chatroomId: String, unread: Int)
+    suspend fun plusChatRoomUnreadById(chatroomId: String, unread: Int)
 
     @Query(
         "UPDATE chatroom SET content = :content AND updated_at = :updatedAt WHERE chatroom_id = :chatroomId"
     )
-    fun updateChatRoomContentById(chatroomId: String, content: String, updatedAt: Date)
+    suspend fun updateChatRoomContentById(chatroomId: String, content: String, updatedAt: Date)
 
     @Query(
         "DELETE FROM chatroom WHERE chatroom_id = :chatroomId"

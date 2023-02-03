@@ -28,39 +28,39 @@ class ChatRoomRepositoryImpl (
         return chatRoomDao.hasPersonalChatRoomByFriend(friendId)
     }
 
-    override fun insertChatRoom(chatRoom: ChatRoom) {
+    override suspend fun insertChatRoom(chatRoom: ChatRoom) {
         return chatRoomDao.insertChatRoom(chatRoom)
     }
 
-    override fun insertAllChatRoom(chatRooms: List<ChatRoom>) {
+    override suspend fun insertAllChatRoom(chatRooms: List<ChatRoom>) {
         return chatRoomDao.insertAllChatRoom(*chatRooms.toTypedArray())
     }
 
-    override fun updateChatRoom(chatroom: ChatRoom) {
+    override suspend fun updateChatRoom(chatroom: ChatRoom) {
         return chatRoomDao.updateChatRoom(chatroom)
     }
 
-    override fun updateChatroomAll(chatrooms: List<ChatRoom>) {
+    override suspend fun updateChatroomAll(chatrooms: List<ChatRoom>) {
         return chatRoomDao.updateChatroomAll(*chatrooms.toTypedArray())
     }
 
-    override fun updateChatRoomTitleById(chatroomId: String, title: String) {
+    override suspend fun updateChatRoomTitleById(chatroomId: String, title: String) {
         return chatRoomDao.updateChatRoomTitleById(chatroomId, title)
     }
 
-    override fun updateChatRoomUnreadById(chatroomId: String, unread: Int) {
+    override suspend fun updateChatRoomUnreadById(chatroomId: String, unread: Int) {
         return chatRoomDao.updateChatRoomUnreadById(chatroomId, unread)
     }
 
-    override fun plusChatRoomUnreadById(chatroomId: String, unread: Int) {
+    override suspend fun plusChatRoomUnreadById(chatroomId: String, unread: Int) {
         return chatRoomDao.plusChatRoomUnreadById(chatroomId, unread)
     }
 
-    override fun updateChatRoomContentById(chatroomId: String, content: String, updatedAt: Date) {
+    override suspend fun updateChatRoomContentById(chatroomId: String, content: String, updatedAt: Date) {
         return chatRoomDao.updateChatRoomContentById(chatroomId, content, updatedAt)
     }
 
-    override fun deleteChatRoom(chatroomId: String) {
+    override suspend fun deleteChatRoom(chatroomId: String) {
         return chatRoomDao.deleteChatRoom(chatroomId)
     }
 }
