@@ -3,14 +3,9 @@ package com.plop.plopmessenger.di
 import android.app.Application
 import androidx.room.Room
 import com.plop.plopmessenger.data.local.AppDatabase
-import com.plop.plopmessenger.data.repository.ChatRoomRepositoryImpl
-import com.plop.plopmessenger.data.repository.FriendRepositoryImpl
-import com.plop.plopmessenger.data.repository.MemberRepositoryImpl
-import com.plop.plopmessenger.data.repository.MessageRepositoryImpl
-import com.plop.plopmessenger.domain.repository.ChatRoomRepository
-import com.plop.plopmessenger.domain.repository.FriendRepository
-import com.plop.plopmessenger.domain.repository.MemberRepository
-import com.plop.plopmessenger.domain.repository.MessageRepository
+import com.plop.plopmessenger.data.pref.PrefDataSource
+import com.plop.plopmessenger.data.repository.*
+import com.plop.plopmessenger.domain.repository.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -72,6 +67,14 @@ object AppModule {
     fun provideMessageRepository(db: AppDatabase): MessageRepository {
         return MessageRepositoryImpl(
             messageDao = db.messageDao
+        )
+    }
+
+    @Singleton
+    @Provides
+    fun provideUserRepository(pref: PrefDataSource): UserRepository {
+        return UserRepositoryImpl(
+            pref = pref
         )
     }
 }

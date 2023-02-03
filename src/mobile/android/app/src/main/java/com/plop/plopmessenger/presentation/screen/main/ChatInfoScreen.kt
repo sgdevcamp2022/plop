@@ -26,6 +26,7 @@ import androidx.compose.runtime.*
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.plop.plopmessenger.R
 import com.plop.plopmessenger.domain.model.ChatRoomType
+import com.plop.plopmessenger.presentation.viewmodel.ChatInfoViewModel
 
 object ChatInfoValue {
     val ChatInfoItemHeight = 52.dp
