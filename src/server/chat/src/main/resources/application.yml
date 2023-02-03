@@ -15,3 +15,10 @@ spring:
 kafka:
   topic:
     name: dm-message
+
+token:
+  # 1분
+  access_expired_time: 600000
+  secret_key: plip
+  # 1시간
+  refresh_expired_time: 3600000
