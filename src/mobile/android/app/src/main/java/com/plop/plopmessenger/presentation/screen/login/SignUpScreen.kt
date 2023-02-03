@@ -14,10 +14,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.plop.plopmessenger.R
 import com.plop.plopmessenger.presentation.component.ButtonValue
 import com.plop.plopmessenger.presentation.component.LoginEditText
 import com.plop.plopmessenger.presentation.component.PlopButton
+import com.plop.plopmessenger.presentation.viewmodel.LoginViewModel
 import com.plop.plopmessenger.util.KeyLine
 
 object SignUpScreenValue {
@@ -30,15 +32,9 @@ object SignUpScreenValue {
 
 @Composable
 fun SignUpScreen(onBackClick: () -> Unit) {
-    var query by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue())
-    }
-    var query2 by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue())
-    }
+    val viewModel = hiltViewModel<LoginViewModel>()
+    val state by viewModel.loginState.collectAsState()
 
-    var textFieldFocusState by remember { mutableStateOf(false) }
-    var textFieldFocusState2 by remember { mutableStateOf(false) }
     var focusManager = LocalFocusManager.current
 
     Column(
@@ -61,10 +57,10 @@ fun SignUpScreen(onBackClick: () -> Unit) {
         Spacer(modifier = Modifier.size(SignUpScreenValue.SpacerBetweenLogoAndEtSize))
 
         LoginEditText(
-            query = query,
-            onQueryChange = { query = it},
-            onSearchFocusChange = { textFieldFocusState = it },
-            searchFocused = textFieldFocusState,
+            query = state.emailQuery,
+            onQueryChange = viewModel::setEmailQuery,
+            onSearchFocusChange = viewModel::setEmailState,
+            searchFocused = state.emailTextFieldFocusState,
             placeholder = stringResource(id = R.string.initial_email_et),
             onDone = { focusManager.moveFocus(FocusDirection.Down) }
         )
@@ -76,10 +72,10 @@ fun SignUpScreen(onBackClick: () -> Unit) {
         )
 
         LoginEditText(
-            query = query2,
-            onQueryChange = { query2 = it},
-            onSearchFocusChange = { textFieldFocusState2 = it },
-            searchFocused = textFieldFocusState2,
+            query = state.pwdQuery,
+            onQueryChange = viewModel::setPwdQuery,
+            onSearchFocusChange = viewModel::setPwdState,
+            searchFocused = state.pwdTextFieldFocusState,
             placeholder = stringResource(id = R.string.initial_password_et),
             onDone = {
                 focusManager.clearFocus()
@@ -93,7 +89,7 @@ fun SignUpScreen(onBackClick: () -> Unit) {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(ButtonValue.LargeButtonHeight),
-            enabled = (query != TextFieldValue("") && query2 != TextFieldValue("")),
+            enabled = (state.emailQuery != TextFieldValue("") && state.pwdQuery != TextFieldValue("")),
             content = stringResource(id = R.string.signup_create_btn),
             contentColor = MaterialTheme.colors.onPrimary,
             disabledContentColor = MaterialTheme.colors.onSecondary,

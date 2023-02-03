@@ -8,6 +8,7 @@ import com.plop.plopmessenger.domain.model.*
 import com.plop.plopmessenger.domain.repository.ChatRoomRepository
 import com.plop.plopmessenger.domain.repository.MemberRepository
 import com.plop.plopmessenger.domain.repository.MessageRepository
+import com.plop.plopmessenger.domain.repository.UserRepository
 import com.plop.plopmessenger.presentation.navigation.DestinationID
 import com.plop.plopmessenger.presentation.screen.main.InputSelector
 import com.plop.plopmessenger.util.getChatRoomTitle

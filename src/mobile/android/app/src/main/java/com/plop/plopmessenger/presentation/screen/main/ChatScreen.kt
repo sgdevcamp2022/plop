@@ -90,6 +90,7 @@ fun ChatScreen(
                 onVideoClick = {},
                 member = state.members,
                 isGroupChat = false,
+                userId = state.userId,
                 modifier = Modifier
                     .padding(
                         top = ChatScreenValue.TopBarHeight,

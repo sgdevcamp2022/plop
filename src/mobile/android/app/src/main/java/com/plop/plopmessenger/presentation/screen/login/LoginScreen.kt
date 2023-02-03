@@ -18,10 +18,12 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.plop.plopmessenger.R
 import com.plop.plopmessenger.presentation.component.ButtonValue
 import com.plop.plopmessenger.presentation.component.LoginEditText
 import com.plop.plopmessenger.presentation.component.PlopButton
+import com.plop.plopmessenger.presentation.viewmodel.LoginViewModel
 import com.plop.plopmessenger.util.KeyLine
 
 object LoginScreenValue {
@@ -39,15 +41,15 @@ fun LoginScreen(
     navigateToSignUp:() -> Unit = {},
     navigateToMain:() -> Unit = {}
 ) {
-    var query by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue())
-    }
-    var query2 by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue())
+    val viewModel = hiltViewModel<LoginViewModel>()
+    val state by viewModel.loginState.collectAsState()
+
+    LaunchedEffect(key1 = state.isLogin) {
+        if (state.isLogin) {
+            navigateToMain()
+        }
     }
 
-    var textFieldFocusState by remember { mutableStateOf(false) }
-    var textFieldFocusState2 by remember { mutableStateOf(false) }
     var focusManager = LocalFocusManager.current
 
     Column(
@@ -70,10 +72,10 @@ fun LoginScreen(
         Spacer(modifier = Modifier.size(LoginScreenValue.SpacerBetweenLogoAndEtSize))
 
         LoginEditText(
-            query = query,
-            onQueryChange = { query = it},
-            onSearchFocusChange = { textFieldFocusState = it },
-            searchFocused = textFieldFocusState,
+            query = state.emailQuery,
+            onQueryChange = viewModel::setEmailQuery,
+            onSearchFocusChange = viewModel::setEmailState,
+            searchFocused = state.emailTextFieldFocusState,
             placeholder = stringResource(id = R.string.initial_email_et),
             onDone = { focusManager.moveFocus(FocusDirection.Down) }
         )
@@ -85,13 +87,14 @@ fun LoginScreen(
         )
 
         LoginEditText(
-            query = query2,
-            onQueryChange = { query2 = it},
-            onSearchFocusChange = { textFieldFocusState2 = it },
-            searchFocused = textFieldFocusState2,
-            placeholder = stringResource(id = R.string.initial_email_et),
+            query = state.pwdQuery,
+            onQueryChange = viewModel::setPwdQuery,
+            onSearchFocusChange = viewModel::setPwdState,
+            searchFocused = state.pwdTextFieldFocusState,
+            placeholder = stringResource(id = R.string.initial_password_et),
             onDone = {
                 focusManager.clearFocus()
+                navigateToMain()
             }
         )
 
@@ -102,7 +105,7 @@ fun LoginScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(ButtonValue.LargeButtonHeight),
-            enabled = (query != TextFieldValue("") && query2 != TextFieldValue("")),
+            enabled = (state.emailQuery != TextFieldValue("") && state.pwdQuery != TextFieldValue("")),
             content = stringResource(id = R.string.login_login_btn),
             contentColor = MaterialTheme.colors.onPrimary,
             disabledContentColor = MaterialTheme.colors.onSecondary,
