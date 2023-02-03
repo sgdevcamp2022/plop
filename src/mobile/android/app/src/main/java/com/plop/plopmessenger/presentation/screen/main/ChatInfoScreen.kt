@@ -23,7 +23,9 @@ import com.plop.plopmessenger.domain.model.Member
 import com.plop.plopmessenger.presentation.component.ProfileImages
 import com.plop.plopmessenger.util.KeyLine
 import androidx.compose.runtime.*
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.plop.plopmessenger.R
+import com.plop.plopmessenger.domain.model.ChatRoomType
 
 object ChatInfoValue {
     val ChatInfoItemHeight = 52.dp
@@ -38,9 +40,11 @@ fun ChatInfoScreen(
     navigateToAddMember: (String) -> Unit,
     upPress: () -> Unit
 ){
-    var members by remember{ mutableStateOf(listOf<Member>()) }
+    val viewModel = hiltViewModel<ChatInfoViewModel>()
+    val state by viewModel.chatInfoState.collectAsState()
+    val members = state.members
 
-    var membersName = if(members.size <= 1) members.first().nickname+stringResource(id = R.string.chat_info_add_group_btn)
+    var membersName = if(state.roomType == ChatRoomType.DM) (members.firstOrNull()?.nickname?: "")+stringResource(id = R.string.chat_info_add_group_btn)
     else stringResource(id = R.string.chat_info_add_member_btn)
 
     Column(
@@ -78,7 +82,7 @@ fun ChatInfoScreen(
         )
 
         ChatInfoItem(
-            onClick = { navigateToAddMember("chatId") },
+            onClick = { navigateToAddMember(state.chatroomId?: "") },
             content = membersName,
             icon = ImageVector.vectorResource(id = R.drawable.ic_groups)
         )

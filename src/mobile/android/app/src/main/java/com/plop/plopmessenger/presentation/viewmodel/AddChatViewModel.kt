@@ -1,6 +1,5 @@
 package com.plop.plopmessenger.presentation.viewmodel
 
-import android.util.Log
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -14,12 +13,11 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-
 @HiltViewModel
-class AddGroupChatViewModel @Inject constructor(
+class AddChatViewModel @Inject constructor(
     private val friendRepository: FriendRepository
 ): ViewModel() {
-    var addGroupChatState = MutableStateFlow(AddGroupChatState())
+    var addChatState = MutableStateFlow(AddGroupChatState())
         private set
 
     init {
@@ -29,7 +27,7 @@ class AddGroupChatViewModel @Inject constructor(
     private fun getFriendList() {
         viewModelScope.launch {
             friendRepository.loadFriend().collect { result ->
-                addGroupChatState.update {
+                addChatState.update {
                     it.copy(friends = result.map { it.toPeople() })
                 }
             }
@@ -38,43 +36,30 @@ class AddGroupChatViewModel @Inject constructor(
 
     private fun getFriendByNickname() {
         viewModelScope.launch {
-            friendRepository.loadFriendByNickname(nickname = addGroupChatState.value.query.text)
+            friendRepository.loadFriendByNickname(nickname = addChatState.value.query.text)
                 .collectLatest { result ->
-                    addGroupChatState.update {
+                    addChatState.update {
                         it.copy(result = result.map { it.toPeople() })
                     }
                 }
         }
     }
 
-    fun addPeople(people: People) {
-        addGroupChatState.update {
-            it.copy(checkedPeople = addGroupChatState.value.checkedPeople.plus(people))
-        }
-    }
-
-    fun deletePeople(people: People) {
-        addGroupChatState.update {
-            it.copy(checkedPeople = addGroupChatState.value.checkedPeople.minusElement(people))
-        }
-    }
-
     fun setQuery(query: TextFieldValue) {
-        addGroupChatState.update {
+        addChatState.update {
             it.copy(query = query)
         }
         if(query != TextFieldValue("")) getFriendByNickname()
     }
 
     fun setFocusState(isFocus: Boolean) {
-        addGroupChatState.update {
+        addChatState.update {
             it.copy(textFieldFocusState = isFocus)
         }
     }
 }
 
-data class AddGroupChatState(
-    val checkedPeople: List<People> = emptyList(),
+data class AddChatState(
     val friends: List<People> = emptyList(),
     var query: TextFieldValue = TextFieldValue(""),
     val result: List<People> = emptyList(),

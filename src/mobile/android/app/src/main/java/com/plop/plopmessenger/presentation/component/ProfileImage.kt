@@ -97,7 +97,7 @@ fun ProfileImages(
     modifier: Modifier = Modifier,
     profileSize: Int = ProfileImageValue.ChatTopBarImageSize
 ) {
-    if(images.size == 1) ProfileImage(imageURL = images.first(), modifier = modifier, profileSize = profileSize)
+    if(images.size <= 1) ProfileImage(imageURL = images.firstOrNull(), modifier = modifier, profileSize = profileSize)
     else if(images.size == 2) DoubleProfileImage(images = images, modifier = modifier, profileSize = profileSize)
     else TripleProfileImage(images = images, modifier = modifier, profileSize = profileSize)
 }

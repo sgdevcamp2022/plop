@@ -22,10 +22,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.plop.plopmessenger.R
 import com.plop.plopmessenger.domain.model.ChatRoom
+import com.plop.plopmessenger.domain.model.ChatRoomType
 import com.plop.plopmessenger.domain.model.Member
 import com.plop.plopmessenger.presentation.component.*
+import com.plop.plopmessenger.presentation.viewmodel.ChatsViewModel
 import com.plop.plopmessenger.util.Constants
 import com.plop.plopmessenger.util.KeyLine
 import java.time.format.DateTimeFormatter
@@ -50,7 +53,9 @@ fun ChatsScreen(
         mutableStateOf(TextFieldValue(""))
     }
 
-    var chatRooms by remember{ mutableStateOf(listOf<ChatRoom>()) }
+    val viewModel = hiltViewModel<ChatsViewModel>()
+
+    var state = viewModel.chatsState.collectAsState()
     var activePeople by remember{ mutableStateOf(listOf<Member>()) }
 
     var textFieldFocusState by remember { mutableStateOf(false) }
@@ -94,12 +99,12 @@ fun ChatsScreen(
                 }
             }
 
-            if(chatRooms.isEmpty()) {
+            if(state.value.chats.isEmpty()) {
                 item {
                     Text("빈화면임")
                 }
             } else {
-                items(chatRooms) {
+                items(state.value.chats) {
                     ChatItem(
                         onClick = navigateToChat,
                         chatRoom = it,
@@ -165,9 +170,9 @@ fun ChatItem(
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        if(chatRoom.images.size == 1) {
+        if(chatRoom.type == ChatRoomType.DM) {
             ProfileImageWithState(
-                imageURL = chatRoom.images.first(),
+                imageURL = chatRoom.images.firstOrNull()?: "",
                 isActivate = isActivate?: false,
                 profileSize = ProfileImageValue.ProfileWithStateSize
             )

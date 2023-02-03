@@ -4,12 +4,16 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.*
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Send
-import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -21,14 +25,14 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.plop.plopmessenger.R
-import com.plop.plopmessenger.domain.model.ChatRoom
 import com.plop.plopmessenger.domain.model.ChatRoomType
-import com.plop.plopmessenger.domain.model.Message
 import com.plop.plopmessenger.presentation.component.ChatTextBar
 import com.plop.plopmessenger.presentation.component.ChatTopBar
 import com.plop.plopmessenger.presentation.component.Messages
 import com.plop.plopmessenger.presentation.component.ProfileImages
+import com.plop.plopmessenger.presentation.viewmodel.ChatViewModel
 import com.plop.plopmessenger.util.KeyLine
 
 enum class InputSelector {
@@ -57,17 +61,12 @@ fun ChatScreen(
     navigateToChatInfo: (String) -> Unit,
     navigateToAddMember: (String) -> Unit,
 ) {
-    var textState by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue())
-    }
-
-    var chatRooms by remember{ mutableStateOf<ChatRoom>() }
-
-    var messages by remember{ mutableStateOf(listOf<Message>()) }
-
-    var textFieldFocusState by remember { mutableStateOf(false) }
-    var currentInputSelector by rememberSaveable{ mutableStateOf( InputSelector.NONE )}
-    val dismissKeyboard = { currentInputSelector = InputSelector.NONE }
+    val viewModel = hiltViewModel<ChatViewModel>()
+    val state by viewModel.chatState.collectAsState()
+    val messages = state.messages
+    var query = state.query
+    var textFieldFocusState = state.textFieldFocusState
+    var currentInputSelector = state.currentInputSelector
     var focusManager = LocalFocusManager.current
 
     Box(
@@ -78,7 +77,7 @@ fun ChatScreen(
     ) {
         Column(
             modifier = Modifier.clickable {
-                if(textFieldFocusState) {
+                if (textFieldFocusState) {
                     textFieldFocusState = false
                     focusManager.clearFocus()
                 }
@@ -89,6 +88,7 @@ fun ChatScreen(
                 onAuthorClick = {},
                 onImageClick = {},
                 onVideoClick = {},
+                member = state.members,
                 isGroupChat = false,
                 modifier = Modifier
                     .padding(
@@ -97,26 +97,27 @@ fun ChatScreen(
                     )
                     .fillMaxWidth()
             ) {
-                if(chatRooms.type == ChatRoomType.MULTIPLE) {
+                if (state.chatRoomType == ChatRoomType.GROUP && !state.chatroomId.isNullOrBlank()) {
                     GroupChatButtons(
-                        onAddBtnClick = { navigateToAddMember(chatRooms.chatroomId) },
+                        onAddBtnClick = { navigateToAddMember(state.chatroomId!!) },
                         onEditBtnClick = { /*TODO*/ },
-                        onMemberBtnClick = {  }
+                        onMemberBtnClick = { }
                     )
                 }
                 ChatRoomInfo(
-                    images = chatRooms.images,
-                    title = chatRooms.title
+                    images = state.members.values.map { it.profileImg },
+                    title = state.title
                 )
             }
         }
 
+
         ChatTopBar(
             onClick = navigateToChatInfo,
             upPress = upPress,
-            chatroomTitle = chatRooms.title,
-            images = chatRooms.images,
-            chatId = chatRooms.chatroomId,
+            chatroomTitle = state.title,
+            images = state.members.values.map { it.profileImg },
+            chatId = state.chatroomId,
             modifier = Modifier
                 .background(MaterialTheme.colors.background)
                 .align(Alignment.TopCenter)
@@ -125,8 +126,8 @@ fun ChatScreen(
         UserInput(
             onMessageSent = { /*TODO*/ },
             resetScroll = { /*TODO*/ },
-            query = textState,
-            onQueryChange = { textState = it },
+            query = query,
+            onQueryChange = viewModel::setQuery,
             modifier = Modifier
                 .background(MaterialTheme.colors.background)
                 .align(Alignment.BottomStart)
@@ -136,19 +137,19 @@ fun ChatScreen(
                 if (focused) {
                     currentInputSelector = InputSelector.NONE
                 }
-                textFieldFocusState = focused
+                viewModel.setFocusState(focused)
             },
             focused = textFieldFocusState,
             currentInputSelector = currentInputSelector,
             onChangeCurrentInput = {
                 currentInputSelector = it
 
-                if(textFieldFocusState) {
-                    textFieldFocusState = false
+                if (textFieldFocusState) {
+                    viewModel.setFocusState(false)
                     focusManager.clearFocus()
                 }
             },
-            dismissKeyboard = dismissKeyboard
+            dismissKeyboard = { viewModel.setInputSelector(InputSelector.NONE) }
         )
     }
 }
