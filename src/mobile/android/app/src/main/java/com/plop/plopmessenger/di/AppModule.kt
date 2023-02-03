@@ -1,5 +1,8 @@
 package com.plop.plopmessenger.di
 
+import android.app.Application
+import androidx.room.Room
+import com.plop.plopmessenger.local.AppDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,5 +22,15 @@ object AppModule {
             addConverterFactory(GsonConverterFactory.create())
             //baseUrl(BuildConfig.API_BASE_URL)
         }.build()
+    }
+
+    @Singleton
+    @Provides
+    fun provideAppDatabase(app: Application): AppDatabase {
+        return Room.databaseBuilder(
+            app,
+            AppDatabase::class.java,
+            AppDatabase.DATABASE_NAME
+        ).build()
     }
 }
