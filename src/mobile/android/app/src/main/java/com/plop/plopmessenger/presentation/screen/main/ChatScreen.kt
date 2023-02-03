@@ -12,6 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -28,6 +29,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.plop.plopmessenger.R
 import com.plop.plopmessenger.domain.model.ChatRoomType
+import com.plop.plopmessenger.domain.model.People
 import com.plop.plopmessenger.presentation.component.ChatTextBar
 import com.plop.plopmessenger.presentation.component.ChatTopBar
 import com.plop.plopmessenger.presentation.component.Messages
@@ -60,8 +62,14 @@ fun ChatScreen(
     upPress: () -> Unit,
     navigateToChatInfo: (String) -> Unit,
     navigateToAddMember: (String) -> Unit,
+    peopleList: List<People>? = emptyList(),
+    viewModel: ChatViewModel = hiltViewModel()
 ) {
-    val viewModel = hiltViewModel<ChatViewModel>()
+    LaunchedEffect(true) {
+        if(!peopleList.isNullOrEmpty()) {
+            viewModel.getMember(peopleList)
+        }
+    }
     val state by viewModel.chatState.collectAsState()
     val messages = state.messages
     var query = state.query
