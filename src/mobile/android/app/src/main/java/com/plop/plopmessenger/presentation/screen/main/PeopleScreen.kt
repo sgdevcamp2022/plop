@@ -9,12 +9,14 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.plop.plopmessenger.R
 import com.plop.plopmessenger.domain.model.People
 import com.plop.plopmessenger.presentation.component.PeopleItem
 import com.plop.plopmessenger.presentation.component.PeopleWithTwoBtnItem
 import com.plop.plopmessenger.presentation.component.SubTitle
 import com.plop.plopmessenger.presentation.component.TopBarWithProfile
+import com.plop.plopmessenger.presentation.viewmodel.PeopleViewModel
 import com.plop.plopmessenger.util.KeyLine
 
 
@@ -28,10 +30,11 @@ object PeopleScreenValue {
 fun PeopleScreen(
     navigateToAddPeople: () -> Unit
 ) {
-    var friendsRequest by remember{ mutableStateOf(listOf<People>(
-    )) }
-    var friends by remember{ mutableStateOf(listOf<People>(
-    )) }
+    val viewModel = hiltViewModel<PeopleViewModel>()
+    val state by viewModel.peopleState.collectAsState()
+    val friends = state.friends
+    val requests = state.requests
+
 
     Column(
         modifier = Modifier
@@ -46,7 +49,7 @@ fun PeopleScreen(
         )
 
         LazyColumn() {
-            if(friendsRequest.isNotEmpty()) {
+            if(requests.isNotEmpty()) {
                 item {
                     SubTitle(
                         content = stringResource(id = R.string.people_friend_request_subtitle)
@@ -55,13 +58,13 @@ fun PeopleScreen(
                 }
             }
 
-            items(friendsRequest) { request ->
+            items(requests) { request ->
                 PeopleWithTwoBtnItem(
                     onLeftClick = { /*TODO*/ },
                     onRightClick = { /*TODO*/ },
                     leftBtnContent = stringResource(id = R.string.people_accept_btn),
                     rightBtnContent = stringResource(id = R.string.people_deny_btn),
-                    imageURL = "",
+                    imageURL = request.profileImg,
                     nickname = request.nickname
                 )
                 Spacer(modifier = Modifier.size(PeopleScreenValue.SpacerBetweenFriends))
@@ -76,7 +79,7 @@ fun PeopleScreen(
 
             items(friends) { friend ->
                 PeopleItem(
-                    imageURL = "",
+                    imageURL = friend.profileImg,
                     nickname = friend.nickname
                 )
 
