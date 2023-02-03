@@ -5,4 +5,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface MessageRepository {
     fun loadChatMessage(chatroomId: String): Flow<List<Message>>
+    suspend fun insertMessage(message: Message)
+    suspend fun insertAllMessage(messages: List<Message>)
 }
