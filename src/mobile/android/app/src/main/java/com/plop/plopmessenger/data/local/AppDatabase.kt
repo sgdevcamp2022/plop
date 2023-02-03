@@ -4,7 +4,6 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.plop.plopmessenger.data.local.dao.*
-import com.plop.plopmessenger.local.dao.*
 import com.plop.plopmessenger.data.local.entity.ChatRoom
 import com.plop.plopmessenger.data.local.entity.Friend
 import com.plop.plopmessenger.data.local.entity.Member
