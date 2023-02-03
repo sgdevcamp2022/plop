@@ -5,11 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import smilegate.plop.chat.domain.room.RoomIdCreator;
 import smilegate.plop.chat.dto.APIMessage;
-import smilegate.plop.chat.dto.ReqGroupDto;
-import smilegate.plop.chat.dto.ReqInviteDto;
-import smilegate.plop.chat.dto.RespRoomDto;
+import smilegate.plop.chat.dto.request.ReqDmDto;
+import smilegate.plop.chat.dto.request.ReqGroupDto;
+import smilegate.plop.chat.dto.request.ReqInviteDto;
+import smilegate.plop.chat.dto.response.RespRoomDto;
 import smilegate.plop.chat.service.ChatRoomService;
 
 import java.util.HashMap;
@@ -22,13 +22,15 @@ public class ChatRoomController {
 
     private final ChatRoomService chatRoomMongoService;
 
-    @GetMapping("/v1/req-roomid")
-    public ResponseEntity<String> requestRoomId(){
-        return new ResponseEntity<>(RoomIdCreator.createRoomId(),HttpStatus.OK);
+    @PostMapping("/v1/dm-creation")
+    public ResponseEntity<RespRoomDto> dmCreation(@RequestHeader("Authorization") String jwt, @RequestBody ReqDmDto reqDmDto){
+        String userId = "test";
+        reqDmDto.setCreator(userId);
+        return new ResponseEntity<>(chatRoomMongoService.createDmRoom(reqDmDto),HttpStatus.CREATED);
     }
 
     @PostMapping("/v1/group-creation")
-    public ResponseEntity<RespRoomDto> groupCreation(@RequestBody ReqGroupDto reqGroupDto){
+    public ResponseEntity<RespRoomDto> groupCreation(@RequestHeader("Authorization") String jwt, @RequestBody ReqGroupDto reqGroupDto){
         String userId = "test";
         reqGroupDto.setCreator(userId);
         return new ResponseEntity<>(chatRoomMongoService.createGroup(reqGroupDto),HttpStatus.CREATED);
