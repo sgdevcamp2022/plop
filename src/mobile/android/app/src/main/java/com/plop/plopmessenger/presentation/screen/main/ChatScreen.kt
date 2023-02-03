@@ -97,7 +97,7 @@ fun ChatScreen(
                     )
                     .fillMaxWidth()
             ) {
-                if(chatRooms.type == ChatRoomType.MULTIPLE) {
+                if(chatRooms.type == ChatRoomType.GROUP) {
                     GroupChatButtons(
                         onAddBtnClick = { navigateToAddMember(chatRooms.chatroomId) },
                         onEditBtnClick = { /*TODO*/ },
