@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import smilegate.plop.chat.domain.kafka.Producers;
 import smilegate.plop.chat.dto.ChatMessageDto;
@@ -12,7 +13,7 @@ import smilegate.plop.chat.service.ChatMessageService;
 @Slf4j
 @RequiredArgsConstructor
 @RestController()
-//@RequestMapping("/chatting")
+@RequestMapping("/chatting")
 public class ChatMessageController {
     private final Producers producers;
     private final ChatMessageService chatMessageService;
