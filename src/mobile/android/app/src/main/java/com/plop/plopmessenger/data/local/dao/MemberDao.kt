@@ -1,8 +1,8 @@
-package com.plop.plopmessenger.local.dao
+package com.plop.plopmessenger.data.local.dao
 
 import androidx.room.Dao
 import androidx.room.Query
-import com.plop.plopmessenger.local.entity.Member
+import com.plop.plopmessenger.data.local.entity.Member
 import kotlinx.coroutines.flow.Flow
 
 @Dao

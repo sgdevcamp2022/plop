@@ -1,13 +1,14 @@
-package com.plop.plopmessenger.local
+package com.plop.plopmessenger.data.local
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.plop.plopmessenger.data.local.dao.*
 import com.plop.plopmessenger.local.dao.*
-import com.plop.plopmessenger.local.entity.ChatRoom
-import com.plop.plopmessenger.local.entity.Friend
-import com.plop.plopmessenger.local.entity.Member
-import com.plop.plopmessenger.local.entity.Message
+import com.plop.plopmessenger.data.local.entity.ChatRoom
+import com.plop.plopmessenger.data.local.entity.Friend
+import com.plop.plopmessenger.data.local.entity.Member
+import com.plop.plopmessenger.data.local.entity.Message
 
 
 @Database(entities = [ChatRoom::class, Friend::class, Member::class, Message::class], version = 1)

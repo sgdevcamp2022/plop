@@ -1,4 +1,4 @@
-package com.plop.plopmessenger.local.dao
+package com.plop.plopmessenger.data.local.dao
 
 import androidx.room.Dao
 import androidx.room.Query

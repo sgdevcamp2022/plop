@@ -1,4 +1,4 @@
-package com.plop.plopmessenger.local
+package com.plop.plopmessenger.data.local
 
 import androidx.room.TypeConverter
 import java.util.*

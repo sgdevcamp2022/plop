@@ -1,4 +1,4 @@
-package com.plop.plopmessenger.local.entity
+package com.plop.plopmessenger.data.local.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
