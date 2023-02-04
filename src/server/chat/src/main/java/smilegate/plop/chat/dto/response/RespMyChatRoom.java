@@ -1,9 +1,14 @@
 package smilegate.plop.chat.dto.response;
 
-import lombok.Data;
+import lombok.*;
 import smilegate.plop.chat.dto.LastMessage;
 
-@Data
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
 public class RespMyChatRoom {
     private String room_id;
     private String title;

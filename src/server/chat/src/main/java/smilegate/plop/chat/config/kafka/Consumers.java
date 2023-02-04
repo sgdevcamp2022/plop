@@ -21,7 +21,7 @@ public class Consumers {
     private final ChatRoomService chatRoomService;
 
     @KafkaListener(groupId = "${spring.kafka.chat-consumer.group-id}" ,topics="${kafka.topic.chat-name}")
-    public void listenDM(ChatMessageDto chatMessageDto){
+    public void listenChat(ChatMessageDto chatMessageDto){
         if(chatMessageDto.getMessage_type()==MessageType.FIRST){
             RespRoomDto respRoomDto = chatRoomService.getChatRoomInfo(chatMessageDto.getRoom_id());
             /**

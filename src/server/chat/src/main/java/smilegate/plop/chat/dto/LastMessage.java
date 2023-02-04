@@ -1,13 +1,18 @@
 package smilegate.plop.chat.dto;
 
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
 public class LastMessage {
     private String message_id;
     private String sender_id;
     private String content;
-    private LocalDateTime last_modified_at;
+    private LocalDateTime created_at;
 }

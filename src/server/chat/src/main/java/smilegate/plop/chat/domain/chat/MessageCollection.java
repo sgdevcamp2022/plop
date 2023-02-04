@@ -3,7 +3,6 @@ package smilegate.plop.chat.domain.chat;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import smilegate.plop.chat.dto.MessageType;

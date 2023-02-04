@@ -15,12 +15,10 @@ import java.util.Map;
 public class KafkaTopicConfig {
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapAddress;
-
     @Value("${kafka.topic.chat-name}")
     private String topicChatName;
     @Value("${kafka.topic.room-name}")
     private String topicRoomName;
-
 
     @Bean
     public KafkaAdmin kafkaAdmin(){

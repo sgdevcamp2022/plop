@@ -32,6 +32,7 @@ public class RoomRepositoryImpl implements RoomMongoTemplateRepository{
                 Criteria.where("userId").is(userId)
         ));
 
+        query.fields().exclude("_id");
         query.fields().include("roomId");
         query.fields().include("title");
 
