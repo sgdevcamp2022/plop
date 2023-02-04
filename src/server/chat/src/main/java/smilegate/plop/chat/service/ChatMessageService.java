@@ -35,6 +35,10 @@ public class ChatMessageService {
         return messageCollections.stream().map(m -> convertEntityToDto(m)).collect(Collectors.toList());
     }
 
+    public List<ChatMessageDto> getAllMessagesAtRoom(String roomId) {
+        return chatMessageRepository.getAllMessagesAtRoom(roomId).stream().map(mc -> convertEntityToDto(mc)).collect(Collectors.toList());
+    }
+
     private ChatMessageDto convertEntityToDto(MessageCollection messageCollection) {
         return ChatMessageDto.builder()
                 .room_id(messageCollection.getRoomId())
