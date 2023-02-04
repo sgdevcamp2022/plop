@@ -2,11 +2,11 @@ package smilegate.plop.chat.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import smilegate.plop.chat.config.kafka.Producers;
+import smilegate.plop.chat.dto.APIMessage;
 import smilegate.plop.chat.dto.ChatMessageDto;
 import smilegate.plop.chat.service.ChatMessageService;
 
@@ -25,5 +25,14 @@ public class ChatMessageController {
 
         log.info("메시지 전송");
         producers.sendMessage(savedMessage);
+    }
+
+    @GetMapping("/room/v1/history-message/{roomid}")
+    public ResponseEntity<APIMessage> allMessagesAtRoom(@PathVariable(value = "roomid")String roomId){
+        APIMessage apiMessage = new APIMessage();
+        apiMessage.setMessage(APIMessage.ResultEnum.success);
+        apiMessage.setData(chatMessageService.getAllMessagesAtRoom(roomId));
+
+        return new ResponseEntity<>(apiMessage, HttpStatus.OK);
     }
 }
