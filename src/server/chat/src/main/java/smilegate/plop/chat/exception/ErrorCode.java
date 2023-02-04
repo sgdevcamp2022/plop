@@ -4,7 +4,9 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 
+@Getter
 public enum ErrorCode {
+    GROUP_MEMBER_SIZE_ERROR(4001,"CHATTING-001","그룹멤버는 3명이상이여야함."),
     JWT_PARSING_FAILED(4201, "CHATTING-201", "인증에 실패한 경우");
 
     private final int status;
