@@ -70,7 +70,7 @@ public class ChatRoomService {
                 .build()
         );
 
-        return new RespRoomDto(savedRoom.getRoomId(),savedRoom.getTitle(),savedRoom.getType(),savedRoom.getMembers(),savedRoom.getManagers(),savedRoom.getCreatedAt());
+        return convertEntityToDto(savedRoom);
     }
 
     public boolean inviteMembers(ReqInviteDto reqInviteDto){
@@ -109,11 +109,17 @@ public class ChatRoomService {
     public RespRoomDto getChatRoomInfo(String roomId) {
         RoomCollection roomCollection = roomRepository.findByRoomId(roomId).get();
 
-        return new RespRoomDto(roomCollection.getRoomId(),
-                roomCollection.getTitle(),
-                roomCollection.getType(),
-                roomCollection.getMembers(),
-                roomCollection.getManagers(),
-                roomCollection.getCreatedAt());
+        return convertEntityToDto(roomCollection);
+    }
+
+    private RespRoomDto convertEntityToDto(RoomCollection roomCollection) {
+        return RespRoomDto.builder()
+                .room_id(roomCollection.getRoomId())
+                .title(roomCollection.getTitle())
+                .type(roomCollection.getType())
+                .members(roomCollection.getMembers())
+                .managers(roomCollection.getManagers())
+                .createdAt(roomCollection.getCreatedAt())
+                .build();
     }
 }
