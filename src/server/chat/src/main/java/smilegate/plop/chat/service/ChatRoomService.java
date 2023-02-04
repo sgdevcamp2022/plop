@@ -9,7 +9,10 @@ import smilegate.plop.chat.dto.*;
 import smilegate.plop.chat.dto.request.ReqDmDto;
 import smilegate.plop.chat.dto.request.ReqGroupDto;
 import smilegate.plop.chat.dto.request.ReqInviteDto;
+import smilegate.plop.chat.dto.response.RespMyChatRoom;
 import smilegate.plop.chat.dto.response.RespRoomDto;
+import smilegate.plop.chat.exception.CustomAPIException;
+import smilegate.plop.chat.exception.ErrorCode;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -32,7 +35,7 @@ public class ChatRoomService {
     }
 
     public RespRoomDto createDmRoom(ReqDmDto reqDmDto){
-        // type이 dm이고 멤버가 일치하면 해당 방정보를 전송
+        // type이 DM이고 멤버가 일치하면 해당 방정보를 전송
         RoomCollection savedRoom = matchDmMembers(reqDmDto);
         if(savedRoom == null){
             List<Member> members = new ArrayList<>();
@@ -46,17 +49,22 @@ public class ChatRoomService {
                     .build());
         }
 
-        return RespRoomDto.builder()
-                .room_id(savedRoom.getRoomId())
-                .type(savedRoom.getType())
-                .members(savedRoom.getMembers())
-                .build();
+        return convertEntityToDto(savedRoom);
     }
 
-
+    private String createGroupTitle(String creator, List<String> list){
+        return creator + String.join(", ",list);
+    }
+    private void validateSizeOfGroup(ReqGroupDto reqGroupDto){
+        if (reqGroupDto.getMembers().size() <= 1){
+            throw new CustomAPIException(ErrorCode.GROUP_MEMBER_SIZE_ERROR, "초대된 멤버가 1명이하입니다.");
+        }
+    }
     public RespRoomDto createGroup(ReqGroupDto reqGroupDto){
+        validateSizeOfGroup(reqGroupDto);
+
         List<Member> members = new ArrayList<>();
-        String title = convertMembersListToString(reqGroupDto.getMembers());
+        String title = createGroupTitle(reqGroupDto.getCreator(), reqGroupDto.getMembers());
 
         reqGroupDto.getMembers().forEach(m -> members.add(new Member(m,LocalDateTime.now())));
         members.add(new Member(reqGroupDto.getCreator(), LocalDateTime.now()));
@@ -81,17 +89,31 @@ public class ChatRoomService {
         return false;
     }
 
-    public APIMessage findMyRoomsByUserId(String userId){
+    /**
+     * 방마다 최신 메시지 받기
+     * 1. roomid 에 해당하는 메시지 중
+     * 2. 가장 최신 sort
+     * 3. limit 1 개
+     */
+    public List<RespMyChatRoom> findMyRoomsByUserId(String userId){
         List<RoomCollection> roomCollectionList = roomRepository.findMyRoomsByUserId(userId);
 
-        // 방마다 최신 메시지 받기
-        // 1. roomid 에 해당하는 메시지 중
-        // 2. 가장 최신 sort
-        // 3. limit 1 개
-        List<String> roomIds = null;
-        List<MessageCollection> messageCollectionList = chatMessageRepository.getAllLastMessage(roomIds);
+        List<RespMyChatRoom> respMyChatRooms = new ArrayList<>();
 
-        return new APIMessage(APIMessage.ResultEnum.success,roomCollectionList);
+        for(RoomCollection roomCollection : roomCollectionList){
+            String roomId = roomCollection.getRoomId();
+            MessageCollection messageCollection = chatMessageRepository.getLastMessage(roomId);
+
+            LastMessage lastMessage = LastMessage.builder()
+                            .message_id(messageCollection.get_id()).sender_id(messageCollection.getSenderId())
+                            .content(messageCollection.getContent()).created_at(messageCollection.getCreatedAt())
+                            .build();
+            respMyChatRooms.add(RespMyChatRoom.builder()
+                    .room_id(roomId).title(roomCollection.getTitle()).last_message(lastMessage)
+                    .build());
+        }
+
+        return respMyChatRooms;
     }
 
     public boolean outOfTheRoom(String roomId, String userId) {
@@ -102,13 +124,8 @@ public class ChatRoomService {
         return false;
     }
 
-    public String convertMembersListToString(List<String> list){
-        return String.join(", ",list);
-    }
-
     public RespRoomDto getChatRoomInfo(String roomId) {
         RoomCollection roomCollection = roomRepository.findByRoomId(roomId).get();
-
         return convertEntityToDto(roomCollection);
     }
 
