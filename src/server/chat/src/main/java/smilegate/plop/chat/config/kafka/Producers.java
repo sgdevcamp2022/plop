@@ -18,17 +18,15 @@ import smilegate.plop.chat.dto.response.RespRoomDto;
 @RequiredArgsConstructor
 public class Producers {
     private final KafkaTemplate<String, ChatMessageDto> kafkaTemplate;
-    @Value("${kafka.topic.name}")
-    private String topicDmName;
+    @Value("${kafka.topic.chat-name}")
+    private String topicChatName;
 
     private final KafkaTemplate<String, RespRoomDto> roomKafkaTemplate;
     @Value("${kafka.topic.room-name}")
-    private String roomTopicName;
+    private String topicRoomName;
 
     public void sendMessage(ChatMessageDto chatMessageDto){
-        log.info("토픽 : {}", topicDmName);
-
-        ListenableFuture<SendResult<String, ChatMessageDto>> listenable = kafkaTemplate.send(topicDmName,chatMessageDto); // 보낼 메시지 포맷 변경 해야됨
+        ListenableFuture<SendResult<String, ChatMessageDto>> listenable = kafkaTemplate.send(topicChatName,chatMessageDto); // 보낼 메시지 포맷 변경 해야됨
         listenable.addCallback(new ListenableFutureCallback<SendResult<String, ChatMessageDto>>() {
             @Override
             public void onSuccess(SendResult<String, ChatMessageDto> result) {
@@ -42,7 +40,7 @@ public class Producers {
     }
 
     public void sendRoomMessage(RespRoomDto respRoomDto){
-        ListenableFuture<SendResult<String, RespRoomDto>> listenable = roomKafkaTemplate.send(roomTopicName,respRoomDto);
+        ListenableFuture<SendResult<String, RespRoomDto>> listenable = roomKafkaTemplate.send(topicRoomName,respRoomDto);
         listenable.addCallback(new ListenableFutureCallback<SendResult<String, RespRoomDto>>() {
             @Override
             public void onSuccess(SendResult<String, RespRoomDto> result) {

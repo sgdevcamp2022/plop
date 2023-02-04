@@ -16,8 +16,8 @@ public class KafkaTopicConfig {
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapAddress;
 
-    @Value("${kafka.topic.name}")
-    private String topicName;
+    @Value("${kafka.topic.chat-name}")
+    private String topicChatName;
     @Value("${kafka.topic.room-name}")
     private String topicRoomName;
 
@@ -31,7 +31,7 @@ public class KafkaTopicConfig {
 
     @Bean
     public NewTopic topic(){
-        return new NewTopic(topicName,1,(short)1);
+        return new NewTopic(topicChatName,1,(short)1);
     }
     @Bean
     public NewTopic roomTopic() {

@@ -10,14 +10,14 @@ spring:
       # uri : mongodb: //localhost:27017/plop
   kafka:
     bootstrap-servers: localhost:9092
-    consumer:
-      group-id: plop
-    room:
-      group-id: room
+    chat-consumer:
+      group-id: chat-group
+    room-consumer:
+      group-id: room-group
 kafka:
   topic:
-    name: dm-message
-    room-name: chat-room
+    chat-name: message
+    room-name: room
 
 token:
   # 1분
