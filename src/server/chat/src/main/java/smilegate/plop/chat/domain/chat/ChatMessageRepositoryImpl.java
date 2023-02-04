@@ -18,10 +18,16 @@ public class ChatMessageRepositoryImpl implements ChatMongoTemplateRepository{
     }
 
     @Override
-    public List<MessageCollection> getAllLastMessage(List<String> roomIds) {
-        Query query = Query.query(Criteria.where("roomId").in(roomIds));
+    public MessageCollection getLastMessage(String roomId) {
 
-        return null;
+        List<MessageCollection> messageCollectionList = mongoTemplate.find(Query.query(Criteria.where("roomId").is(roomId))
+                .with(Sort.by(Sort.Direction.DESC,"createdAt")).limit(1), MessageCollection.class);
+
+        if(messageCollectionList.size() == 0){
+            messageCollectionList.add(new MessageCollection());
+        }
+
+        return messageCollectionList.get(0);
     }
 
     @Override

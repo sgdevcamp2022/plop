@@ -10,11 +10,13 @@ import smilegate.plop.chat.dto.APIMessage;
 import smilegate.plop.chat.dto.request.ReqDmDto;
 import smilegate.plop.chat.dto.request.ReqGroupDto;
 import smilegate.plop.chat.dto.request.ReqInviteDto;
+import smilegate.plop.chat.dto.response.RespMyChatRoom;
 import smilegate.plop.chat.dto.response.RespRoomDto;
 import smilegate.plop.chat.model.jwt.JwtTokenProvider;
 import smilegate.plop.chat.service.ChatRoomService;
 
 import java.util.HashMap;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -55,15 +57,17 @@ public class ChatRoomController {
         return new ResponseEntity<>(new APIMessage(APIMessage.ResultEnum.failed,reqInviteDto),HttpStatus.OK);
     }
 
-    // 자신 채팅방 리스트 조회 ~ing
     @GetMapping("/v1/my-rooms")
     public ResponseEntity<APIMessage> myChatRooms(@RequestHeader("Authorization") String jwt){
         //jwt를 auth 서버를 통해 사용자 id 가져온다.
         String userId = getTokenToUserId(jwt);
-        return new ResponseEntity<>(chatRoomMongoService.findMyRoomsByUserId(userId),HttpStatus.OK);
+        List<RespMyChatRoom> respMyChatRooms = chatRoomMongoService.findMyRoomsByUserId(userId);
+        APIMessage apiMessage = new APIMessage();
+        apiMessage.setMessage(APIMessage.ResultEnum.success);
+        apiMessage.setData(respMyChatRooms);
+        return new ResponseEntity<>(apiMessage,HttpStatus.OK);
     }
 
-    // 채팅방 나가기
     @DeleteMapping("/v1/out/{roomid}")
     public ResponseEntity<APIMessage> outOfTheRoom(@RequestHeader("Authorization") String jwt, @PathVariable(value = "roomid") String roomId){
         String userId = getTokenToUserId(jwt);
