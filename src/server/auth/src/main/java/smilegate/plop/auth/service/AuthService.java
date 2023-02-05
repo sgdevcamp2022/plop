@@ -14,6 +14,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import smilegate.plop.auth.dto.request.RequestNewPassword;
+import smilegate.plop.auth.dto.response.ResponseUser;
 import smilegate.plop.auth.model.JwtUser;
 import smilegate.plop.auth.dto.response.ResponseJWT;
 import smilegate.plop.auth.security.JwtTokenProvider;
@@ -104,6 +106,7 @@ public class AuthService implements UserDetailsService {
         //1) refresh token O access token 재발행 + refresh token 재발행
         //2) refresh token X 수동 로그인
         String savedRefreshToken = redisService.getValues(email);
+        log.error(savedRefreshToken);
         if(savedRefreshToken.equals(jwt)) {
             UserEntity userEntity= userRepository.findByEmail(email);
             UserDto userDto = userEntity.toUserDto();
@@ -116,8 +119,8 @@ public class AuthService implements UserDetailsService {
             redisService.setValues(email, refreshToken);
 
             return responseJWT;
-        }
-        return null;
+        } else
+            return null;
     }
 
     public UserDto withdrawal(String jwt) {
@@ -133,6 +136,26 @@ public class AuthService implements UserDetailsService {
 
         UserDto userDto = savedUser.toUserDto();
         return userDto;
+    }
+    public ResponseUser changePassword(RequestNewPassword newPassword) {
+        UserEntity userEntity = userRepository.findByEmail(newPassword.getEmail());
+        if (userEntity == null)
+            throw new UsernameNotFoundException(userEntity.getEmail());
+        String newEncryptedPwd = passwordEncoder.encode(newPassword.getNewPassword());
+        log.error(newEncryptedPwd);
+        log.error(userEntity.getEncryptedPwd());
+        if (newEncryptedPwd.equals(userEntity.getEncryptedPwd())) {
+            return null;
+        }
+        userEntity.setEncryptedPwd(newEncryptedPwd);
+        UserEntity savedUser = userRepository.save(userEntity);
+
+        ResponseUser responseUser = new ResponseUser(
+                savedUser.getEmail(),
+                savedUser.getProfile().get("nickname").toString(),
+                savedUser.getUserId());
+        return responseUser;
+
     }
 
     public UserDto getUserById(String userId) {
@@ -158,16 +181,6 @@ public class AuthService implements UserDetailsService {
             throw new UsernameNotFoundException(email);
 
         UserDto userDto = userEntity.toUserDto();
-//        UserDto userDto = new ModelMapper().map(userEntity, UserDto.class);
-//        UserDto userDto = UserDto.builder()
-//                .email(userEntity.getEmail())
-//                .userId(userEntity.getUserId())
-//                .encryptedPwd(userEntity.getEncryptedPwd())
-//                .state(userEntity.getState())
-//                .img(userEntity.getProfile().get("img").toString())
-//                .nickname(userEntity.getProfile().get("nickname").toString())
-//                .role(userEntity.getRole())
-//                .build();
         return userDto;
     }
 

@@ -1,13 +1,11 @@
 package smilegate.plop.auth.exception;
 
-<<<<<<< HEAD
-import smilegate.plop.auth.dto.ErrorResponseDto;
-=======
 import smilegate.plop.auth.dto.response.ErrorResponseDto;
->>>>>>> be
+
 
 public enum ErrorCode {
     WITHDRAWAL_USER(403, "AUTH-005", "탈퇴한 회원이 요청한 경우"),
+    PASSWORD_NOT_CHANGED(400, "AUTH-006", "새 비밀번호로 바꿀 수 없는 경우"),
     INVALID_INPUT_VALUE(400, "COMMON-001", "유효성 검증에 실패한 경우"),
     INTERNAL_SERVER_ERROR(500, "COMMON-002", "서버에서 처리할 수 없는 경우"),
 

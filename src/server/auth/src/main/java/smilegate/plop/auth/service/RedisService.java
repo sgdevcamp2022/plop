@@ -18,6 +18,10 @@ public class RedisService {
         values.set(email, token);
         //values.set(token, email , Duration.ofMinutes(3));
     }
+    public void setValuesWithTTL(String email, String token, long minutes) {
+        ValueOperations<String, String> values = redisTemplate.opsForValue();
+        values.set(email, token , Duration.ofMinutes(3));
+    }
     public String getValues(String email) {
         ValueOperations<String,String> values = redisTemplate.opsForValue();
         return values.get(email);

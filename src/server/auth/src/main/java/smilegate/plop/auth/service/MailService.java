@@ -1,5 +1,6 @@
 package smilegate.plop.auth.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import smilegate.plop.auth.domain.UserEntity;
 import smilegate.plop.auth.domain.UserRepository;
 import smilegate.plop.auth.dto.request.RequestEmailVerification;
+import smilegate.plop.auth.dto.request.RequestVerificationCode;
 import smilegate.plop.auth.dto.response.ErrorResponseDto;
 import smilegate.plop.auth.dto.response.ResponseDto;
 import smilegate.plop.auth.exception.ErrorCode;
@@ -36,6 +38,8 @@ public class MailService {
 
     private UserRepository userRepository;
     private RedisService redisService;
+
+    private final long TIME_LIMIT = 3;
 
     @Autowired
     public MailService(UserRepository userRepository, RedisService redisService, JavaMailSender mailSender) {
@@ -64,22 +68,44 @@ public class MailService {
             return true;
         return false;
     }
+    public boolean checkInfo(RequestVerificationCode info){
+        UserEntity user = userRepository.findByUserId(info.getUserId());
+        if (user.getEmail().equals(info.getEmail()) )
+            return true;
+        return false;
+    }
     @Async
     public void send(RequestEmailVerification info, String subject) {
         if (!checkInfo(info))
             throw new UsernameNotFoundException("정보가 일치하지 않습니다.");
         String authNum = createCode();
         MimeMessage message = mailHelper(info,subject, authNum);
-
-        SimpleMailMessage smm = new SimpleMailMessage();
-        smm.setTo(info.getEmail());
-        smm.setFrom("jhl81094@gmail.com");
-        smm.setSubject(subject);
-        smm.setText(message.toString());
-
         mailSender.send(message);
+        log.error("verify-"+info.getEmail());
+        redisService.setValuesWithTTL("verify-"+info.getEmail(), authNum,TIME_LIMIT);
+    }
+    public boolean verifyCode(RequestVerificationCode verificationCode) {
+        log.error(verificationCode.toString());
+        if(!checkInfo(verificationCode))
+            throw new UsernameNotFoundException("정보가 일치하지 않습니다.");
+        UserEntity userEntity = userRepository.findByEmail(verificationCode.getEmail());
+        if (userEntity == null)
+            throw new UsernameNotFoundException(verificationCode.getEmail());
+        if (userEntity.getState() == 9)
+            try {
+                throw new WithdrawalUserException("user state is 9");
+            } catch (WithdrawalUserException e) {
+                return false;
+            }
+        //state :9 => 회원 탈퇴, 실제 삭제은 하지 않음, 탈퇴 후 ~ 기간 이후에 삭제하는 방식?
+        userEntity.setState(1);
+        userRepository.save(userEntity);
 
-        log.error("send ok");
+        String savedVerificationCode = redisService.getValues("verify-"+verificationCode.getEmail());
+        if (savedVerificationCode.equals(verificationCode.getVerificationCode()))
+            return true;
+        else
+            return false;
     }
 
     public MimeMessage mailHelper(RequestEmailVerification info, String subject,String authNum) {
