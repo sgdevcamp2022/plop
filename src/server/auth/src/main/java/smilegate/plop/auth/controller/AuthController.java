@@ -1,12 +1,11 @@
 package smilegate.plop.auth.controller;
 
-import io.jsonwebtoken.Jwt;
 import lombok.extern.slf4j.Slf4j;
-import smilegate.plop.auth.dto.ResponseDto;
+import smilegate.plop.auth.dto.response.ResponseDto;
 import smilegate.plop.auth.dto.UserDto;
-import smilegate.plop.auth.model.RequestUser;
-import smilegate.plop.auth.model.ResponseJWT;
-import smilegate.plop.auth.model.ResponseUser;
+import smilegate.plop.auth.dto.request.RequestUser;
+import smilegate.plop.auth.dto.response.ResponseJWT;
+import smilegate.plop.auth.dto.response.ResponseUser;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
