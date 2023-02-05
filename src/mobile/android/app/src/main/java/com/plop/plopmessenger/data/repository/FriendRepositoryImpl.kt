@@ -15,4 +15,28 @@ class FriendRepositoryImpl(
     override fun loadFriendByNickname(nickname: String): Flow<List<Friend>> {
         return friendDao.loadFriendByNickname(nickname = "%$nickname%")
     }
+
+    override suspend fun insertFriend(friend: Friend) {
+        return friendDao.insertFriend(friend)
+    }
+
+    override suspend fun insertAllFriend(friends: List<Friend>) {
+        return friendDao.insertAllFriend(*friends.toTypedArray())
+    }
+
+    override suspend fun updateFriend(friend: Friend) {
+        return friendDao.updateFriend(friend)
+    }
+
+    override suspend fun updateFriendStateToBlockById(friendId: String) {
+        return friendDao.updateFriendStateToBlockById(friendId)
+    }
+
+    override suspend fun updateFriendStateToFriendById(friendId: String) {
+        return friendDao.updateFriendStateToFriendById(friendId)
+    }
+
+    override suspend fun updateAllFriend(friends: List<Friend>) {
+        return friendDao.updateAllFriend(*friends.toTypedArray())
+    }
 }
