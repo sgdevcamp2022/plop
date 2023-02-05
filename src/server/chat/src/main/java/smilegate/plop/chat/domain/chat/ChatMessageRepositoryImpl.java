@@ -1,10 +1,14 @@
 package smilegate.plop.chat.domain.chat;
 
 import org.bson.types.ObjectId;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.support.PageableExecutionUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -48,5 +52,25 @@ public class ChatMessageRepositoryImpl implements ChatMongoTemplateRepository{
     public List<MessageCollection> getAllMessagesAtRoom(String roomId) {
         Query query = Query.query(Criteria.where("roomId").is(roomId));
         return mongoTemplate.find(query,MessageCollection.class);
+    }
+
+    @Override
+    public Page<MessageCollection> findByRoomIdWithPagingAndFiltering(String roomId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+
+        Query query = new Query()
+                .with(pageable)
+                .skip(pageable.getPageSize() * pageable.getPageNumber()) // offset : ~5, ~10
+                .limit(pageable.getPageSize());
+        query.addCriteria(Criteria.where("roomId").is(roomId));
+
+        List<MessageCollection> messageCollections = mongoTemplate.find(query, MessageCollection.class);
+        Page<MessageCollection> messageCollectionPage = PageableExecutionUtils.getPage(
+                messageCollections,
+                pageable,
+                ()-> mongoTemplate.count(query.skip(-1).limit(-1), MessageCollection.class) // 정확한 도큐먼트 갯수 구하기 위함
+        );
+
+        return messageCollectionPage;
     }
 }

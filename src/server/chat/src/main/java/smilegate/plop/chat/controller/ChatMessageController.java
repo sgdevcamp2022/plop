@@ -35,4 +35,15 @@ public class ChatMessageController {
 
         return new ResponseEntity<>(apiMessage, HttpStatus.OK);
     }
+
+    @GetMapping("/room/v1/history")
+    public ResponseEntity<APIMessage> chatMessagePagination(
+            @RequestParam(name = "roomid") String roomId,
+            @RequestParam(name = "page") int page){
+        APIMessage apiMessage = new APIMessage();
+        apiMessage.setMessage(APIMessage.ResultEnum.success);
+        apiMessage.setData(chatMessageService.chatMessagePagination(roomId,page));
+
+        return new ResponseEntity<>(apiMessage, HttpStatus.OK);
+    }
 }
