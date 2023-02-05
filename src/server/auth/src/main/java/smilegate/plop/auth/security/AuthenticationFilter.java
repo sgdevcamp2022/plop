@@ -1,19 +1,16 @@
 package smilegate.plop.auth.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import smilegate.plop.auth.domain.UserEntity;
 import smilegate.plop.auth.domain.UserRepository;
-import smilegate.plop.auth.dto.ErrorResponseDto;
-import smilegate.plop.auth.dto.ResponseDto;
+import smilegate.plop.auth.dto.response.ErrorResponseDto;
+import smilegate.plop.auth.dto.response.ResponseDto;
 import smilegate.plop.auth.dto.UserDto;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
 import smilegate.plop.auth.exception.ErrorCode;
 import smilegate.plop.auth.exception.WithdrawalUserException;
-import smilegate.plop.auth.model.RequestLogin;
-import smilegate.plop.auth.model.ResponseJWT;
+import smilegate.plop.auth.dto.request.RequestLogin;
+import smilegate.plop.auth.dto.response.ResponseJWT;
 import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

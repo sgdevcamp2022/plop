@@ -1,6 +1,6 @@
 package smilegate.plop.auth.exception;
 
-import smilegate.plop.auth.dto.ErrorResponseDto;
+import smilegate.plop.auth.dto.response.ErrorResponseDto;
 
 public enum ErrorCode {
     WITHDRAWAL_USER(403, "AUTH-005", "탈퇴한 회원이 요청한 경우"),
