@@ -1,5 +1,6 @@
 package smilegate.plop.auth.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
@@ -87,6 +88,19 @@ public class MailService {
         log.error(verificationCode.toString());
         if(!checkInfo(verificationCode))
             throw new UsernameNotFoundException("정보가 일치하지 않습니다.");
+        UserEntity userEntity = userRepository.findByEmail(verificationCode.getEmail());
+        if (userEntity == null)
+            throw new UsernameNotFoundException(verificationCode.getEmail());
+        if (userEntity.getState() == 9)
+            try {
+                throw new WithdrawalUserException("user state is 9");
+            } catch (WithdrawalUserException e) {
+                return false;
+            }
+        //state :9 => 회원 탈퇴, 실제 삭제은 하지 않음, 탈퇴 후 ~ 기간 이후에 삭제하는 방식?
+        userEntity.setState(1);
+        userRepository.save(userEntity);
+
         String savedVerificationCode = redisService.getValues("verify-"+verificationCode.getEmail());
         if (savedVerificationCode.equals(verificationCode.getVerificationCode()))
             return true;

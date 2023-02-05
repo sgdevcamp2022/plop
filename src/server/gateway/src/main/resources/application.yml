@@ -16,22 +16,12 @@ spring:
         locator:
           enabled: true
       routes:
-        - id: user-service
-          uri: lb://USER-SERVICE
-          predicates:
-            - Path=/user/v1/**
-          filters:
-#            - AuthenticationFilter
-            - AuthorizationHeaderFilter
-            - RewritePath=/user/v1/(?<segment>.*), /$\{segment}
-
         - id: auth-service
           uri: lb://AUTH-SERVICE
           predicates:
             - Path=/auth/v1/login
           filters:
             - RewritePath=/auth/v1/(?<segment>.*), /$\{segment}
-
         - id: auth-service
           uri: lb://AUTH-SERVICE
           predicates:
@@ -41,11 +31,38 @@ spring:
         - id: auth-service
           uri: lb://AUTH-SERVICE
           predicates:
+            - Path=/auth/v1/email/code
+          filters:
+            - RewritePath=/auth/v1/(?<segment>.*), /$\{segment}
+        - id: auth-service
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/auth/v1/email/verify
+          filters:
+            - RewritePath=/auth/v1/(?<segment>.*), /$\{segment}
+        - id: auth-service
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/auth/v1/password/new
+          filters:
+            - RewritePath=/auth/v1/(?<segment>.*), /$\{segment}
+
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/user/v1/**
+          filters:
+            - AuthorizationHeaderFilter
+            - RewritePath=/user/v1/(?<segment>.*), /$\{segment}
+        - id: auth-service
+          uri: lb://AUTH-SERVICE
+          predicates:
             - Path=/auth/v1/**
           filters:
-#            - AuthenticationFilter
             - AuthorizationHeaderFilter
             - RewritePath=/auth/v1/(?<segment>.*), /$\{segment}
+
+
 
 
 #jwt :

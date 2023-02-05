@@ -2,7 +2,9 @@ package smilegate.plop.auth.controller;
 
 
 import lombok.extern.slf4j.Slf4j;
+import smilegate.plop.auth.dto.BaseResponse;
 import smilegate.plop.auth.dto.request.RequestEmailVerification;
+import smilegate.plop.auth.dto.request.RequestNewPassword;
 import smilegate.plop.auth.dto.request.RequestUser;
 import smilegate.plop.auth.dto.request.RequestVerificationCode;
 import smilegate.plop.auth.dto.response.ResponseDto;
@@ -16,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import smilegate.plop.auth.dto.response.ResponseJWT;
 import smilegate.plop.auth.dto.response.ResponseUser;
+import smilegate.plop.auth.exception.ErrorCode;
 import smilegate.plop.auth.security.JwtTokenProvider;
 import smilegate.plop.auth.service.AuthService;
 import smilegate.plop.auth.service.MailService;
@@ -34,10 +37,10 @@ public class AuthController {
     private MailService mailService;
 
     @Autowired
-    public AuthController(Environment env, AuthService userService,
+    public AuthController(Environment env, AuthService authService,
                           JwtTokenProvider jwtTokenProvider, MailService mailService) {
         this.env = env;
-        this.authService = userService;
+        this.authService = authService;
         this.jwtTokenProvider = jwtTokenProvider;
         this.mailService = mailService;
     }
@@ -76,6 +79,16 @@ public class AuthController {
         } else {
             ResponseDto responseDto = new ResponseDto<>("FAIL", "verification code is not correct", "");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseDto);
+        }
+    }
+    @PostMapping("/password/new")
+    public ResponseEntity<BaseResponse> changePassword(@RequestBody RequestNewPassword requestNewPassword) {
+        ResponseUser savedUser = authService.changePassword(requestNewPassword);
+        if (savedUser.equals(null)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorCode.PASSWORD_NOT_CHANGED.toErrorResponseDto("현재 비밀번호와 동일합니다."));
+        } else {
+            ResponseDto responseDto = new ResponseDto<>("SUCCESS", "password is changed successfully", savedUser);
+            return ResponseEntity.status(HttpStatus.OK).body(responseDto);
         }
     }
 }
