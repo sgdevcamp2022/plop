@@ -77,6 +77,7 @@
 		B4C60993298CC14200FEA42B /* WebSocketConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4C60992298CC14200FEA42B /* WebSocketConnection.swift */; };
 		B4C60995298CC17F00FEA42B /* WebSocketConnectionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4C60994298CC17F00FEA42B /* WebSocketConnectionDelegate.swift */; };
 		B4C60997298CD7A200FEA42B /* URLSessionWebSocketTask+Rx.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4C60996298CD7A200FEA42B /* URLSessionWebSocketTask+Rx.swift */; };
+		B4CD3300298E74F200628402 /* WebSocketUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4CD32FF298E74F100628402 /* WebSocketUseCase.swift */; };
 		B4D6814A298BADE5000D8920 /* KeychainRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D68149298BADE5000D8920 /* KeychainRepository.swift */; };
 		B4D6814C298BAE7D000D8920 /* Token.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D6814B298BAE7D000D8920 /* Token.swift */; };
 		B4E8D66F29880E9D003B946D /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = B4E8D66E29880E9D003B946D /* RxCocoa */; };
@@ -157,6 +158,7 @@
 		B4C60992298CC14200FEA42B /* WebSocketConnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketConnection.swift; sourceTree = "<group>"; };
 		B4C60994298CC17F00FEA42B /* WebSocketConnectionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketConnectionDelegate.swift; sourceTree = "<group>"; };
 		B4C60996298CD7A200FEA42B /* URLSessionWebSocketTask+Rx.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLSessionWebSocketTask+Rx.swift"; sourceTree = "<group>"; };
+		B4CD32FF298E74F100628402 /* WebSocketUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketUseCase.swift; sourceTree = "<group>"; };
 		B4D68149298BADE5000D8920 /* KeychainRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainRepository.swift; sourceTree = "<group>"; };
 		B4D6814B298BAE7D000D8920 /* Token.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Token.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -367,10 +369,11 @@
 			isa = PBXGroup;
 			children = (
 				B48BF22A298C0B07006E2684 /* AuthUseCase.swift */,
+				B48BF22B298C0B07006E2684 /* Common */,
+				B4CD32FF298E74F100628402 /* WebSocketUseCase.swift */,
 				B48BF233298C0D20006E2684 /* RoomsUseCase.swift */,
 				B48BF22E298C0B07006E2684 /* TokenUseCase.swift */,
 				B48BF22D298C0B07006E2684 /* UserUseCase.swift */,
-				B48BF22B298C0B07006E2684 /* Common */,
 			);
 			path = UseCases;
 			sourceTree = "<group>";
@@ -533,6 +536,7 @@
 				B415246429896F75006B86FF /* CDFriendsUseCase.swift in Sources */,
 				B41E40F329879D2900BB3126 /* ServiceProvider.swift in Sources */,
 				B46082E8298AAC9200BABC97 /* CDRoom+CoreDataProperties.swift in Sources */,
+				B4CD3300298E74F200628402 /* WebSocketUseCase.swift in Sources */,
 				B401933A2988B80D00217AEB /* CDMember+Ext.swift in Sources */,
 				B46082E2298AAC9200BABC97 /* CDMember+CoreDataProperties.swift in Sources */,
 				B401930A298810D300217AEB /* NSManagedObjectContext+Ext.swift in Sources */,
