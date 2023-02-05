@@ -14,9 +14,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import smilegate.plop.auth.exception.JwtTokenMissingException;
 import smilegate.plop.auth.model.JwtUser;
-import smilegate.plop.auth.model.ResponseJWT;
+import smilegate.plop.auth.dto.response.ResponseJWT;
 import smilegate.plop.auth.security.JwtTokenProvider;
 
 import javax.transaction.Transactional;

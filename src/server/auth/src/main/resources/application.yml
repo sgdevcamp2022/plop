@@ -15,6 +15,19 @@ spring:
     host: 127.0.0.1
     port: 6379
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: jhl81094@gmail.com
+    password: nrlawlbsermlieze
+    properties:
+      mail:
+        debug: true
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
 eureka:
   instance:
     instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
