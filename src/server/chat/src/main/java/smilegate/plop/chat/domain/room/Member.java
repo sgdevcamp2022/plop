@@ -2,9 +2,13 @@ package smilegate.plop.chat.domain.room;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+@NoArgsConstructor
+@Setter
 @Getter
 public class Member {
 

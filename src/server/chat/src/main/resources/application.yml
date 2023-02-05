@@ -10,8 +10,18 @@ spring:
       # uri : mongodb: //localhost:27017/plop
   kafka:
     bootstrap-servers: localhost:9092
-    consumer:
-      group-id: plop
+    chat-consumer:
+      group-id: chat-group
+    room-consumer:
+      group-id: room-group
 kafka:
   topic:
-    name: dm-message
+    chat-name: message
+    room-name: room
+
+token:
+  # 1분
+  access_expired_time: 6000000
+  secret_key: plip
+  # 1시간
+  refresh_expired_time: 3600000
