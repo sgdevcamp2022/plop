@@ -11,4 +11,14 @@ class MessageRepositoryImpl(
     override fun loadChatMessage(chatroomId: String): Flow<List<Message>> {
         return messageDao.loadChatMessage(chatroomId)
     }
+
+    override suspend fun insertMessage(message: Message) {
+        return messageDao.insertMessage(message)
+    }
+
+    override suspend fun insertAllMessage(messages: List<Message>) {
+        return messageDao.insertAllMessage(*messages.toTypedArray())
+    }
+
+
 }

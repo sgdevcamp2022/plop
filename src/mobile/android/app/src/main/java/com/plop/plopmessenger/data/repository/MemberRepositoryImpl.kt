@@ -19,4 +19,24 @@ class MemberRepositoryImpl(
     override fun loadChatMemberId(chatroomId: String): Flow<List<Member>> {
         return memberDao.loadChatMemberId(chatroomId)
     }
+
+    override suspend fun insertMember(member: Member) {
+        return memberDao.insertMember(member)
+    }
+
+    override suspend fun insertAllMember(members: List<Member>) {
+        return memberDao.insertAllMember(*members.toTypedArray())
+    }
+
+    override suspend fun updateMember(member: Member) {
+        return memberDao.updateMember(member)
+    }
+
+    override suspend fun updateAllMember(members: List<Member>) {
+        return memberDao.updateAllMember(*members.toTypedArray())
+    }
+
+    override suspend fun deleteMember(member: Member) {
+        return memberDao.deleteMember(member)
+    }
 }
