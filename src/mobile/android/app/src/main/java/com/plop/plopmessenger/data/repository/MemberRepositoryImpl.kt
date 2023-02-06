@@ -4,8 +4,9 @@ import com.plop.plopmessenger.data.local.dao.MemberDao
 import com.plop.plopmessenger.data.local.entity.Member
 import com.plop.plopmessenger.domain.repository.MemberRepository
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class MemberRepositoryImpl(
+class MemberRepositoryImpl @Inject constructor(
     private val memberDao: MemberDao
 ): MemberRepository {
     override fun loadChatMemberImage(chatroomId: String): Flow<List<String>> {

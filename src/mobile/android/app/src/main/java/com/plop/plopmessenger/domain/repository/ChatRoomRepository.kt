@@ -1,8 +1,14 @@
 package com.plop.plopmessenger.domain.repository
 
+import com.plop.plopmessenger.data.dto.request.chat.DeleteChatRoomRequest
+import com.plop.plopmessenger.data.dto.request.chat.PostDmRoomRequest
+import com.plop.plopmessenger.data.dto.request.chat.PostGroupRoomRequest
+import com.plop.plopmessenger.data.dto.request.chat.PostInvitationRequest
+import com.plop.plopmessenger.data.dto.response.chat.*
 import com.plop.plopmessenger.data.local.dao.ChatRoomMemberImage
 import com.plop.plopmessenger.data.local.entity.ChatRoom
 import kotlinx.coroutines.flow.Flow
+import retrofit2.Response
 import java.util.*
 
 interface ChatRoomRepository {
@@ -19,4 +25,12 @@ interface ChatRoomRepository {
     suspend fun plusChatRoomUnreadById(chatroomId: String, unread: Int)
     suspend fun updateChatRoomContentById(chatroomId: String, content: String, updatedAt: Date)
     suspend fun deleteChatRoom(chatroomId: String)
+    suspend fun postDmChatroom(postDmRoomRequest: PostDmRoomRequest): Response<PostDmRoomResponse>
+    suspend fun postGroupChatroom(postGroupRoomRequest: PostGroupRoomRequest): Response<PostGroupRoomResponse>
+    suspend fun postInvitation(postInvitationRequest: PostInvitationRequest): Response<PostInvitationResponse>
+    suspend fun getMyRooms(): Response<GetMyRoomResponse>
+    suspend fun deleteChatroom(roomid: String, deleteChatRoomRequest: DeleteChatRoomRequest): Response<DeleteChatRoomResponse>
+    suspend fun getChatroomNewMessage(roomid: String, readMsgId: String): Response<GetChatRoomNewMessageResponse>
+    suspend fun getChatroomHistory(roomid: String): Response<GetHistoryMessageResponse>
+    suspend fun getChatRoomInfo(roomid: String): Response<GetChatRoomInfoResponse>
 }

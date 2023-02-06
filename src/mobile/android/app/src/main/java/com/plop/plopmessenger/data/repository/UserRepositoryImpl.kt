@@ -1,12 +1,18 @@
 package com.plop.plopmessenger.data.repository
 
+import com.plop.plopmessenger.data.dto.request.user.*
+import com.plop.plopmessenger.data.dto.response.user.*
 import com.plop.plopmessenger.data.pref.PrefDataSource
 import com.plop.plopmessenger.data.pref.model.UserPref
+import com.plop.plopmessenger.data.remote.api.UserApi
 import com.plop.plopmessenger.domain.repository.UserRepository
 import kotlinx.coroutines.flow.Flow
+import retrofit2.Response
+import javax.inject.Inject
 
-class UserRepositoryImpl(
-    private val pref: PrefDataSource
+class UserRepositoryImpl @Inject constructor(
+    private val pref: PrefDataSource,
+    private val userApi: UserApi
 ): UserRepository {
     override fun getAccessToken(): Flow<String> {
         return pref.getAccessToken()
@@ -74,6 +80,50 @@ class UserRepositoryImpl(
 
     override suspend fun loginUser(userPref: UserPref) {
         pref.loginUser(userPref = userPref)
+    }
+
+    override suspend fun postLogin(loginRequest: PostLoginRequest): Response<PostLoginResponse> {
+        return userApi.postLogin(loginRequest)
+    }
+
+    override suspend fun postAutoLogin(postAutoLoginRequest: PostAutoLoginRequest): Response<PostAutoLoginResponse> {
+        return userApi.postAutoLogin(postAutoLoginRequest)
+    }
+
+    override suspend fun deleteLogout(): Response<DeleteLogoutResponse> {
+        return userApi.deleteLogout()
+    }
+
+    override suspend fun postSignUp(postSignUpRequest: PostSignUpRequest): Response<PostSignUpResponse> {
+        return userApi.postSignUp(postSignUpRequest)
+    }
+
+    override suspend fun postEmailCode(postEmailCodeRequest: PostEmailCodeRequest): Response<PostEmailCodeResponse> {
+        return userApi.postEmailCode(postEmailCodeRequest)
+    }
+
+    override suspend fun postEmailVerify(postEmailCodeRequest: PostEmailCodeRequest): Response<PostEmailCodeResponse> {
+        return userApi.postEmailVerify(postEmailCodeRequest)
+    }
+
+    override suspend fun putWithdrawal(): Response<PutWithdrawalResponse> {
+        return userApi.putWithdrawal()
+    }
+
+    override suspend fun postPasswordNew(postPasswordNewRequest: PostPasswordNewRequest): Response<PostPasswordNewResponse> {
+        return userApi.postPasswordNew(postPasswordNewRequest)
+    }
+
+    override suspend fun getUserProfile(email: String): Response<GetUserProfileResponse> {
+        return userApi.getUserProfile(email = email)
+    }
+
+    override suspend fun putUserProfile(putUserProfileRequest: PutUserProfileRequest): Response<PutUserProfileResponse> {
+        return userApi.putUserProfile(putUserProfileRequest)
+    }
+
+    override suspend fun getSearchUser(getSearchUserRequest: GetSearchUserRequest): Response<GetSearchUserResponse> {
+        return userApi.getSearchUser(getSearchUserRequest)
     }
 }
 

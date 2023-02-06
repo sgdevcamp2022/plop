@@ -7,6 +7,7 @@ import androidx.room.Room
 import com.plop.plopmessenger.data.local.AppDatabase
 import com.plop.plopmessenger.data.pref.PrefDataSource
 import com.plop.plopmessenger.data.remote.api.ChatApi
+import com.plop.plopmessenger.data.remote.api.Constants.BASE_URL
 import com.plop.plopmessenger.data.remote.api.FriendApi
 import com.plop.plopmessenger.data.remote.api.UserApi
 import com.plop.plopmessenger.data.remote.stomp.WebSocketListener
@@ -38,7 +39,7 @@ object AppModule {
     fun provideRetrofit(okHttpClient: OkHttpClient) : Retrofit {
         return Retrofit.Builder().apply {
             addConverterFactory(GsonConverterFactory.create())
-            //baseUrl(BuildConfig.API_BASE_URL)
+            baseUrl(BASE_URL)
         }.build()
     }
 
@@ -148,18 +149,20 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideChatRoomRepository(db: AppDatabase): ChatRoomRepository {
+    fun provideChatRoomRepository(db: AppDatabase, chatApi: ChatApi): ChatRoomRepository {
         return ChatRoomRepositoryImpl(
             chatRoomDao = db.chatroomDao,
-            chatroomMemberImageDao = db.chatroomMemberImageDao
+            chatroomMemberImageDao = db.chatroomMemberImageDao,
+            chatApi = chatApi
         )
     }
 
     @Singleton
     @Provides
-    fun provideFriendRepository(db: AppDatabase): FriendRepository {
+    fun provideFriendRepository(db: AppDatabase, friendApi: FriendApi): FriendRepository {
         return FriendRepositoryImpl(
-            friendDao = db.friendDao
+            friendDao = db.friendDao,
+            friendApi = friendApi
         )
     }
 
@@ -181,9 +184,10 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideUserRepository(pref: PrefDataSource): UserRepository {
+    fun provideUserRepository(pref: PrefDataSource, userApi: UserApi): UserRepository {
         return UserRepositoryImpl(
-            pref = pref
+            pref = pref,
+            userApi = userApi
         )
     }
 

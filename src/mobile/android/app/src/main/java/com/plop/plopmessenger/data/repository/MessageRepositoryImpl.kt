@@ -4,8 +4,9 @@ import com.plop.plopmessenger.data.local.dao.MessageDao
 import com.plop.plopmessenger.data.local.entity.Message
 import com.plop.plopmessenger.domain.repository.MessageRepository
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class MessageRepositoryImpl(
+class MessageRepositoryImpl @Inject constructor(
     private val messageDao: MessageDao
 ): MessageRepository {
     override fun loadChatMessage(chatroomId: String): Flow<List<Message>> {

@@ -1,16 +1,25 @@
 package com.plop.plopmessenger.data.repository
 
+import com.plop.plopmessenger.data.dto.request.chat.DeleteChatRoomRequest
+import com.plop.plopmessenger.data.dto.request.chat.PostDmRoomRequest
+import com.plop.plopmessenger.data.dto.request.chat.PostGroupRoomRequest
+import com.plop.plopmessenger.data.dto.request.chat.PostInvitationRequest
+import com.plop.plopmessenger.data.dto.response.chat.*
 import com.plop.plopmessenger.data.local.dao.ChatRoomDao
 import com.plop.plopmessenger.data.local.dao.ChatRoomMemberImage
 import com.plop.plopmessenger.data.local.dao.ChatRoomMemberImageDao
 import com.plop.plopmessenger.data.local.entity.ChatRoom
+import com.plop.plopmessenger.data.remote.api.ChatApi
 import com.plop.plopmessenger.domain.repository.ChatRoomRepository
 import kotlinx.coroutines.flow.Flow
+import retrofit2.Response
 import java.util.*
+import javax.inject.Inject
 
-class ChatRoomRepositoryImpl (
+class ChatRoomRepositoryImpl @Inject constructor(
     private val chatRoomDao: ChatRoomDao,
-    private val chatroomMemberImageDao: ChatRoomMemberImageDao
+    private val chatroomMemberImageDao: ChatRoomMemberImageDao,
+    private val chatApi: ChatApi
 ): ChatRoomRepository {
     override fun loadChatRoomTitle(chatroomId: String): Flow<String> {
         return chatRoomDao.loadChatRoomTitle(chatroomId)
@@ -62,5 +71,42 @@ class ChatRoomRepositoryImpl (
 
     override suspend fun deleteChatRoom(chatroomId: String) {
         return chatRoomDao.deleteChatRoom(chatroomId)
+    }
+
+    override suspend fun postDmChatroom(postDmRoomRequest: PostDmRoomRequest): Response<PostDmRoomResponse> {
+        return chatApi.postDmChatroom(postDmRoomRequest)
+    }
+
+    override suspend fun postGroupChatroom(postGroupRoomRequest: PostGroupRoomRequest): Response<PostGroupRoomResponse> {
+        return chatApi.postGroupChatroom(postGroupRoomRequest)
+    }
+
+    override suspend fun postInvitation(postInvitationRequest: PostInvitationRequest): Response<PostInvitationResponse> {
+        return chatApi.postInvitation(postInvitationRequest)
+    }
+
+    override suspend fun getMyRooms(): Response<GetMyRoomResponse> {
+        return chatApi.getMyRooms()
+    }
+
+    override suspend fun deleteChatroom(
+        roomid: String,
+        deleteChatRoomRequest: DeleteChatRoomRequest
+    ): Response<DeleteChatRoomResponse> {
+        return chatApi.deleteChatroom(roomid, deleteChatRoomRequest)
+    }
+
+    override suspend fun getChatroomNewMessage(roomid: String, readMsgId: String): Response<GetChatRoomNewMessageResponse> {
+        return chatApi.getChatroomNewMessage(roomid = roomid, readMsgId = readMsgId)
+    }
+
+    override suspend fun getChatroomHistory(
+        roomid: String
+    ): Response<GetHistoryMessageResponse> {
+        return chatApi.getChatroomHistory(roomid)
+    }
+
+    override suspend fun getChatRoomInfo(roomid: String): Response<GetChatRoomInfoResponse> {
+        return return chatApi.getChatRoomInfo(roomid)
     }
 }
