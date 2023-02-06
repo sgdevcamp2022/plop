@@ -16,7 +16,7 @@ import com.plop.plopmessenger.data.remote.api.Constants.POST_INVITATION
 import retrofit2.Response
 import retrofit2.http.*
 
-interface ChatApI {
+interface ChatApi {
 
     @POST(POST_DM_CHATROOM)
     suspend fun postDmChatroom(

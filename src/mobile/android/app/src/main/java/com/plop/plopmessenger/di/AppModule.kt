@@ -6,6 +6,9 @@ import android.util.Log
 import androidx.room.Room
 import com.plop.plopmessenger.data.local.AppDatabase
 import com.plop.plopmessenger.data.pref.PrefDataSource
+import com.plop.plopmessenger.data.remote.api.ChatApi
+import com.plop.plopmessenger.data.remote.api.FriendApi
+import com.plop.plopmessenger.data.remote.api.UserApi
 import com.plop.plopmessenger.data.remote.stomp.WebSocketListener
 import com.plop.plopmessenger.data.repository.*
 import com.plop.plopmessenger.domain.repository.*
@@ -37,6 +40,24 @@ object AppModule {
             addConverterFactory(GsonConverterFactory.create())
             //baseUrl(BuildConfig.API_BASE_URL)
         }.build()
+    }
+
+    @Singleton
+    @Provides
+    fun provideChatApi(retrofit: Retrofit): ChatApi {
+        return retrofit.create(ChatApi::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideFriendApi(retrofit: Retrofit): FriendApi {
+        return retrofit.create(FriendApi::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideUserApi(retrofit: Retrofit): UserApi {
+        return retrofit.create(UserApi::class.java)
     }
 
     @Singleton
