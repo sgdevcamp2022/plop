@@ -178,20 +178,22 @@ public class AuthService {
         UserEntity userEntity = userRepository.findByEmail(newPassword.getEmail());
         if (userEntity == null)
             throw new EntityNotFoundException(userEntity.getEmail());
-        String newEncryptedPwd = passwordEncoder.encode(newPassword.getNewPassword());
-        log.error(newEncryptedPwd);
-        log.error(userEntity.getEncryptedPwd());
-        if (newEncryptedPwd.equals(userEntity.getEncryptedPwd())) {
-            return null;
-        }
-        userEntity.setEncryptedPwd(newEncryptedPwd);
-        UserEntity savedUser = userRepository.save(userEntity);
 
-        ResponseUser responseUser = new ResponseUser(
-                savedUser.getEmail(),
-                savedUser.getProfile().get("nickname").toString(),
-                savedUser.getUserId());
-        return responseUser;
+        // 비밀번호가 일치하지 않을 때만
+        if (!passwordEncoder.matches(newPassword.getNewPassword(),userEntity.getEncryptedPwd())) {
+            String newEncryptedPwd = passwordEncoder.encode(newPassword.getNewPassword());
+            userEntity.setEncryptedPwd(newEncryptedPwd);
+            UserEntity savedUser = userRepository.save(userEntity);
+
+            ResponseUser responseUser = new ResponseUser(
+                    savedUser.getEmail(),
+                    savedUser.getProfile().get("nickname").toString(),
+                    savedUser.getUserId());
+            return responseUser;
+        }
+
+
+        return null;
 
     }
 
