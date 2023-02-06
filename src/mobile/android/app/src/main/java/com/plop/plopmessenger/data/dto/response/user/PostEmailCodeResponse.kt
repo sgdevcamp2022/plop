@@ -1,9 +1,7 @@
 package com.plop.plopmessenger.data.dto.response.user
 
 
-import com.google.gson.annotations.SerializedName
-
-data class PostEmailCodeResource(
+data class PostEmailCodeResponse(
     val email: String,
     val userId: String
 )
