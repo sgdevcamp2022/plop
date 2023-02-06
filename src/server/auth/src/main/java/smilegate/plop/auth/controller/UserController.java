@@ -10,10 +10,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import smilegate.plop.auth.dto.UserDto;
 import smilegate.plop.auth.dto.request.RequestEmailVerification;
+import smilegate.plop.auth.dto.request.RequestLogin;
 import smilegate.plop.auth.dto.request.RequestUser;
 import smilegate.plop.auth.dto.response.ResponseDto;
 import smilegate.plop.auth.dto.response.ResponseJWT;
 import smilegate.plop.auth.dto.response.ResponseUser;
+import smilegate.plop.auth.exception.ErrorCode;
 import smilegate.plop.auth.security.JwtTokenProvider;
 import smilegate.plop.auth.service.AuthService;
 import smilegate.plop.auth.service.MailService;
@@ -49,17 +51,26 @@ public class UserController {
         ModelMapper mapper = new ModelMapper();
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         UserDto userDto = mapper.map(user, UserDto.class);
-        UserDto savedUser = authService.createUser(userDto);
+        UserDto savedUser = authService.signUp(userDto);
 
         ResponseUser responseUser = mapper.map(savedUser, ResponseUser.class);
         ResponseDto responseDto = new ResponseDto<>("SUCCESS", "signup successfully", responseUser);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
-    /*
-    POST - login
-
-     */
+    @PostMapping("/login")
+    public ResponseEntity<ResponseDto> logIn(@RequestBody RequestLogin user) {
+        ResponseJWT responseJWT = authService.logIn(user);
+        log.error(responseJWT.toString());
+        if (responseJWT.equals(null)) {
+            ResponseDto responseDto = new ResponseDto("FAIL", "password is not correct", user.getIdOrEmail());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseDto);
+        }
+        else {
+            ResponseDto responseDto = new ResponseDto("SUCCESS", "login successfully", responseJWT);
+            return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+        }
+    }
 
     @DeleteMapping("/logout")
     public ResponseEntity<ResponseDto> logOut(@RequestHeader("AUTHORIZATION") String bearerToken) {

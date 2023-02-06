@@ -8,7 +8,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMailMessage;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import smilegate.plop.auth.domain.UserEntity;
@@ -25,6 +24,7 @@ import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.persistence.EntityNotFoundException;
 import java.io.UnsupportedEncodingException;
 import java.util.Random;
 
@@ -77,7 +77,7 @@ public class MailService {
     @Async
     public void send(RequestEmailVerification info, String subject) {
         if (!checkInfo(info))
-            throw new UsernameNotFoundException("정보가 일치하지 않습니다.");
+            throw new EntityNotFoundException("정보가 일치하지 않습니다.");
         String authNum = createCode();
         MimeMessage message = mailHelper(info,subject, authNum);
         mailSender.send(message);
@@ -87,10 +87,10 @@ public class MailService {
     public boolean verifyCode(RequestVerificationCode verificationCode) {
         log.error(verificationCode.toString());
         if(!checkInfo(verificationCode))
-            throw new UsernameNotFoundException("정보가 일치하지 않습니다.");
+            throw new EntityNotFoundException("정보가 일치하지 않습니다.");
         UserEntity userEntity = userRepository.findByEmail(verificationCode.getEmail());
         if (userEntity == null)
-            throw new UsernameNotFoundException(verificationCode.getEmail());
+            throw new EntityNotFoundException(verificationCode.getEmail());
         if (userEntity.getState() == 9)
             try {
                 throw new WithdrawalUserException("user state is 9");
