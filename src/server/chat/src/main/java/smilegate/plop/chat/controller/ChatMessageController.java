@@ -27,7 +27,7 @@ public class ChatMessageController {
         producers.sendMessage(savedMessage);
     }
 
-    @GetMapping("/room/v1/history-message/{roomid}")
+    @GetMapping("/v1/history-message/{roomid}")
     public ResponseEntity<APIMessage> allMessagesAtRoom(@PathVariable(value = "roomid")String roomId){
         APIMessage apiMessage = new APIMessage();
         apiMessage.setMessage(APIMessage.ResultEnum.success);
@@ -36,7 +36,7 @@ public class ChatMessageController {
         return new ResponseEntity<>(apiMessage, HttpStatus.OK);
     }
 
-    @GetMapping("/room/v1/history")
+    @GetMapping("/v1/history")
     public ResponseEntity<APIMessage> chatMessagePagination(
             @RequestParam(name = "roomid") String roomId,
             @RequestParam(name = "page") int page){
