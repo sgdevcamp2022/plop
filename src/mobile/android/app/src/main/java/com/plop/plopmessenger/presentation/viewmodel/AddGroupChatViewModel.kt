@@ -7,6 +7,8 @@ import androidx.lifecycle.viewModelScope
 import com.plop.plopmessenger.domain.model.People
 import com.plop.plopmessenger.domain.model.toPeople
 import com.plop.plopmessenger.domain.repository.FriendRepository
+import com.plop.plopmessenger.domain.usecase.friend.FriendUseCase
+import com.plop.plopmessenger.domain.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -17,7 +19,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddGroupChatViewModel @Inject constructor(
-    private val friendRepository: FriendRepository
+    private val friendUseCase: FriendUseCase
 ): ViewModel() {
     var addGroupChatState = MutableStateFlow(AddGroupChatState())
         private set
@@ -28,9 +30,26 @@ class AddGroupChatViewModel @Inject constructor(
 
     private fun getFriendList() {
         viewModelScope.launch {
-            friendRepository.loadFriend().collect { result ->
-                addGroupChatState.update {
-                    it.copy(friends = result.map { it.toPeople() })
+            friendUseCase.getFriendListUseCase().collect() { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        addGroupChatState.update {
+                            it.copy(
+                                friends = result.data ?: emptyList(),
+                                isLoading = false,
+                            )
+                        }
+                    }
+                    is Resource.Loading -> {
+                        addGroupChatState.update {
+                            it.copy(isLoading = true)
+                        }
+                    }
+                    is Resource.Error -> {
+                        addGroupChatState.update {
+                            it.copy(isLoading = false)
+                        }
+                    }
                 }
             }
         }
@@ -38,10 +57,27 @@ class AddGroupChatViewModel @Inject constructor(
 
     private fun getFriendByNickname() {
         viewModelScope.launch {
-            friendRepository.loadFriendByNickname(nickname = addGroupChatState.value.query.text)
+            friendUseCase.getFriendByNicknameListUseCase(nickname = addGroupChatState.value.query.text)
                 .collectLatest { result ->
-                    addGroupChatState.update {
-                        it.copy(result = result.map { it.toPeople() })
+                    when (result) {
+                        is Resource.Success -> {
+                            addGroupChatState.update {
+                                it.copy(
+                                    friends = result.data ?: emptyList(),
+                                    isLoading = false,
+                                )
+                            }
+                        }
+                        is Resource.Loading -> {
+                            addGroupChatState.update {
+                                it.copy(isLoading = true)
+                            }
+                        }
+                        is Resource.Error -> {
+                            addGroupChatState.update {
+                                it.copy(isLoading = false)
+                            }
+                        }
                     }
                 }
         }
@@ -78,5 +114,6 @@ data class AddGroupChatState(
     val friends: List<People> = emptyList(),
     var query: TextFieldValue = TextFieldValue(""),
     val result: List<People> = emptyList(),
-    val textFieldFocusState: Boolean = false
+    val textFieldFocusState: Boolean = false,
+    val isLoading: Boolean = false
 )

@@ -20,6 +20,7 @@ import com.plop.plopmessenger.R
 import com.plop.plopmessenger.domain.model.ChatRoomType
 import com.plop.plopmessenger.domain.model.Member
 import com.plop.plopmessenger.domain.model.People
+import com.plop.plopmessenger.domain.model.toPeople
 import com.plop.plopmessenger.presentation.component.*
 import com.plop.plopmessenger.presentation.navigation.PeopleParcelableModel
 import com.plop.plopmessenger.presentation.viewmodel.AddChatMemberViewModel
@@ -47,7 +48,7 @@ fun AddChatMemberScreen(
     //멤버수에 따른 함수
     val addMember: () -> Unit = if(state.chatRoomType == ChatRoomType.DM) {
         {
-            navigateToNewChat(PeopleParcelableModel(state.checkedPeople + state.members))}
+            navigateToNewChat(PeopleParcelableModel(state.checkedPeople + state.members.map { it.toPeople() }))}
     }
     else {
         { navigateToUpdateGroupChat(state.chatId?: "", PeopleParcelableModel(state.checkedPeople)) }
@@ -109,7 +110,7 @@ fun AddChatMemberScreen(
                         SubTitle(content = stringResource(id = R.string.add_chat_member_friend_subtitle))
                     }
                     items(state.friends) { friend ->
-                        if(!state.members.map { it.peopleId }.contains(friend.peopleId)) {
+                        if(!state.members.map { it.memberId }.contains(friend.peopleId)) {
                             PeopleWithCheckItem(
                                 onClick = {
                                     if(friend in state.checkedPeople) viewModel.deletePeople(people = friend)

@@ -172,13 +172,13 @@ fun ChatItem(
     ) {
         if(chatRoom.type == ChatRoomType.DM) {
             ProfileImageWithState(
-                imageURL = chatRoom.images.firstOrNull()?: "",
+                imageURL = chatRoom.members.firstOrNull()?.profileImg?: "",
                 isActivate = isActivate?: false,
                 profileSize = ProfileImageValue.ProfileWithStateSize
             )
         } else {
             ProfileImages(
-                images = chatRoom.images,
+                images = chatRoom.members.map { it.profileImg },
                 profileSize = ProfileImageValue.ProfileWithStateSize
             )
         }
