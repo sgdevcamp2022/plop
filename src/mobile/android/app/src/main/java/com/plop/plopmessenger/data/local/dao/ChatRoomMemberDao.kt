@@ -30,5 +30,5 @@ data class ChatRoomMemberImage(
         parentColumn = "chatroom_id",
         entityColumn = "chatroom_id"
     )
-    val images: List<Member>,
+    val members: List<Member>,
 )

@@ -5,12 +5,11 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.plop.plopmessenger.domain.model.ChatRoomType
+import com.plop.plopmessenger.domain.model.Member
 import com.plop.plopmessenger.domain.model.People
-import com.plop.plopmessenger.domain.model.toChatRoom
-import com.plop.plopmessenger.domain.model.toPeople
-import com.plop.plopmessenger.domain.repository.ChatRoomRepository
-import com.plop.plopmessenger.domain.repository.FriendRepository
-import com.plop.plopmessenger.domain.repository.MemberRepository
+import com.plop.plopmessenger.domain.usecase.chatroom.ChatRoomUseCase
+import com.plop.plopmessenger.domain.usecase.friend.FriendUseCase
+import com.plop.plopmessenger.domain.util.Resource
 import com.plop.plopmessenger.presentation.navigation.DestinationID
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,9 +21,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddChatMemberViewModel @Inject constructor(
-    private val friendRepository: FriendRepository,
-    private val chatRoomRepository: ChatRoomRepository,
-    private val memberRepository: MemberRepository,
+    private val friendUseCase: FriendUseCase,
+    private val chatRoomUseCase: ChatRoomUseCase,
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
@@ -35,26 +33,32 @@ class AddChatMemberViewModel @Inject constructor(
     init {
         if(!addChatMemberState.value.chatId.isNullOrBlank()) {
             getFriendList()
-            getMemberId()
             getChatroomInfo()
         }
     }
 
     private fun getFriendList() {
         viewModelScope.launch {
-            friendRepository.loadFriend().collect { result ->
-                addChatMemberState.update {
-                    it.copy(friends = result.map { it.toPeople() })
-                }
-            }
-        }
-    }
-
-    private fun getMemberId() {
-        viewModelScope.launch {
-            memberRepository.loadChatMemberId(addChatMemberState.value.chatId!!).collect() { result ->
-                addChatMemberState.update {
-                    it.copy(members = result.map { it.toPeople() })
+            friendUseCase.getFriendListUseCase().collect() { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        addChatMemberState.update {
+                            it.copy(
+                                friends = result.data ?: emptyList(),
+                                isLoading = false,
+                            )
+                        }
+                    }
+                    is Resource.Loading -> {
+                        addChatMemberState.update {
+                            it.copy(isLoading = true)
+                        }
+                    }
+                    is Resource.Error -> {
+                        addChatMemberState.update {
+                            it.copy(isLoading = false)
+                        }
+                    }
                 }
             }
         }
@@ -62,22 +66,57 @@ class AddChatMemberViewModel @Inject constructor(
 
     private fun getFriendByNickname() {
         viewModelScope.launch {
-            friendRepository.loadFriendByNickname(nickname = addChatMemberState.value.query.text)
+            friendUseCase.getFriendByNicknameListUseCase(addChatMemberState.value.query.text)
                 .collectLatest { result ->
-                    addChatMemberState.update {
-                        it.copy(result = result.map { it.toPeople() })
+                    when (result) {
+                        is Resource.Success -> {
+                            addChatMemberState.update {
+                                it.copy(
+                                    friends = result.data ?: emptyList(),
+                                    isLoading = false,
+                                )
+                            }
+                        }
+                        is Resource.Loading -> {
+                            addChatMemberState.update {
+                                it.copy(isLoading = true)
+                            }
+                        }
+                        is Resource.Error -> {
+                            addChatMemberState.update {
+                                it.copy(isLoading = false)
+                            }
+                        }
                     }
                 }
+
+
         }
     }
 
     private fun getChatroomInfo() {
         viewModelScope.launch {
-            chatRoomRepository.loadChatRoomAndMemberById(addChatMemberState.value.chatId!!).collect { result ->
-                addChatMemberState.update {
-                    it.copy(
-                        chatRoomType = result.toChatRoom().type
-                    )
+            chatRoomUseCase.getChatRoomInfoUseCase(addChatMemberState.value.chatId!!).collect { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        addChatMemberState.update {
+                            it.copy(
+                                chatRoomType = result.data?.type ?: ChatRoomType.DM,
+                                isLoading = false,
+                                members = result.data?.members ?: emptyList()
+                            )
+                        }
+                    }
+                    is Resource.Loading -> {
+                        addChatMemberState.update {
+                            it.copy(isLoading = true)
+                        }
+                    }
+                    is Resource.Error -> {
+                        addChatMemberState.update {
+                            it.copy(isLoading = false)
+                        }
+                    }
                 }
             }
         }
@@ -110,12 +149,13 @@ class AddChatMemberViewModel @Inject constructor(
 }
 
 data class AddChatMemeberState(
+    val isLoading: Boolean = false,
     val checkedPeople: List<People> = emptyList(),
     val friends: List<People> = emptyList(),
     var query: TextFieldValue = TextFieldValue(""),
     val result: List<People> = emptyList(),
     val textFieldFocusState: Boolean = false,
-    val members: List<People> = emptyList(),
+    val members: List<Member> = emptyList(),
     val chatRoomType: ChatRoomType = ChatRoomType.DM,
     val chatId: String?
 )

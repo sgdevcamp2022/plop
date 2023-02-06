@@ -8,6 +8,8 @@ import com.plop.plopmessenger.domain.model.Member
 import com.plop.plopmessenger.domain.model.toChatRoom
 import com.plop.plopmessenger.domain.model.toMember
 import com.plop.plopmessenger.domain.repository.ChatRoomRepository
+import com.plop.plopmessenger.domain.usecase.chatroom.ChatRoomUseCase
+import com.plop.plopmessenger.domain.util.Resource
 import com.plop.plopmessenger.presentation.navigation.DestinationID
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,7 +19,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ChatInfoViewModel @Inject constructor(
-    private val chatRoomRepository: ChatRoomRepository,
+    private val chatRoomUseCase: ChatRoomUseCase,
     private val savedStateHandle: SavedStateHandle
 ): ViewModel() {
     var chatInfoState = MutableStateFlow(ChatInfoState(chatroomId = savedStateHandle.get<String>(
@@ -26,19 +28,34 @@ class ChatInfoViewModel @Inject constructor(
 
     init {
         if(!chatInfoState.value.chatroomId.isNullOrBlank()){
-            getChatroomInfo()
+            getLocalChatroomInfo()
         }
     }
 
-    private fun getChatroomInfo() {
+    private fun getLocalChatroomInfo() {
         viewModelScope.launch {
-            chatRoomRepository.loadChatRoomAndMemberById(chatInfoState.value.chatroomId!!).collect { result ->
-                chatInfoState.update {
-                    it.copy(
-                        title = result.chatroom.title,
-                        members = result.images.map { it.toMember() },
-                        roomType = result.toChatRoom().type
-                    )
+            chatRoomUseCase.getChatRoomInfoUseCase(chatInfoState.value.chatroomId!!).collect { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        chatInfoState.update {
+                            it.copy(
+                                title = result.data?.title?: "",
+                                members = result.data?.members?: emptyList(),
+                                roomType = result.data?.type?: ChatRoomType.DM,
+                                isLoading = false
+                            )
+                        }
+                    }
+                    is Resource.Loading -> {
+                        chatInfoState.update {
+                            it.copy(isLoading = true)
+                        }
+                    }
+                    is Resource.Error -> {
+                        chatInfoState.update {
+                            it.copy(isLoading = false)
+                        }
+                    }
                 }
             }
         }
@@ -46,6 +63,7 @@ class ChatInfoViewModel @Inject constructor(
 }
 
 data class ChatInfoState(
+    var isLoading: Boolean = false,
     var title: String = "",
     var members: List<Member> = emptyList(),
     var chatroomId: String? = null,

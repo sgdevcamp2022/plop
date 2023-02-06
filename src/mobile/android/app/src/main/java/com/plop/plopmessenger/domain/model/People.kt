@@ -1,7 +1,6 @@
 package com.plop.plopmessenger.domain.model
 
 import com.plop.plopmessenger.data.local.entity.Friend
-import com.plop.plopmessenger.data.local.entity.Member
 
 data class People(
     val peopleId: String,

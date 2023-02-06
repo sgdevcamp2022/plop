@@ -9,7 +9,7 @@ data class ChatRoom(
     var unread: Int,
     var content: String,
     var createdAt: Date,
-    var images: List<String>,
+    var members: List<Member>,
     val type: ChatRoomType
 )
 
@@ -23,7 +23,7 @@ fun ChatRoomMemberImage.toChatRoom(): ChatRoom = ChatRoom(
     unread = this.chatroom.unread,
     content = this.chatroom.content,
     createdAt = this.chatroom.updatedAt,
-    images = this.images.map { it.profileImg },
+    members = this.members.map { it.toMember() },
     type = when(this.chatroom.type){
         1 -> ChatRoomType.DM
         else -> ChatRoomType.GROUP

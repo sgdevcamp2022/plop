@@ -5,10 +5,10 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.plop.plopmessenger.domain.model.*
-import com.plop.plopmessenger.domain.repository.ChatRoomRepository
-import com.plop.plopmessenger.domain.repository.MemberRepository
-import com.plop.plopmessenger.domain.repository.MessageRepository
 import com.plop.plopmessenger.domain.repository.UserRepository
+import com.plop.plopmessenger.domain.usecase.chatroom.ChatRoomUseCase
+import com.plop.plopmessenger.domain.usecase.message.MessageUseCase
+import com.plop.plopmessenger.domain.util.Resource
 import com.plop.plopmessenger.presentation.navigation.DestinationID
 import com.plop.plopmessenger.presentation.screen.main.InputSelector
 import com.plop.plopmessenger.util.getChatRoomTitle
@@ -20,10 +20,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ChatViewModel @Inject constructor(
-    private val memberRepository: MemberRepository,
-    private val messageRepository: MessageRepository,
+    private val messageUseCase: MessageUseCase,
     private val userRepository: UserRepository,
-    private val chatRoomRepository: ChatRoomRepository,
+    private val chatRoomUseCase: ChatRoomUseCase,
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
@@ -33,28 +32,64 @@ class ChatViewModel @Inject constructor(
 
     init {
         if(!chatState.value.chatroomId.isNullOrBlank()){
-            getMemberList()
             getMessageList()
-            getChatTitle()
+            getChatroomInfo()
         }
         getUserId()
     }
 
     private fun getMessageList() {
         viewModelScope.launch {
-            messageRepository.loadChatMessage(chatState.value.chatroomId!!).collect { result ->
-                chatState.update {
-                    it.copy(messages = result.map { it.toMessage() })
+            messageUseCase.getLocalMessageListUseCase(chatState.value.chatroomId!!).collect() { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        chatState.update {
+                            it.copy(
+                                isLoading = false,
+                                messages = result.data?: emptyList()
+                            )
+                        }
+                    }
+                    is Resource.Loading -> {
+                        chatState.update {
+                            it.copy(isLoading = true)
+                        }
+                    }
+                    is Resource.Error -> {
+                        chatState.update {
+                            it.copy(isLoading = false)
+                        }
+                    }
                 }
+
             }
         }
     }
 
-    private fun getMemberList() {
+    private fun getChatroomInfo() {
         viewModelScope.launch {
-            memberRepository.loadChatMember(chatState.value.chatroomId!!).collect { result ->
-                chatState.update {
-                    it.copy(members = result.map { it.memberId to it.toMember() }.toMap())
+            chatRoomUseCase.getChatRoomInfoUseCase(chatState.value.chatroomId!!).collect { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        chatState.update {
+                            it.copy(
+                                chatRoomType = result.data?.type ?: ChatRoomType.DM,
+                                isLoading = false,
+                                members = result.data?.members?.map { it.memberId to it }?.toMap() ?: mapOf(),
+                                title = result.data?.title ?: ""
+                            )
+                        }
+                    }
+                    is Resource.Loading -> {
+                        chatState.update {
+                            it.copy(isLoading = true)
+                        }
+                    }
+                    is Resource.Error -> {
+                        chatState.update {
+                            it.copy(isLoading = false)
+                        }
+                    }
                 }
             }
         }
@@ -88,32 +123,22 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    private fun getChatTitle() {
-        viewModelScope.launch {
-            chatRoomRepository.loadChatRoomTitle(chatState.value.chatroomId!!).collect() { result ->
-                chatState.update {
-                    it.copy(title = result)
-                }
-            }
-        }
-    }
-
     fun getMember(people: List<People>) {
         if(chatState.value.chatroomId.isNullOrBlank()) {
             if(people.size == 1) {
                 viewModelScope.launch {
-                    chatRoomRepository.hasPersonalChatRoomByFriend(people.first().peopleId).collect() { result ->
-                        if(result.isNullOrBlank()) {
+                    chatRoomUseCase.getChatRoomIdByPeopleIdUseCase(people.first().peopleId).collect() { result ->
+                        if(result.data.isNullOrBlank()) {
                             chatState.update { it.copy(
                                 title = people.first().nickname,
                                 members = mapOf(people.first().peopleId to people.first().toMember()),
                                 chatRoomType = ChatRoomType.DM
-                            )
+                                )
                             }
                         }else {
-                            chatState.update { it.copy(chatroomId = result, title = people.first().nickname) }
+                            chatState.update { it.copy(chatroomId = result.data) }
                             getMessageList()
-                            getMemberList()
+                            getChatroomInfo()
                         }
                     }
                 }
@@ -148,5 +173,6 @@ data class ChatState(
     val textFieldFocusState: Boolean = false,
     val currentInputSelector: InputSelector = InputSelector.NONE,
     val chatRoomType: ChatRoomType = ChatRoomType.DM,
-    val userId: String = ""
+    val userId: String = "",
+    val isLoading: Boolean = false
 )
