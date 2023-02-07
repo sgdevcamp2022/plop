@@ -2,6 +2,8 @@ package com.plop.plopmessenger.data.dto.response
 
 
 import com.google.gson.annotations.SerializedName
+import java.util.*
+import com.plop.plopmessenger.data.local.entity.Message as MessageEntity
 
 data class Message(
     val content: String,
@@ -16,3 +18,22 @@ data class Message(
     @SerializedName("sender_id")
     val senderId: String
 )
+
+fun Message.toMessage() = MessageEntity(
+    messageId = this.messageId,
+    messageFromID = this.senderId,
+    chatroomId = this.roomId,
+    content = this.content,
+    createdAt = Date(),
+    type = MessageTypeConverter(this.messageType)
+)
+
+private fun MessageTypeConverter(type: String): Int {
+    return when(type) {
+        "TEXT" -> 1
+        "IMG" -> 2
+        "VIDEO" -> 3
+        "ENTER" -> 4
+        else -> 1
+    }
+}
