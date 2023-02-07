@@ -29,8 +29,7 @@ final class LoginCoordinator: Coordinator {
   }
 
   func toHome() {
-    let viewController = HomeViewController()
-    
-    window.rootViewController = viewController
+    let coordinator = HomeCoordinator()
+    coordinator.start()
   }
 }

@@ -32,6 +32,8 @@
 		B4152471298977F4006B86FF /* UsersNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4152470298977F4006B86FF /* UsersNetwork.swift */; };
 		B415247329897D05006B86FF /* RoomsNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = B415247229897D05006B86FF /* RoomsNetwork.swift */; };
 		B415247629898737006B86FF /* LoginResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B415247529898737006B86FF /* LoginResponse.swift */; };
+		B41D1DDF2992AB9000EF7390 /* PeopleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41D1DDE2992AB9000EF7390 /* PeopleViewController.swift */; };
+		B41D1DE12992ABB600EF7390 /* SettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41D1DE02992ABB600EF7390 /* SettingViewController.swift */; };
 		B41E40B82987797C00BB3126 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41E40B72987797C00BB3126 /* AppDelegate.swift */; };
 		B41E40BA2987797C00BB3126 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41E40B92987797C00BB3126 /* SceneDelegate.swift */; };
 		B41E40C12987797D00BB3126 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B41E40C02987797D00BB3126 /* Assets.xcassets */; };
@@ -74,6 +76,8 @@
 		B48BF234298C0D20006E2684 /* RoomsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B48BF233298C0D20006E2684 /* RoomsUseCase.swift */; };
 		B4940EEB29922011003BB5CD /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4940EEA29922011003BB5CD /* HomeViewController.swift */; };
 		B4940EED29924584003BB5CD /* LoginCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4940EEC29924584003BB5CD /* LoginCoordinator.swift */; };
+		B4940EF02992A0EA003BB5CD /* HomeCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4940EEF2992A0EA003BB5CD /* HomeCoordinator.swift */; };
+		B4940EF52992A1FB003BB5CD /* ChatRoomsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4940EF42992A1FB003BB5CD /* ChatRoomsViewController.swift */; };
 		B4C60990298C9C0800FEA42B /* WebSocketService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4C6098F298C9C0800FEA42B /* WebSocketService.swift */; };
 		B4C60993298CC14200FEA42B /* WebSocketConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4C60992298CC14200FEA42B /* WebSocketConnection.swift */; };
 		B4C60995298CC17F00FEA42B /* WebSocketConnectionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4C60994298CC17F00FEA42B /* WebSocketConnectionDelegate.swift */; };
@@ -127,6 +131,8 @@
 		B4152470298977F4006B86FF /* UsersNetwork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersNetwork.swift; sourceTree = "<group>"; };
 		B415247229897D05006B86FF /* RoomsNetwork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomsNetwork.swift; sourceTree = "<group>"; };
 		B415247529898737006B86FF /* LoginResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginResponse.swift; sourceTree = "<group>"; };
+		B41D1DDE2992AB9000EF7390 /* PeopleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeopleViewController.swift; sourceTree = "<group>"; };
+		B41D1DE02992ABB600EF7390 /* SettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingViewController.swift; sourceTree = "<group>"; };
 		B41E40B42987797C00BB3126 /* plop-messenger-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "plop-messenger-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B41E40B72987797C00BB3126 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B41E40B92987797C00BB3126 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -171,6 +177,8 @@
 		B48BF233298C0D20006E2684 /* RoomsUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomsUseCase.swift; sourceTree = "<group>"; };
 		B4940EEA29922011003BB5CD /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		B4940EEC29924584003BB5CD /* LoginCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginCoordinator.swift; sourceTree = "<group>"; };
+		B4940EEF2992A0EA003BB5CD /* HomeCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCoordinator.swift; sourceTree = "<group>"; };
+		B4940EF42992A1FB003BB5CD /* ChatRoomsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomsViewController.swift; sourceTree = "<group>"; };
 		B4C6098F298C9C0800FEA42B /* WebSocketService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketService.swift; sourceTree = "<group>"; };
 		B4C60992298CC14200FEA42B /* WebSocketConnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketConnection.swift; sourceTree = "<group>"; };
 		B4C60994298CC17F00FEA42B /* WebSocketConnectionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketConnectionDelegate.swift; sourceTree = "<group>"; };
@@ -421,6 +429,9 @@
 		B4940EE92992200B003BB5CD /* HomeScreen */ = {
 			isa = PBXGroup;
 			children = (
+				B4940EF32992A15B003BB5CD /* SettingScreen */,
+				B4940EF22992A157003BB5CD /* PeopleScreen */,
+				B4940EF12992A152003BB5CD /* ChatRoomsScreen */,
 				B4940EEA29922011003BB5CD /* HomeViewController.swift */,
 			);
 			path = HomeScreen;
@@ -434,6 +445,30 @@
 				B4EAB1E7298F841800A3E098 /* LoginScreen */,
 			);
 			path = Screens;
+			sourceTree = "<group>";
+		};
+		B4940EF12992A152003BB5CD /* ChatRoomsScreen */ = {
+			isa = PBXGroup;
+			children = (
+				B4940EF42992A1FB003BB5CD /* ChatRoomsViewController.swift */,
+			);
+			path = ChatRoomsScreen;
+			sourceTree = "<group>";
+		};
+		B4940EF22992A157003BB5CD /* PeopleScreen */ = {
+			isa = PBXGroup;
+			children = (
+				B41D1DDE2992AB9000EF7390 /* PeopleViewController.swift */,
+			);
+			path = PeopleScreen;
+			sourceTree = "<group>";
+		};
+		B4940EF32992A15B003BB5CD /* SettingScreen */ = {
+			isa = PBXGroup;
+			children = (
+				B41D1DE02992ABB600EF7390 /* SettingViewController.swift */,
+			);
+			path = SettingScreen;
 			sourceTree = "<group>";
 		};
 		B4C6098E298C9BE600FEA42B /* WebSockets */ = {
@@ -477,6 +512,7 @@
 			children = (
 				B4C7163D299109250015DCEC /* SceneCoordinator.swift */,
 				B4940EEC29924584003BB5CD /* LoginCoordinator.swift */,
+				B4940EEF2992A0EA003BB5CD /* HomeCoordinator.swift */,
 			);
 			path = Coordinators;
 			sourceTree = "<group>";
@@ -656,6 +692,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B4940EF52992A1FB003BB5CD /* ChatRoomsViewController.swift in Sources */,
 				B415247329897D05006B86FF /* RoomsNetwork.swift in Sources */,
 				B48BF232298C0B07006E2684 /* TokenUseCase.swift in Sources */,
 				B401930729880F7200217AEB /* CoreDataStack.swift in Sources */,
@@ -677,6 +714,7 @@
 				B401931C29882E4000217AEB /* CDUsersUseCase.swift in Sources */,
 				B4940EEB29922011003BB5CD /* HomeViewController.swift in Sources */,
 				B46082B7298A46FF00BABC97 /* MessageResponse.swift in Sources */,
+				B4940EF02992A0EA003BB5CD /* HomeCoordinator.swift in Sources */,
 				B4C60993298CC14200FEA42B /* WebSocketConnection.swift in Sources */,
 				B401930C29881E2800217AEB /* Observable+Ext.swift in Sources */,
 				B46082A9298A33F600BABC97 /* FriendsNetwork.swift in Sources */,
@@ -726,11 +764,13 @@
 				B46082B5298A437B00BABC97 /* RoomsListResponse.swift in Sources */,
 				B46082A1298A259300BABC97 /* SignupRequest.swift in Sources */,
 				B4EAB1F3298FDC3100A3E098 /* PlopTextField.swift in Sources */,
+				B41D1DE12992ABB600EF7390 /* SettingViewController.swift in Sources */,
 				B48BF231298C0B07006E2684 /* UserUseCase.swift in Sources */,
 				B46082A5298A2BE900BABC97 /* AuthNetwork.swift in Sources */,
 				B4EAB1F9298FF4F200A3E098 /* LoginViewModel.swift in Sources */,
 				B401933C2988BEBE00217AEB /* Member.swift in Sources */,
 				B46082AB298A344A00BABC97 /* FriendsListResponse.swift in Sources */,
+				B41D1DDF2992AB9000EF7390 /* PeopleViewController.swift in Sources */,
 				B4C60995298CC17F00FEA42B /* WebSocketConnectionDelegate.swift in Sources */,
 				B41E40D029877F6500BB3126 /* Room.swift in Sources */,
 				B4C716412991098A0015DCEC /* LaunchViewController.swift in Sources */,
