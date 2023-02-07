@@ -6,7 +6,12 @@ final class UserUseCase {
   private let profileCoreDataUseCase = CDProfileUseCase()
   private let usersNetwork = UsersNetwork()
   
-  func signup(userid: String, email: String, password: String, nickname: String) -> Observable<User> {
+  func signup(
+    userid: String,
+    email: String,
+    password: String,
+    nickname: String
+  ) -> Observable<Result<User, Error>> {
     let request = SignupRequest(
       userid: userid,
       email: email,
@@ -28,11 +33,23 @@ final class UserUseCase {
             rooms: [],
             friends: []
           )
-          return user
+          return .success(user)
         } else {
-          throw UseCaseError.invalidResponse
+          return .failure(UseCaseError.invalidResponse)
         }
       })
+  }
+  
+  func mockSignup() -> Observable<Result<User, Error>> {
+    let user = User(
+      uid: 0,
+      userid: "userid",
+      email: "email",
+      profile: Profile(uid: 0, nickname: "nickname",
+                       image: "image"),
+      device: "device",
+      rooms: [], friends: [])
+    return Observable.just(.success(user))
   }
   
   func search(with email: String) -> Observable<Profile> {

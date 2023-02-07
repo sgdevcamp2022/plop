@@ -6,7 +6,11 @@ final class AuthUseCase {
   private let tokenUseCase = TokenUseCase()
   private let userCoreDataUseCase = CDUsersUseCase()
   
-  func login(userid: String?, email: String?, password: String) -> Observable<Void> {
+  func login(
+    userid: String?,
+    email: String?,
+    password: String
+  ) -> Observable<Result<Void, Error>> {
     network.login(userid: userid, email: email, password: password)
       .map({ [unowned self] response -> Void in
         if response.message == "success" {
@@ -16,7 +20,8 @@ final class AuthUseCase {
             return
           }
           
-          if accessToken != response.accessToken || refreshToken != (response.refreshToken ?? "") {
+          if accessToken != response.data.accessToken ||
+              refreshToken != (response.data.refreshToken ?? "") {
             self.updateToken(response)
           }
           return
@@ -24,6 +29,11 @@ final class AuthUseCase {
           throw UseCaseError.invalidResponse
         }
       })
+      .asResult()
+  }
+  
+  func mockLogin() -> Observable<Result<Void, Error>> {
+    return Observable.just(.success(()))
   }
   
   func autoLogin() -> Observable<Void> {
@@ -40,7 +50,8 @@ final class AuthUseCase {
             return
           }
           
-          if accessToken != response.accessToken || refreshToken != (response.refreshToken ?? "") {
+          if accessToken != response.data.accessToken ||
+              refreshToken != (response.data.refreshToken ?? "") {
             self.updateToken(response)
           }
           return
@@ -48,6 +59,10 @@ final class AuthUseCase {
           throw UseCaseError.invalidResponse
         }
       })
+  }
+  
+  func mockAutoLogin() -> Observable<Result<Void, Error>> {
+    return Observable.just(.failure(UseCaseError.invalidResponse))
   }
   
   func signout() -> Observable<Void> {
@@ -59,11 +74,10 @@ final class AuthUseCase {
   
   private func updateToken(_ response: LoginResponse) {
     self.tokenUseCase.updateToken(Token(
-      uid: "",
-      accessToken: response.accessToken,
-      refreshToken: response.refreshToken ?? "",
-      accessTokenExpiresIn: response.accessTokenExpiresIn,
-      refreshTokenExpiresIn: response.refreshTokenExpiresIn ?? 0)
+      accessToken: response.data.accessToken,
+      refreshToken: response.data.refreshToken ?? "",
+      accessExpire: response.data.accessExpire,
+      refreshExpire: response.data.refreshExpire ?? 0)
     )
   }
 }

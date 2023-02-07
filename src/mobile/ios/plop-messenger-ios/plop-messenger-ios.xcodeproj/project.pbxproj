@@ -34,7 +34,6 @@
 		B415247629898737006B86FF /* LoginResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B415247529898737006B86FF /* LoginResponse.swift */; };
 		B41E40B82987797C00BB3126 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41E40B72987797C00BB3126 /* AppDelegate.swift */; };
 		B41E40BA2987797C00BB3126 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41E40B92987797C00BB3126 /* SceneDelegate.swift */; };
-		B41E40BC2987797C00BB3126 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41E40BB2987797C00BB3126 /* ViewController.swift */; };
 		B41E40C12987797D00BB3126 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B41E40C02987797D00BB3126 /* Assets.xcassets */; };
 		B41E40C42987797D00BB3126 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B41E40C22987797D00BB3126 /* LaunchScreen.storyboard */; };
 		B41E40CE29877F5E00BB3126 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41E40CD29877F5E00BB3126 /* User.swift */; };
@@ -73,16 +72,33 @@
 		B48BF231298C0B07006E2684 /* UserUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B48BF22D298C0B07006E2684 /* UserUseCase.swift */; };
 		B48BF232298C0B07006E2684 /* TokenUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B48BF22E298C0B07006E2684 /* TokenUseCase.swift */; };
 		B48BF234298C0D20006E2684 /* RoomsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B48BF233298C0D20006E2684 /* RoomsUseCase.swift */; };
+		B4940EEB29922011003BB5CD /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4940EEA29922011003BB5CD /* HomeViewController.swift */; };
+		B4940EED29924584003BB5CD /* LoginCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4940EEC29924584003BB5CD /* LoginCoordinator.swift */; };
 		B4C60990298C9C0800FEA42B /* WebSocketService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4C6098F298C9C0800FEA42B /* WebSocketService.swift */; };
 		B4C60993298CC14200FEA42B /* WebSocketConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4C60992298CC14200FEA42B /* WebSocketConnection.swift */; };
 		B4C60995298CC17F00FEA42B /* WebSocketConnectionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4C60994298CC17F00FEA42B /* WebSocketConnectionDelegate.swift */; };
 		B4C60997298CD7A200FEA42B /* URLSessionWebSocketTask+Rx.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4C60996298CD7A200FEA42B /* URLSessionWebSocketTask+Rx.swift */; };
+		B4C716362990BB8B0015DCEC /* SignupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4C716352990BB8B0015DCEC /* SignupViewController.swift */; };
+		B4C716392990C69C0015DCEC /* UIResponder+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4C716382990C69C0015DCEC /* UIResponder+Ext.swift */; };
+		B4C7163B2990D4BA0015DCEC /* SignupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4C7163A2990D4BA0015DCEC /* SignupViewModel.swift */; };
+		B4C7163E299109250015DCEC /* SceneCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4C7163D299109250015DCEC /* SceneCoordinator.swift */; };
+		B4C716412991098A0015DCEC /* LaunchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4C716402991098A0015DCEC /* LaunchViewController.swift */; };
+		B4C7164529914ACB0015DCEC /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4C7164429914ACB0015DCEC /* Coordinator.swift */; };
+		B4C7164729914CEC0015DCEC /* LaunchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4C7164629914CEC0015DCEC /* LaunchViewModel.swift */; };
 		B4CD3300298E74F200628402 /* WebSocketUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4CD32FF298E74F100628402 /* WebSocketUseCase.swift */; };
 		B4D6814A298BADE5000D8920 /* KeychainRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D68149298BADE5000D8920 /* KeychainRepository.swift */; };
 		B4D6814C298BAE7D000D8920 /* Token.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D6814B298BAE7D000D8920 /* Token.swift */; };
 		B4E8D66F29880E9D003B946D /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = B4E8D66E29880E9D003B946D /* RxCocoa */; };
 		B4E8D67129880E9D003B946D /* RxRelay in Frameworks */ = {isa = PBXBuildFile; productRef = B4E8D67029880E9D003B946D /* RxRelay */; };
 		B4E8D67329880E9D003B946D /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = B4E8D67229880E9D003B946D /* RxSwift */; };
+		B4EAB1E9298F842500A3E098 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4EAB1E8298F842500A3E098 /* LoginViewController.swift */; };
+		B4EAB1EC298F878100A3E098 /* UIConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4EAB1EB298F878100A3E098 /* UIConstants.swift */; };
+		B4EAB1EF298F87FF00A3E098 /* PlopOrangeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4EAB1EE298F87FF00A3E098 /* PlopOrangeButton.swift */; };
+		B4EAB1F1298FD39900A3E098 /* PlopGrayButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4EAB1F0298FD39900A3E098 /* PlopGrayButton.swift */; };
+		B4EAB1F3298FDC3100A3E098 /* PlopTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4EAB1F2298FDC3100A3E098 /* PlopTextField.swift */; };
+		B4EAB1F5298FE84200A3E098 /* PlopNoBackgroundButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4EAB1F4298FE84200A3E098 /* PlopNoBackgroundButton.swift */; };
+		B4EAB1F7298FF31D00A3E098 /* ViewModelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4EAB1F6298FF31D00A3E098 /* ViewModelType.swift */; };
+		B4EAB1F9298FF4F200A3E098 /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4EAB1F8298FF4F200A3E098 /* LoginViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -114,7 +130,6 @@
 		B41E40B42987797C00BB3126 /* plop-messenger-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "plop-messenger-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B41E40B72987797C00BB3126 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B41E40B92987797C00BB3126 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		B41E40BB2987797C00BB3126 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		B41E40C02987797D00BB3126 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B41E40C32987797D00BB3126 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B41E40C52987797D00BB3126 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -154,13 +169,30 @@
 		B48BF22D298C0B07006E2684 /* UserUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserUseCase.swift; sourceTree = "<group>"; };
 		B48BF22E298C0B07006E2684 /* TokenUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TokenUseCase.swift; sourceTree = "<group>"; };
 		B48BF233298C0D20006E2684 /* RoomsUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomsUseCase.swift; sourceTree = "<group>"; };
+		B4940EEA29922011003BB5CD /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
+		B4940EEC29924584003BB5CD /* LoginCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginCoordinator.swift; sourceTree = "<group>"; };
 		B4C6098F298C9C0800FEA42B /* WebSocketService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketService.swift; sourceTree = "<group>"; };
 		B4C60992298CC14200FEA42B /* WebSocketConnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketConnection.swift; sourceTree = "<group>"; };
 		B4C60994298CC17F00FEA42B /* WebSocketConnectionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketConnectionDelegate.swift; sourceTree = "<group>"; };
 		B4C60996298CD7A200FEA42B /* URLSessionWebSocketTask+Rx.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLSessionWebSocketTask+Rx.swift"; sourceTree = "<group>"; };
+		B4C716352990BB8B0015DCEC /* SignupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupViewController.swift; sourceTree = "<group>"; };
+		B4C716382990C69C0015DCEC /* UIResponder+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIResponder+Ext.swift"; sourceTree = "<group>"; };
+		B4C7163A2990D4BA0015DCEC /* SignupViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupViewModel.swift; sourceTree = "<group>"; };
+		B4C7163D299109250015DCEC /* SceneCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneCoordinator.swift; sourceTree = "<group>"; };
+		B4C716402991098A0015DCEC /* LaunchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchViewController.swift; sourceTree = "<group>"; };
+		B4C7164429914ACB0015DCEC /* Coordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coordinator.swift; sourceTree = "<group>"; };
+		B4C7164629914CEC0015DCEC /* LaunchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchViewModel.swift; sourceTree = "<group>"; };
 		B4CD32FF298E74F100628402 /* WebSocketUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketUseCase.swift; sourceTree = "<group>"; };
 		B4D68149298BADE5000D8920 /* KeychainRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainRepository.swift; sourceTree = "<group>"; };
 		B4D6814B298BAE7D000D8920 /* Token.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Token.swift; sourceTree = "<group>"; };
+		B4EAB1E8298F842500A3E098 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		B4EAB1EB298F878100A3E098 /* UIConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIConstants.swift; sourceTree = "<group>"; };
+		B4EAB1EE298F87FF00A3E098 /* PlopOrangeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlopOrangeButton.swift; sourceTree = "<group>"; };
+		B4EAB1F0298FD39900A3E098 /* PlopGrayButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlopGrayButton.swift; sourceTree = "<group>"; };
+		B4EAB1F2298FDC3100A3E098 /* PlopTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlopTextField.swift; sourceTree = "<group>"; };
+		B4EAB1F4298FE84200A3E098 /* PlopNoBackgroundButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlopNoBackgroundButton.swift; sourceTree = "<group>"; };
+		B4EAB1F6298FF31D00A3E098 /* ViewModelType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModelType.swift; sourceTree = "<group>"; };
+		B4EAB1F8298FF4F200A3E098 /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -278,14 +310,14 @@
 		B41E40B62987797C00BB3126 /* plop-messenger-ios */ = {
 			isa = PBXGroup;
 			children = (
-				B41E40EA2987926A00BB3126 /* Data */,
-				B41E40CB29877F0100BB3126 /* Domain */,
+				B41E40C52987797D00BB3126 /* Info.plist */,
 				B41E40B72987797C00BB3126 /* AppDelegate.swift */,
 				B41E40B92987797C00BB3126 /* SceneDelegate.swift */,
-				B41E40BB2987797C00BB3126 /* ViewController.swift */,
 				B41E40C02987797D00BB3126 /* Assets.xcassets */,
+				B41E40EA2987926A00BB3126 /* Data */,
+				B41E40CB29877F0100BB3126 /* Domain */,
 				B41E40C22987797D00BB3126 /* LaunchScreen.storyboard */,
-				B41E40C52987797D00BB3126 /* Info.plist */,
+				B4EAB1E6298F825B00A3E098 /* Presentation */,
 			);
 			path = "plop-messenger-ios";
 			sourceTree = "<group>";
@@ -293,8 +325,8 @@
 		B41E40CB29877F0100BB3126 /* Domain */ = {
 			isa = PBXGroup;
 			children = (
-				B46082B8298AA46E00BABC97 /* UseCases */,
 				B41E40CC29877F0300BB3126 /* Entities */,
+				B46082B8298AA46E00BABC97 /* UseCases */,
 			);
 			path = Domain;
 			sourceTree = "<group>";
@@ -315,9 +347,9 @@
 		B41E40EA2987926A00BB3126 /* Data */ = {
 			isa = PBXGroup;
 			children = (
-				B4D68148298BADC2000D8920 /* Keychain */,
-				B41E40ED2987927800BB3126 /* ImageLoader */,
 				B41E40EC2987927300BB3126 /* CoreData */,
+				B41E40ED2987927800BB3126 /* ImageLoader */,
+				B4D68148298BADC2000D8920 /* Keychain */,
 				B41E40EB2987927000BB3126 /* Network */,
 				B41E40F229879D2900BB3126 /* ServiceProvider.swift */,
 			);
@@ -386,6 +418,24 @@
 			path = Common;
 			sourceTree = "<group>";
 		};
+		B4940EE92992200B003BB5CD /* HomeScreen */ = {
+			isa = PBXGroup;
+			children = (
+				B4940EEA29922011003BB5CD /* HomeViewController.swift */,
+			);
+			path = HomeScreen;
+			sourceTree = "<group>";
+		};
+		B4940EEE29929C38003BB5CD /* Screens */ = {
+			isa = PBXGroup;
+			children = (
+				B4940EE92992200B003BB5CD /* HomeScreen */,
+				B4C7163F2991097E0015DCEC /* LaunchScreen */,
+				B4EAB1E7298F841800A3E098 /* LoginScreen */,
+			);
+			path = Screens;
+			sourceTree = "<group>";
+		};
 		B4C6098E298C9BE600FEA42B /* WebSockets */ = {
 			isa = PBXGroup;
 			children = (
@@ -403,6 +453,61 @@
 				B4C60994298CC17F00FEA42B /* WebSocketConnectionDelegate.swift */,
 			);
 			path = Interfaces;
+			sourceTree = "<group>";
+		};
+		B4C716342990BB0D0015DCEC /* SignupScreen */ = {
+			isa = PBXGroup;
+			children = (
+				B4C716352990BB8B0015DCEC /* SignupViewController.swift */,
+				B4C7163A2990D4BA0015DCEC /* SignupViewModel.swift */,
+			);
+			path = SignupScreen;
+			sourceTree = "<group>";
+		};
+		B4C716372990C6910015DCEC /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				B4C716382990C69C0015DCEC /* UIResponder+Ext.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		B4C7163C2991091E0015DCEC /* Coordinators */ = {
+			isa = PBXGroup;
+			children = (
+				B4C7163D299109250015DCEC /* SceneCoordinator.swift */,
+				B4940EEC29924584003BB5CD /* LoginCoordinator.swift */,
+			);
+			path = Coordinators;
+			sourceTree = "<group>";
+		};
+		B4C7163F2991097E0015DCEC /* LaunchScreen */ = {
+			isa = PBXGroup;
+			children = (
+				B4C716402991098A0015DCEC /* LaunchViewController.swift */,
+				B4C7164629914CEC0015DCEC /* LaunchViewModel.swift */,
+			);
+			path = LaunchScreen;
+			sourceTree = "<group>";
+		};
+		B4C7164229914AB30015DCEC /* Interfaces */ = {
+			isa = PBXGroup;
+			children = (
+				B4EAB1F6298FF31D00A3E098 /* ViewModelType.swift */,
+				B4C7164429914ACB0015DCEC /* Coordinator.swift */,
+			);
+			path = Interfaces;
+			sourceTree = "<group>";
+		};
+		B4C7164329914ABA0015DCEC /* UIComponents */ = {
+			isa = PBXGroup;
+			children = (
+				B4EAB1F0298FD39900A3E098 /* PlopGrayButton.swift */,
+				B4EAB1F4298FE84200A3E098 /* PlopNoBackgroundButton.swift */,
+				B4EAB1EE298F87FF00A3E098 /* PlopOrangeButton.swift */,
+				B4EAB1F2298FDC3100A3E098 /* PlopTextField.swift */,
+			);
+			path = UIComponents;
 			sourceTree = "<group>";
 		};
 		B4D68148298BADC2000D8920 /* Keychain */ = {
@@ -432,6 +537,45 @@
 				B41524462988FD38006B86FF /* Extensions */,
 			);
 			path = Entities;
+			sourceTree = "<group>";
+		};
+		B4EAB1E6298F825B00A3E098 /* Presentation */ = {
+			isa = PBXGroup;
+			children = (
+				B4EAB1ED298F87EC00A3E098 /* Common */,
+				B4EAB1EA298F877A00A3E098 /* Constants */,
+				B4C7163C2991091E0015DCEC /* Coordinators */,
+				B4C716372990C6910015DCEC /* Extensions */,
+				B4940EEE29929C38003BB5CD /* Screens */,
+			);
+			path = Presentation;
+			sourceTree = "<group>";
+		};
+		B4EAB1E7298F841800A3E098 /* LoginScreen */ = {
+			isa = PBXGroup;
+			children = (
+				B4C716342990BB0D0015DCEC /* SignupScreen */,
+				B4EAB1E8298F842500A3E098 /* LoginViewController.swift */,
+				B4EAB1F8298FF4F200A3E098 /* LoginViewModel.swift */,
+			);
+			path = LoginScreen;
+			sourceTree = "<group>";
+		};
+		B4EAB1EA298F877A00A3E098 /* Constants */ = {
+			isa = PBXGroup;
+			children = (
+				B4EAB1EB298F878100A3E098 /* UIConstants.swift */,
+			);
+			path = Constants;
+			sourceTree = "<group>";
+		};
+		B4EAB1ED298F87EC00A3E098 /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				B4C7164329914ABA0015DCEC /* UIComponents */,
+				B4C7164229914AB30015DCEC /* Interfaces */,
+			);
+			path = Common;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -515,42 +659,53 @@
 				B415247329897D05006B86FF /* RoomsNetwork.swift in Sources */,
 				B48BF232298C0B07006E2684 /* TokenUseCase.swift in Sources */,
 				B401930729880F7200217AEB /* CoreDataStack.swift in Sources */,
+				B4EAB1EC298F878100A3E098 /* UIConstants.swift in Sources */,
 				B48BF230298C0B07006E2684 /* UseCaseError.swift in Sources */,
 				B4D6814C298BAE7D000D8920 /* Token.swift in Sources */,
 				B41E40CE29877F5E00BB3126 /* User.swift in Sources */,
 				B4C60997298CD7A200FEA42B /* URLSessionWebSocketTask+Rx.swift in Sources */,
 				B415247629898737006B86FF /* LoginResponse.swift in Sources */,
 				B41E40D9298783AE00BB3126 /* Friend.swift in Sources */,
+				B4C7163E299109250015DCEC /* SceneCoordinator.swift in Sources */,
 				B46082E6298AAC9200BABC97 /* CDProfile+CoreDataProperties.swift in Sources */,
+				B4EAB1F1298FD39900A3E098 /* PlopGrayButton.swift in Sources */,
+				B4C7164729914CEC0015DCEC /* LaunchViewModel.swift in Sources */,
 				B40193132988242800217AEB /* ContextScheduler.swift in Sources */,
 				B4019317298829E700217AEB /* NSManagedObjectContext+Rx.swift in Sources */,
 				B401930E29881F4800217AEB /* DomainConvertibleType.swift in Sources */,
 				B46082E0298AAC9200BABC97 /* CDFriend+CoreDataProperties.swift in Sources */,
 				B401931C29882E4000217AEB /* CDUsersUseCase.swift in Sources */,
+				B4940EEB29922011003BB5CD /* HomeViewController.swift in Sources */,
 				B46082B7298A46FF00BABC97 /* MessageResponse.swift in Sources */,
 				B4C60993298CC14200FEA42B /* WebSocketConnection.swift in Sources */,
-				B41E40BC2987797C00BB3126 /* ViewController.swift in Sources */,
 				B401930C29881E2800217AEB /* Observable+Ext.swift in Sources */,
 				B46082A9298A33F600BABC97 /* FriendsNetwork.swift in Sources */,
 				B4019338298835E100217AEB /* CDProfile+Ext.swift in Sources */,
 				B415246429896F75006B86FF /* CDFriendsUseCase.swift in Sources */,
 				B41E40F329879D2900BB3126 /* ServiceProvider.swift in Sources */,
 				B46082E8298AAC9200BABC97 /* CDRoom+CoreDataProperties.swift in Sources */,
+				B4C7164529914ACB0015DCEC /* Coordinator.swift in Sources */,
 				B4CD3300298E74F200628402 /* WebSocketUseCase.swift in Sources */,
 				B401933A2988B80D00217AEB /* CDMember+Ext.swift in Sources */,
 				B46082E2298AAC9200BABC97 /* CDMember+CoreDataProperties.swift in Sources */,
 				B401930A298810D300217AEB /* NSManagedObjectContext+Ext.swift in Sources */,
 				B40193102988230B00217AEB /* Persistable.swift in Sources */,
+				B4EAB1EF298F87FF00A3E098 /* PlopOrangeButton.swift in Sources */,
 				B460829F298A217700BABC97 /* NetworkError.swift in Sources */,
 				B41524662989701D006B86FF /* CDMemebersUseCase.swift in Sources */,
 				B41E40B82987797C00BB3126 /* AppDelegate.swift in Sources */,
 				B40193442988C95700217AEB /* CDMessage+Ext.swift in Sources */,
 				B40193152988297300217AEB /* FetchedResultsControllerObserver.swift in Sources */,
 				B46082EA298AAC9200BABC97 /* CDUser+CoreDataProperties.swift in Sources */,
+				B4EAB1F7298FF31D00A3E098 /* ViewModelType.swift in Sources */,
 				B415246A2989714E006B86FF /* CDProfileUseCase.swift in Sources */,
+				B4EAB1E9298F842500A3E098 /* LoginViewController.swift in Sources */,
 				B41E40F1298792AD00BB3126 /* PlopMessengerModel.xcdatamodeld in Sources */,
+				B4C716362990BB8B0015DCEC /* SignupViewController.swift in Sources */,
 				B46082DF298AAC9200BABC97 /* CDFriend+CoreDataClass.swift in Sources */,
 				B401931E29882FDE00217AEB /* CDUser+Ext.swift in Sources */,
+				B4EAB1F5298FE84200A3E098 /* PlopNoBackgroundButton.swift in Sources */,
+				B4C7163B2990D4BA0015DCEC /* SignupViewModel.swift in Sources */,
 				B48BF234298C0D20006E2684 /* RoomsUseCase.swift in Sources */,
 				B41E40D229877F6A00BB3126 /* Message.swift in Sources */,
 				B46082E1298AAC9200BABC97 /* CDMember+CoreDataClass.swift in Sources */,
@@ -570,18 +725,23 @@
 				B415246829897051006B86FF /* CDMessagesUseCase.swift in Sources */,
 				B46082B5298A437B00BABC97 /* RoomsListResponse.swift in Sources */,
 				B46082A1298A259300BABC97 /* SignupRequest.swift in Sources */,
+				B4EAB1F3298FDC3100A3E098 /* PlopTextField.swift in Sources */,
 				B48BF231298C0B07006E2684 /* UserUseCase.swift in Sources */,
 				B46082A5298A2BE900BABC97 /* AuthNetwork.swift in Sources */,
+				B4EAB1F9298FF4F200A3E098 /* LoginViewModel.swift in Sources */,
 				B401933C2988BEBE00217AEB /* Member.swift in Sources */,
 				B46082AB298A344A00BABC97 /* FriendsListResponse.swift in Sources */,
 				B4C60995298CC17F00FEA42B /* WebSocketConnectionDelegate.swift in Sources */,
 				B41E40D029877F6500BB3126 /* Room.swift in Sources */,
+				B4C716412991098A0015DCEC /* LaunchViewController.swift in Sources */,
 				B46082E3298AAC9200BABC97 /* CDMessage+CoreDataClass.swift in Sources */,
 				B401931929882D4000217AEB /* CoreDataRepository.swift in Sources */,
 				B4D6814A298BADE5000D8920 /* KeychainRepository.swift in Sources */,
 				B46082B1298A3EEF00BABC97 /* MemberResponse.swift in Sources */,
+				B4C716392990C69C0015DCEC /* UIResponder+Ext.swift in Sources */,
 				B46082E7298AAC9200BABC97 /* CDRoom+CoreDataClass.swift in Sources */,
 				B46082E5298AAC9200BABC97 /* CDProfile+CoreDataClass.swift in Sources */,
+				B4940EED29924584003BB5CD /* LoginCoordinator.swift in Sources */,
 				B401933E2988BF1F00217AEB /* CDRoom+Ext.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -3,7 +3,11 @@ import RxSwift
 import RxCocoa
 
 final class AuthNetwork {
-  func login(userid: String?, email: String?, password: String) -> Observable<LoginResponse> {
+  func login(
+    userid: String?,
+    email: String?,
+    password: String
+  ) -> Observable<LoginResponse> {
     var jsonBody: [String: Any] = [:]
     
     if let userid = userid {
