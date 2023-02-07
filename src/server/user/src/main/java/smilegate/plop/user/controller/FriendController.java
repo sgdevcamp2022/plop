@@ -8,10 +8,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import smilegate.plop.user.dto.response.ResponseDto;
 import smilegate.plop.user.dto.response.ResponseFriend;
+import smilegate.plop.user.dto.response.ResponseProfile;
 import smilegate.plop.user.model.FriendshipCode;
 import smilegate.plop.user.security.JwtTokenProvider;
 import smilegate.plop.user.service.FriendService;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -36,6 +38,20 @@ public class FriendController {
     public String status() {
         return String.format("It's Working in User Service On PORT %s", env.getProperty("local.server.port"));
     }
+    @GetMapping("/friend/request")
+    public ResponseEntity<ResponseDto> requestFriendList(
+            @RequestHeader("AUTHORIZATION") String bearerToken) {
+        // 게이트웨이에서 이미 인증 토큰의 유효성을 검증하였음.
+        String jwt = jwtTokenProvider.removeBearer(bearerToken);
+        List<ResponseProfile> friend = friendService.requestFriendList(jwt);
+        ResponseDto responseDto;
+        if (friend != null )
+            responseDto = new ResponseDto<>("SUCCESS", "query friend request list successfully", friend);
+        else
+            responseDto = new ResponseDto<>("FAIL", "query friend request list failed", friend);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+    }
+
     @PostMapping("/friend/request")
     public ResponseEntity<ResponseDto> requestFriend(
             @RequestHeader("AUTHORIZATION") String bearerToken,
@@ -67,6 +83,19 @@ public class FriendController {
         else
             responseDto = new ResponseDto<>("FAIL", "cancel friend request failed", friend);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
+    }
+    @GetMapping("/friend/response")
+    public ResponseEntity<ResponseDto> responseFriendList(
+            @RequestHeader("AUTHORIZATION") String bearerToken) {
+        // 게이트웨이에서 이미 인증 토큰의 유효성을 검증하였음.
+        String jwt = jwtTokenProvider.removeBearer(bearerToken);
+        List<ResponseProfile> friend = friendService.responseFriendList(jwt);
+        ResponseDto responseDto;
+        if (friend != null )
+            responseDto = new ResponseDto<>("SUCCESS", "query friend response list successfully", friend);
+        else
+            responseDto = new ResponseDto<>("FAIL", "query friend response list failed", friend);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
     @PostMapping("/friend/response")
     public ResponseEntity<ResponseDto> acceptFriend(

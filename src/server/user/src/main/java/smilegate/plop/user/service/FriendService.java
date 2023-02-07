@@ -7,13 +7,14 @@ import smilegate.plop.user.domain.friend.FriendEntity;
 import smilegate.plop.user.domain.friend.FriendRepository;
 import smilegate.plop.user.domain.user.UserEntity;
 import smilegate.plop.user.domain.user.UserRepository;
-import smilegate.plop.user.dto.UserDto;
 import smilegate.plop.user.dto.response.ResponseFriend;
+import smilegate.plop.user.dto.response.ResponseProfile;
 import smilegate.plop.user.model.FriendshipCode;
 import smilegate.plop.user.model.JwtUser;
 import smilegate.plop.user.security.JwtTokenProvider;
 
-import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -30,6 +31,56 @@ public class FriendService {
         this.friendRepository = friendRepository;
         this.jwtTokenProvider = jwtTokenProvider;
     }
+    public List<ResponseProfile> requestFriendList(String jwt) {
+        JwtUser sender = jwtTokenProvider.getUserInfo(jwt);
+        UserEntity senderEntity = userRepository.findByEmail(sender.getEmail());
+        if (senderEntity == null)
+            return null;
+
+        List<FriendEntity> friendEntityList = friendRepository.findBySenderIdAndStatus(
+                senderEntity.getId(),
+                FriendshipCode.REQUESTED.value()
+        );
+        List<ResponseProfile> responseFriendList = new ArrayList<>();
+        if (friendEntityList == null) {
+            return null;
+        } else {
+            for(FriendEntity friend : friendEntityList) {
+                UserEntity receiver = userRepository.findById(friend.getReceiverId()).orElse(null);
+                if (sender == null)
+                    return null;
+
+                ResponseProfile user = new ResponseProfile(receiver.getUserId(), receiver.getEmail(), receiver.getProfile());
+                responseFriendList.add(user);
+            }
+            return responseFriendList;
+        }
+    }
+    public List<ResponseProfile> responseFriendList(String jwt) {
+        JwtUser receiver = jwtTokenProvider.getUserInfo(jwt);
+        UserEntity receiverEntity = userRepository.findByEmail(receiver.getEmail());
+        if (receiverEntity == null)
+            return null;
+
+        List<FriendEntity> friendEntityList = friendRepository.findByReceiverIdAndStatus(
+                receiverEntity.getId(),
+                FriendshipCode.REQUESTED.value()
+        );
+        List<ResponseProfile> responseFriendList = new ArrayList<>();
+        if (friendEntityList == null) {
+            return null;
+        } else {
+            for(FriendEntity friend : friendEntityList) {
+                UserEntity sender = userRepository.findById(friend.getSenderId()).orElse(null);
+                if (sender == null)
+                    return null;
+
+                ResponseProfile user = new ResponseProfile(sender.getUserId(), sender.getEmail(), sender.getProfile());
+                responseFriendList.add(user);
+            }
+            return responseFriendList;
+        }
+    }
 
     public ResponseFriend requestFriend(String jwt, String target, int status) {
         // 친구 요청을 하는 엔티티 - jwt를 통해 email로 검색
@@ -40,17 +91,16 @@ public class FriendService {
 
         // 친구 요청을 받는 엔티티 - 이메일 혹은 아이디로 검색
         UserEntity receiverEntity = null;
-        if (target.contains("@")) {// 이메일인 경우
+        // 이메일인 경우
+        if (target.contains("@"))
             receiverEntity = userRepository.findByEmail(target);
-            log.error(receiverEntity.toString());
-        }
-
-        else // 아이디인 경우
+        // 아이디인 경우
+        else
             receiverEntity = userRepository.findByUserId(target);
         if (receiverEntity == null)
             return null;
 
-        FriendEntity friendEntity, savedFriendEntity;
+        FriendEntity friendEntity;
         if (status == FriendshipCode.NONE.value()) { // 취소하고 싶은경우 삭제
             friendEntity = friendRepository.findBySenderIdAndReceiverIdAndStatus(
                     senderEntity.getId(), receiverEntity.getId(),FriendshipCode.REQUESTED.value());
@@ -67,7 +117,6 @@ public class FriendService {
             }
             friendRepository.save(friendEntity);
         }
-
 
         ResponseFriend responseFriend = ResponseFriend.builder()
                 .sender(sender.getEmail())

@@ -7,6 +7,7 @@ import org.hibernate.annotations.TypeDef;
 import smilegate.plop.user.dto.response.ResponseFriend;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @ToString
 @Builder
@@ -17,12 +18,12 @@ import javax.persistence.*;
 @Entity
 @TypeDef(name = "json", typeClass = JsonType.class)
 @Table(name = "friend")
-
-public class FriendEntity {
+@IdClass(FriendEntity.class)
+public class FriendEntity implements Serializable {
     @Id
     @Column(name = "sender_id", nullable = false, unique = true)
     private Long senderId;
-
+    @Id
     @Column(name = "receiver_id", nullable = false, unique = true)
     private Long receiverId;
 

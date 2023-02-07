@@ -6,12 +6,15 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import smilegate.plop.user.domain.user.UserEntity;
 
+import java.util.List;
+
 @Repository
 public interface FriendRepository extends JpaRepository<FriendEntity,Long> {
     FriendEntity findBySenderId(long senderId);
     FriendEntity findByReceiverId(long receiverId);
     FriendEntity findBySenderIdAndReceiverIdAndStatus(long senderId, long receiverId, int status);
-    FriendEntity findByReceiverIdAndStatus(String receiverId, int status);
+    List<FriendEntity> findBySenderIdAndStatus(long senderId, int status);
+    List<FriendEntity> findByReceiverIdAndStatus(long receiverId, int status);
 
     // 두 유저 간 친구 관계 조회
 //    @Query(value = "SELECT * from friend where " +
