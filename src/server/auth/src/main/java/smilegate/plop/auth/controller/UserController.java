@@ -52,18 +52,22 @@ public class UserController {
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         UserDto userDto = mapper.map(user, UserDto.class);
         UserDto savedUser = authService.signUp(userDto);
-
-        ResponseUser responseUser = mapper.map(savedUser, ResponseUser.class);
-        ResponseDto responseDto = new ResponseDto<>("SUCCESS", "signup successfully", responseUser);
+        ResponseDto responseDto;
+        if (savedUser == null ) {
+            responseDto = new ResponseDto<>("SUCCESS", "signup successfully", savedUser);
+        }
+        else {
+            ResponseUser responseUser = mapper.map(savedUser, ResponseUser.class);
+            responseDto = new ResponseDto("FAIL", "user already exists", responseUser);
+        }
 
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
     @PostMapping("/login")
     public ResponseEntity<ResponseDto> logIn(@RequestBody RequestLogin user) {
         ResponseJWT responseJWT = authService.logIn(user);
-        log.error(responseJWT.toString());
-        if (responseJWT.equals(null)) {
-            ResponseDto responseDto = new ResponseDto("FAIL", "password is not correct", user.getIdOrEmail());
+        if (responseJWT == null) {
+            ResponseDto responseDto = new ResponseDto("FAIL", "password is not correct or user is not valid", user.getIdOrEmail());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseDto);
         }
         else {
@@ -95,7 +99,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
-    @PutMapping("/withdrawal")
+    @DeleteMapping("/withdrawal")
     public ResponseEntity<ResponseDto> withdrawal(@RequestHeader("AUTHORIZATION") String bearerToken) {
         //게이트웨이에서 이미 인증 토큰의 유효성을 검증하였음.
         String jwt = jwtTokenProvider.removeBearer(bearerToken);
