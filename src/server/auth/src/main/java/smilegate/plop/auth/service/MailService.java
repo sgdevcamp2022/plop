@@ -102,7 +102,10 @@ public class MailService {
         userRepository.save(userEntity);
 
         String savedVerificationCode = redisService.getValues("verify-"+verificationCode.getEmail());
-        if (savedVerificationCode.equals(verificationCode.getVerificationCode()))
+        if (savedVerificationCode == null) {
+            return false;
+        }
+        else if (savedVerificationCode.equals(verificationCode.getVerificationCode()))
             return true;
         else
             return false;

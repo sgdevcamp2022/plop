@@ -47,6 +47,10 @@ public class AuthService {
 
     public UserDto signUp(UserDto userDto) {
         userDto.setEncryptedPwd(passwordEncoder.encode(userDto.getPassword()));
+
+        if (userRepository.findByEmail(userDto.getEmail()) != null) {
+            return null;
+        }
         UserEntity userEntity = UserEntity.builder()
                 .userId(userDto.getUserId())
                 .email(userDto.getEmail())
