@@ -42,8 +42,8 @@ interface UserApi {
 
     @POST(POST_EMAIL_VERIFY)
     suspend fun postEmailVerify(
-        @Body postEmailCodeRequest: PostEmailCodeRequest
-    ): Response<PostEmailCodeResponse>
+        @Body postEmailVerifyRequest: PostEmailVerifyRequest
+    ): Response<PostEmailVerifyResponse>
 
     @PUT(PUT_WITHDRAWAL)
     suspend fun putWithdrawal(): Response<PutWithdrawalResponse>

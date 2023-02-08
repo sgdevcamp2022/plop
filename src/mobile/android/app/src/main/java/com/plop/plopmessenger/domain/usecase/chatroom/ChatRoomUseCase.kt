@@ -10,5 +10,6 @@ data class ChatRoomUseCase @Inject constructor(
     val createGroupChatRoomUseCase: CreateGroupChatRoomUseCase,
     val inviteMemberUseCase: InviteMemberUseCase,
     val getNewChatRoomMessageUseCase: GetNewChatRoomMessageUseCase,
-    val getMessageHistoryUseCase: GetMessageHistoryUseCase
+    val getMessageHistoryUseCase: GetMessageHistoryUseCase,
+    val getRemoteChatRoomInfoUseCase: GetRemoteChatRoomInfoUseCase
 )

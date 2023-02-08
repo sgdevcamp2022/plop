@@ -26,6 +26,10 @@ class UserRepositoryImpl @Inject constructor(
         return pref.getRefreshToken()
     }
 
+    override suspend fun setRefreshToken(refreshToken: String) {
+        pref.setAccessToken(refreshToken)
+    }
+
     override fun getUser(): Flow<UserPref> {
         return pref.getUser()
     }
@@ -102,8 +106,8 @@ class UserRepositoryImpl @Inject constructor(
         return userApi.postEmailCode(postEmailCodeRequest)
     }
 
-    override suspend fun postEmailVerify(postEmailCodeRequest: PostEmailCodeRequest): Response<PostEmailCodeResponse> {
-        return userApi.postEmailVerify(postEmailCodeRequest)
+    override suspend fun postEmailVerify(postEmailVerifyRequest: PostEmailVerifyRequest): Response<PostEmailVerifyResponse> {
+        return userApi.postEmailVerify(postEmailVerifyRequest)
     }
 
     override suspend fun putWithdrawal(): Response<PutWithdrawalResponse> {

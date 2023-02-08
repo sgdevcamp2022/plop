@@ -12,6 +12,7 @@ interface UserRepository {
     fun getAccessToken(): Flow<String>
     suspend fun setAccessToken(accessToken: String)
     fun getRefreshToken(): Flow<String>
+    suspend fun setRefreshToken(refreshToken: String)
     fun getUser(): Flow<UserPref>
     fun getUserId(): Flow<String>
     fun getNickname(): Flow<String>
@@ -32,7 +33,7 @@ interface UserRepository {
     suspend fun deleteLogout(): Response<DeleteLogoutResponse>
     suspend fun postSignUp(postSignUpRequest: PostSignUpRequest): Response<PostSignUpResponse>
     suspend fun postEmailCode(postEmailCodeRequest: PostEmailCodeRequest): Response<PostEmailCodeResponse>
-    suspend fun postEmailVerify(postEmailCodeRequest: PostEmailCodeRequest): Response<PostEmailCodeResponse>
+    suspend fun postEmailVerify(postEmailVerifyRequest: PostEmailVerifyRequest): Response<PostEmailVerifyResponse>
     suspend fun putWithdrawal(): Response<PutWithdrawalResponse>
     suspend fun postPasswordNew(postPasswordNewRequest: PostPasswordNewRequest): Response<PostPasswordNewResponse>
     suspend fun getUserProfile(email: String): Response<GetUserProfileResponse>
