@@ -4,3 +4,4 @@ data class GetFriendListResponse(
     val profiles: List<FriendDto>,
     val message: String
 )
+
