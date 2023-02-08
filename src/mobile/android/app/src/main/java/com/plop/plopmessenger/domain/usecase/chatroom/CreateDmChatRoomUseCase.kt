@@ -17,7 +17,7 @@ class CreateDmChatRoomUseCase @Inject constructor(
     private val repository: ChatRoomRepository,
     private val memberRepository: MemberRepository
 ) {
-    suspend operator fun invoke(friend: People): Flow<Resource<String>> = flow{
+    suspend operator fun invoke(friend: People): Flow<Resource<Boolean>> = flow{
         try {
             val response = repository.postDmChatroom(PostDmRoomRequest(friend.peopleId))
             when(response.code()){
@@ -25,7 +25,7 @@ class CreateDmChatRoomUseCase @Inject constructor(
                     val chatroom = response.body()
 
                     if (chatroom?.roomId != null) {
-                        emit(Resource.Success())
+                        emit(Resource.Success(true))
                         repository.insertChatRoom(
                             ChatRoom(chatroom.roomId, friend.nickname, 0, "", Date(), 1)
                         )

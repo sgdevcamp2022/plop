@@ -14,7 +14,7 @@ class InviteMemberUseCase @Inject constructor(
     private val chatRoomRepository: ChatRoomRepository,
     private val memberRepository: MemberRepository
 ) {
-    operator fun invoke(roomid: String, members: List<People>): Flow<Resource<String>> = flow {
+    operator fun invoke(roomid: String, members: List<People>): Flow<Resource<Boolean>> = flow {
         try {
             val response = chatRoomRepository.postInvitation(PostInvitationRequest(members.map { it.peopleId }, roomid))
             when(response.code()) {
@@ -26,7 +26,7 @@ class InviteMemberUseCase @Inject constructor(
                         }
                     )
                     if (chatroom != null) {
-                        emit(Resource.Success())
+                        emit(Resource.Success(true))
                     }
                 }
             }
