@@ -22,10 +22,7 @@ import java.util.Map;
 public class FriendController {
     private Environment env;
     private FriendService friendService;
-
     private JwtTokenProvider jwtTokenProvider;
-
-
 
     @Autowired
     public FriendController(Environment env, FriendService friendService, JwtTokenProvider jwtTokenProvider) {
@@ -129,6 +126,19 @@ public class FriendController {
             responseDto = new ResponseDto<>("FAIL", "reject friend request failed", friend);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
+    @GetMapping("/friend")
+    public ResponseEntity<ResponseDto> getFriends(
+            @RequestHeader("AUTHORIZATION") String bearerToken) {
+        // 게이트웨이에서 이미 인증 토큰의 유효성을 검증하였음.
+        String jwt = jwtTokenProvider.removeBearer(bearerToken);
+        List<ResponseProfile> friends = friendService.friendList(jwt);
+        ResponseDto responseDto;
+        if (friends != null)
+            responseDto = new ResponseDto<>("SUCCESS", "get friend list successfully", friends);
+        else
+            responseDto = new ResponseDto<>("FAIL", "get friend list request failed", friends);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+    }
     @DeleteMapping("/friend")
     public ResponseEntity<ResponseDto> deleteFriend(
             @RequestHeader("AUTHORIZATION") String bearerToken,
@@ -137,7 +147,7 @@ public class FriendController {
         String jwt = jwtTokenProvider.removeBearer(bearerToken);
         String target = targetInput.get("target").toString();
         log.error(target);
-        ResponseFriend friend = friendService.deleteFriend(jwt, target, FriendshipCode.REJECTED.value());
+        ResponseFriend friend = friendService.deleteFriend(jwt, target);
         ResponseDto responseDto;
         if (friend != null)
             responseDto = new ResponseDto<>("SUCCESS", "reject friend successfully", friend);

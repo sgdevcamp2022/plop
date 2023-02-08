@@ -31,56 +31,6 @@ public class FriendService {
         this.friendRepository = friendRepository;
         this.jwtTokenProvider = jwtTokenProvider;
     }
-    public List<ResponseProfile> requestFriendList(String jwt) {
-        JwtUser sender = jwtTokenProvider.getUserInfo(jwt);
-        UserEntity senderEntity = userRepository.findByEmail(sender.getEmail());
-        if (senderEntity == null)
-            return null;
-
-        List<FriendEntity> friendEntityList = friendRepository.findBySenderIdAndStatus(
-                senderEntity.getId(),
-                FriendshipCode.REQUESTED.value()
-        );
-        List<ResponseProfile> responseFriendList = new ArrayList<>();
-        if (friendEntityList == null) {
-            return null;
-        } else {
-            for(FriendEntity friend : friendEntityList) {
-                UserEntity receiver = userRepository.findById(friend.getReceiverId()).orElse(null);
-                if (sender == null)
-                    return null;
-
-                ResponseProfile user = new ResponseProfile(receiver.getUserId(), receiver.getEmail(), receiver.getProfile());
-                responseFriendList.add(user);
-            }
-            return responseFriendList;
-        }
-    }
-    public List<ResponseProfile> responseFriendList(String jwt) {
-        JwtUser receiver = jwtTokenProvider.getUserInfo(jwt);
-        UserEntity receiverEntity = userRepository.findByEmail(receiver.getEmail());
-        if (receiverEntity == null)
-            return null;
-
-        List<FriendEntity> friendEntityList = friendRepository.findByReceiverIdAndStatus(
-                receiverEntity.getId(),
-                FriendshipCode.REQUESTED.value()
-        );
-        List<ResponseProfile> responseFriendList = new ArrayList<>();
-        if (friendEntityList == null) {
-            return null;
-        } else {
-            for(FriendEntity friend : friendEntityList) {
-                UserEntity sender = userRepository.findById(friend.getSenderId()).orElse(null);
-                if (sender == null)
-                    return null;
-
-                ResponseProfile user = new ResponseProfile(sender.getUserId(), sender.getEmail(), sender.getProfile());
-                responseFriendList.add(user);
-            }
-            return responseFriendList;
-        }
-    }
 
     public ResponseFriend requestFriend(String jwt, String target, int status) {
         // 친구 요청을 하는 엔티티 - jwt를 통해 email로 검색
@@ -158,7 +108,7 @@ public class FriendService {
         return responseFriend;
     }
 
-    public ResponseFriend deleteFriend(String jwt, String target, int value) {
+    public ResponseFriend deleteFriend(String jwt, String target) {
         // 친구 요청을 하는 엔티티 - jwt를 통해 email로 검색
         JwtUser receiver = jwtTokenProvider.getUserInfo(jwt);
         UserEntity receiverEntity = userRepository.findByEmail(receiver.getEmail());
@@ -176,26 +126,90 @@ public class FriendService {
 
         return null;
     }
+    public List<ResponseProfile> friendList(String jwt) {
+        JwtUser sender = jwtTokenProvider.getUserInfo(jwt);
+        UserEntity senderEntity = userRepository.findByEmail(sender.getEmail());
+        if (senderEntity == null)
+            return null;
 
-//    public ResponseFriend updateStatus(String jwt, String target, int status) {
-//        UserEntity senderEntity = null;
-//        UserEntity receiverEntity = null;
-//        // 친구 요청을 하는 엔티티 - jwt를 통해 email로 검색
-//        JwtUser sender = jwtTokenProvider.getUserInfo(jwt);
-//        senderEntity = userRepository.findByEmail(sender.getEmail());
-//        if (senderEntity == null)
-//            throw new EntityNotFoundException();
-//
-//        // 친구 요청을 받는 엔티티 - 이메일 혹은 아이디로 검색
-//        if (target.contains("@")) // 이메일인 경우
-//            receiverEntity = userRepository.findByEmail(target);
-//        else // 아이디인 경우
-//            receiverEntity = userRepository.findByUserId(target);
-//        if (receiverEntity == null)
-//            throw new EntityNotFoundException();
-//
-//        friendRepository.findFriendEntityBySenderIdAndReceiverId(se)
-//        friendRepository.
-//    }
+        List<FriendEntity> friendEntityList = friendRepository.findBySenderIdOrReceiverIdAndStatus(
+                senderEntity.getId(),
+                FriendshipCode.ACCCEPTED.value()
+        );
+        log.error(friendEntityList.toString());
+        log.error(senderEntity.toString());
+        List<ResponseProfile> responseFriendList = new ArrayList<>();
+        if (friendEntityList == null) {
+            return null;
+        } else {
+            for(FriendEntity friend : friendEntityList) {
+                UserEntity user;
+                if (friend.getSenderId().equals(senderEntity.getId())) { //내가 요청한 경우(sender) -> 수락한 사람이 친구 (receiver)
+                    user = userRepository.findById(friend.getReceiverId()).orElse(null);
+                } else { // 내가 수락한 경우(receiver) -> 요청한 사람이 친구 (sender)
+                    user = userRepository.findById(friend.getSenderId()).orElse(null);
+                }
+                if (user == null)
+                    return null;
+
+                ResponseProfile userProfile = new ResponseProfile(user.getUserId(), user.getEmail(), user.getProfile());
+                responseFriendList.add(userProfile);
+            }
+            log.error(responseFriendList.toString());
+            return responseFriendList;
+        }
+    }
+
+    public List<ResponseProfile> requestFriendList(String jwt) {
+        JwtUser sender = jwtTokenProvider.getUserInfo(jwt);
+        UserEntity senderEntity = userRepository.findByEmail(sender.getEmail());
+        if (senderEntity == null)
+            return null;
+
+        List<FriendEntity> friendEntityList = friendRepository.findBySenderIdAndStatus(
+                senderEntity.getId(),
+                FriendshipCode.REQUESTED.value()
+        );
+        List<ResponseProfile> responseFriendList = new ArrayList<>();
+        if (friendEntityList == null) {
+            return null;
+        } else {
+            for(FriendEntity friend : friendEntityList) {
+                UserEntity receiver = userRepository.findById(friend.getReceiverId()).orElse(null);
+                if (sender == null)
+                    return null;
+
+                ResponseProfile user = new ResponseProfile(receiver.getUserId(), receiver.getEmail(), receiver.getProfile());
+                responseFriendList.add(user);
+            }
+            return responseFriendList;
+        }
+    }
+    public List<ResponseProfile> responseFriendList(String jwt) {
+        JwtUser receiver = jwtTokenProvider.getUserInfo(jwt);
+        UserEntity receiverEntity = userRepository.findByEmail(receiver.getEmail());
+        if (receiverEntity == null)
+            return null;
+
+        List<FriendEntity> friendEntityList = friendRepository.findByReceiverIdAndStatus(
+                receiverEntity.getId(),
+                FriendshipCode.REQUESTED.value()
+        );
+        List<ResponseProfile> responseFriendList = new ArrayList<>();
+        if (friendEntityList == null) {
+            return null;
+        } else {
+            for(FriendEntity friend : friendEntityList) {
+                UserEntity sender = userRepository.findById(friend.getSenderId()).orElse(null);
+                if (sender == null)
+                    return null;
+
+                ResponseProfile user = new ResponseProfile(sender.getUserId(), sender.getEmail(), sender.getProfile());
+                responseFriendList.add(user);
+            }
+            return responseFriendList;
+        }
+    }
+
 
 }

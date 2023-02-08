@@ -15,17 +15,21 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @DynamicUpdate
-@Entity
+@Entity(name = "friend")
 @TypeDef(name = "json", typeClass = JsonType.class)
 @Table(name = "friend")
-@IdClass(FriendEntity.class)
-public class FriendEntity implements Serializable {
+@IdClass(FriendIdEntity.class)
+public class FriendEntity {
     @Id
-    @Column(name = "sender_id", nullable = false, unique = true)
+    @Column(name = "sender_id", nullable = false)
     private Long senderId;
     @Id
-    @Column(name = "receiver_id", nullable = false, unique = true)
+    @Column(name = "receiver_id", nullable = false)
     private Long receiverId;
+//    @Column(name = "sender_email", nullable = false)
+//    private Long senderEmail;
+//    @Column(name = "receiver_email", nullable = false)
+//    private Long receiverEmail;
 
     @Column(name = "status")
     private Integer status;
