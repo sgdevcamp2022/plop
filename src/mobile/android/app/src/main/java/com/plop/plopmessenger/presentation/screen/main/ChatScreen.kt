@@ -1,5 +1,8 @@
 package com.plop.plopmessenger.presentation.screen.main
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.launch
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -76,6 +79,11 @@ fun ChatScreen(
     var textFieldFocusState = state.textFieldFocusState
     var currentInputSelector = state.currentInputSelector
     var focusManager = LocalFocusManager.current
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicturePreview()) {
+        viewModel.setImage(it)
+    }
 
     Box(
         modifier = Modifier
@@ -158,6 +166,7 @@ fun ChatScreen(
                     focusManager.clearFocus()
                 }
             },
+            onCameraClick = { launcher.launch() },
             dismissKeyboard = { viewModel.setInputSelector(InputSelector.NONE) }
         )
     }
@@ -173,6 +182,7 @@ fun UserInput(
     onQueryChange: (TextFieldValue) -> Unit,
     currentInputSelector: InputSelector,
     onChangeCurrentInput: (InputSelector) -> Unit,
+    onCameraClick: () -> Unit,
     dismissKeyboard: () -> Unit,
     modifier: Modifier
 ) {
@@ -184,7 +194,10 @@ fun UserInput(
         verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(
-            onClick = { onChangeCurrentInput(InputSelector.CAMERA) },
+            onClick = {
+                onChangeCurrentInput(InputSelector.CAMERA)
+                onCameraClick()
+                      },
             modifier = Modifier.size(ChatScreenValue.ChatBarIconBtnSize)
         ) {
             Icon(

@@ -1,6 +1,12 @@
 package com.plop.plopmessenger.presentation.viewmodel
 
+import android.content.Intent
+import android.graphics.Bitmap
+import android.provider.MediaStore
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -18,6 +24,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+
 @HiltViewModel
 class ChatViewModel @Inject constructor(
     private val messageUseCase: MessageUseCase,
@@ -29,6 +36,8 @@ class ChatViewModel @Inject constructor(
     var chatState = MutableStateFlow(ChatState(chatroomId = savedStateHandle.get<String>(
         DestinationID.CHAT_ID)?: null))
         private set
+
+    var image = MutableStateFlow<Bitmap?>(null)
 
     init {
         if(!chatState.value.chatroomId.isNullOrBlank()){
@@ -162,6 +171,11 @@ class ChatViewModel @Inject constructor(
             }
         }
     }
+
+    fun setImage(bitmap: Bitmap?) {
+        image.value = bitmap
+    }
+
 }
 
 data class ChatState(
