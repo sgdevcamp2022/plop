@@ -1,12 +1,18 @@
 package com.plop.plopmessenger.domain.repository
 
+import com.plop.plopmessenger.data.dto.request.user.*
+import com.plop.plopmessenger.data.dto.response.user.*
 import com.plop.plopmessenger.data.pref.model.UserPref
 import kotlinx.coroutines.flow.Flow
+import retrofit2.Response
+import retrofit2.http.Body
+import retrofit2.http.Query
 
 interface UserRepository {
     fun getAccessToken(): Flow<String>
     suspend fun setAccessToken(accessToken: String)
     fun getRefreshToken(): Flow<String>
+    suspend fun setRefreshToken(refreshToken: String)
     fun getUser(): Flow<UserPref>
     fun getUserId(): Flow<String>
     fun getNickname(): Flow<String>
@@ -21,4 +27,16 @@ interface UserRepository {
     suspend fun setActiveMode(mode: Boolean)
     suspend fun logoutUser()
     suspend fun loginUser(userPref: UserPref)
+
+    suspend fun postLogin(loginRequest: PostLoginRequest): Response<PostLoginResponse>
+    suspend fun postAutoLogin(postAutoLoginRequest: PostAutoLoginRequest): Response<PostAutoLoginResponse>
+    suspend fun deleteLogout(): Response<DeleteLogoutResponse>
+    suspend fun postSignUp(postSignUpRequest: PostSignUpRequest): Response<PostSignUpResponse>
+    suspend fun postEmailCode(postEmailCodeRequest: PostEmailCodeRequest): Response<PostEmailCodeResponse>
+    suspend fun postEmailVerify(postEmailVerifyRequest: PostEmailVerifyRequest): Response<PostEmailVerifyResponse>
+    suspend fun putWithdrawal(): Response<PutWithdrawalResponse>
+    suspend fun postPasswordNew(postPasswordNewRequest: PostPasswordNewRequest): Response<PostPasswordNewResponse>
+    suspend fun getUserProfile(email: String): Response<GetUserProfileResponse>
+    suspend fun putUserProfile(putUserProfileRequest: PutUserProfileRequest): Response<PutUserProfileResponse>
+    suspend fun getSearchUser(getSearchUserRequest: GetSearchUserRequest): Response<GetSearchUserResponse>
 }
