@@ -5,4 +5,4 @@ spring:
   application:
     name: chat-service
   profiles:
-    default: dev
+    default: prod
