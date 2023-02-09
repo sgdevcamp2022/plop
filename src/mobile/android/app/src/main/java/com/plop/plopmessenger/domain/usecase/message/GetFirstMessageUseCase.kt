@@ -10,18 +10,19 @@ import kotlinx.coroutines.flow.flow
 import java.io.IOException
 import javax.inject.Inject
 
-class GetLocalMessageListUseCase @Inject constructor(
+class GetFirstMessageUseCase @Inject constructor(
     private val messageRepository: MessageRepository
 ) {
-    operator fun invoke(chatroomId: String, page: Int): Flow<Resource<List<Message>>> = flow {
+    operator fun invoke(chatroomId: String): Flow<Resource<Message>> = flow {
         try {
             emit(Resource.Loading())
-            val result = messageRepository.loadChatMessage(chatroomId, page)
-            emit(Resource.Success(result.map { it.toMessage() }))
+            messageRepository.loadChatFirstMessage(chatroomId).collect() { result ->
+                emit(Resource.Success(result.toMessage()))
+            }
         } catch (e: IOException) {
-            Log.d("GetMessageListUseCase", "IOException")
+            Log.d("GetFirstMessageListUseCase", "IOException")
         } catch (e: Exception) {
-            Log.d("GetMessageListUseCase", e.message.toString())
+            Log.d("GetFirstMessageListUseCase", e.message.toString())
         }
     }
 }

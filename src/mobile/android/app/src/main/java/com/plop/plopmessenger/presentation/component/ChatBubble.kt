@@ -25,7 +25,9 @@ import com.plop.plopmessenger.domain.model.MessageType
 import com.plop.plopmessenger.util.SymbolAnnotationType
 import com.plop.plopmessenger.util.messageFormatter
 import com.plop.plopmessenger.R
+import com.plop.plopmessenger.domain.model.ChatRoom
 import com.plop.plopmessenger.domain.model.Member
+import com.plop.plopmessenger.presentation.viewmodel.ChatState
 
 
 object ChatItemBubbleValue {
@@ -56,6 +58,8 @@ fun Messages(
     member: Map<String, Member>,
     modifier: Modifier = Modifier,
     userId : String,
+    state: ChatState,
+    getNextMessage: () -> Unit,
     content: @Composable () -> Unit
 ) {
 
@@ -68,7 +72,7 @@ fun Messages(
             .fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(2.dp)
     ) {
-        for(index in messages.indices.reversed()) {
+        items(messages.size) { index ->
             val prevAuthor = messages.getOrNull(index - 1)?.messageFromId
             val nextAuthor = messages.getOrNull(index + 1)?.messageFromId
             val content = messages[index]
@@ -76,23 +80,25 @@ fun Messages(
             else (content.createdAt.time/60000 - messages.getOrNull(index - 1)?.createdAt!!.time/60000) >= 1
             val nextTimeDiffIsOverMin = if(messages.getOrNull(index + 1) == null) false
             else (messages.getOrNull(index + 1)?.createdAt!!.time/60000 - content.createdAt.time/60000) >= 1
-            val isFirstMessageByAuthor = (prevAuthor != content.messageFromId || prevTimeDiffIsOverMin)
-            val isLastMessageByAuthor = (nextAuthor != content.messageFromId || nextTimeDiffIsOverMin)
+            val isFirstMessageByAuthor = (nextAuthor != content.messageFromId || nextTimeDiffIsOverMin)
+            val isLastMessageByAuthor = (prevAuthor != content.messageFromId || prevTimeDiffIsOverMin)
 
-            item {
-                Message(
-                    onAuthorClick = onAuthorClick,
-                    message = content,
-                    isUserMe = content.messageFromId == userId,
-                    isFirstMessageByAuthor = isFirstMessageByAuthor,
-                    isLastMessageByAuthor = isLastMessageByAuthor,
-                    onImageClick = onImageClick,
-                    onVideoClick = onVideoClick,
-                    isGroupChat = isGroupChat,
-                    member = member,
-                    modifier = Modifier
-                )
+            if(index >= state.messages.size - 1 && !state.endReached && !state.isLoading) {
+                getNextMessage()
             }
+
+            Message(
+                onAuthorClick = onAuthorClick,
+                message = content,
+                isUserMe = content.messageFromId == userId,
+                isFirstMessageByAuthor = isFirstMessageByAuthor,
+                isLastMessageByAuthor = isLastMessageByAuthor,
+                onImageClick = onImageClick,
+                onVideoClick = onVideoClick,
+                isGroupChat = isGroupChat,
+                member = member,
+                modifier = Modifier
+            )
         }
         item {
             Spacer(modifier = Modifier.size(ChatItemBubbleValue.betweenContentAndChat))
