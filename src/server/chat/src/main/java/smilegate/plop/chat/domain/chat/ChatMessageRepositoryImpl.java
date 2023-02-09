@@ -50,7 +50,8 @@ public class ChatMessageRepositoryImpl implements ChatMongoTemplateRepository{
 
     @Override
     public List<MessageCollection> getAllMessagesAtRoom(String roomId) {
-        Query query = Query.query(Criteria.where("roomId").is(roomId));
+        Query query = Query.query(Criteria.where("roomId").is(roomId)).with(
+                Sort.by(Sort.Direction.DESC,"createdAt"));
         return mongoTemplate.find(query,MessageCollection.class);
     }
 
