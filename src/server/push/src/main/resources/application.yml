@@ -1,0 +1,26 @@
+
+
+server:
+  port: 0
+
+spring:
+  application:
+    name: push-service
+
+eureka:
+  instance:
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
+
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://127.0.0.1:8761/eureka
+fcm:
+  key:
+    path: plop-df864-firebase-adminsdk-5aitx-a4a75b121d.json
+    scope: https://www.googleapis.com/auth/cloud-platform
+
+
+
+
