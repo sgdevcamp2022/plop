@@ -27,15 +27,28 @@ public class ChatMessageController {
         producers.sendMessage(savedMessage);
     }
 
-    @GetMapping("/v1/history-message/{roomid}")
-    public ResponseEntity<APIMessage> allMessagesAtRoom(@PathVariable(value = "roomid")String roomId){
+    @GetMapping("/v1/new-message/{roomid}/{readMsgId}")
+    public ResponseEntity<APIMessage> newMessagesAtRoom(@PathVariable(value = "roomid") String roomId, @PathVariable String readMsgId){
         APIMessage apiMessage = new APIMessage();
         apiMessage.setMessage(APIMessage.ResultEnum.success);
-        apiMessage.setData(chatMessageService.getAllMessagesAtRoom(roomId));
-
+        apiMessage.setData(chatMessageService.getNewMessages(roomId, readMsgId));
         return new ResponseEntity<>(apiMessage, HttpStatus.OK);
     }
 
+    /**
+     * 과거채팅보기(해당 채팅방내 전체 메시지 가져오기
+     */
+    @GetMapping("/v1/history-message/{roomid}")
+    public ResponseEntity<APIMessage> allMessagesAtRoom(@PathVariable(value = "roomid") String roomId){
+        APIMessage apiMessage = new APIMessage();
+        apiMessage.setMessage(APIMessage.ResultEnum.success);
+        apiMessage.setData(chatMessageService.getAllMessagesAtRoom(roomId));
+        return new ResponseEntity<>(apiMessage, HttpStatus.OK);
+    }
+
+    /**
+     * 패이지내이션
+     */
     @GetMapping("/v1/history")
     public ResponseEntity<APIMessage> chatMessagePagination(
             @RequestParam(name = "roomid") String roomId,
