@@ -72,6 +72,7 @@ public class AuthService {
 //                .createdAt(LocalDateTime.now())
 //                .updatedAt(LocalDateTime.now())
                 .loginAt(LocalDateTime.of(1900, 01, 01, 00, 00, 00, 000000000))
+                .fcmToken("")
                 .build();
 
         userRepository.save(userEntity);

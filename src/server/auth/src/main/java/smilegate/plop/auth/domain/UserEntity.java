@@ -55,6 +55,9 @@ public class UserEntity extends BaseEntity {
     @Column(name = "login_at")
     private LocalDateTime loginAt;
 
+    @Column(name = "fcm_token")
+    private String fcmToken;
+
     public UserDto toUserDto() {
         UserDto userDto = UserDto.builder()
                 .email(this.getEmail())
