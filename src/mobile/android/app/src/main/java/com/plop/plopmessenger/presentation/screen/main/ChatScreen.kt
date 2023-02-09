@@ -124,6 +124,8 @@ fun ChatScreen(
                 member = state.members,
                 isGroupChat = false,
                 userId = state.userId,
+                state = state,
+                getNextMessage = viewModel::getMessageList,
                 modifier = Modifier
                     .padding(
                         top = ChatScreenValue.TopBarHeight,

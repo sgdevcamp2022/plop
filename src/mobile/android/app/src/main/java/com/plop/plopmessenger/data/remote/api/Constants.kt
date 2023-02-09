@@ -28,4 +28,6 @@ object Constants {
     const val DELETE_FRIEND_REQUEST = "/user/v1/friend/"
     const val DELETE_FRIEND = "/user/v1/friend/{friendid}"
     const val PUT_FRIEND_REQUEST = "/user/v1/friend/{friendid}"
+
+    const val PAGE_SIZE = 10
 }

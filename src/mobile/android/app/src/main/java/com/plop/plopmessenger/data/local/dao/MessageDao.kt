@@ -7,9 +7,14 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface MessageDao {
     @Query(
-        "SELECT * FROM messages WHERE chatroom_id = :chatroomId ORDER BY created_at ASC"
+        "SELECT * FROM messages WHERE chatroom_id = :chatroomId ORDER BY created_at DESC LIMIT :size OFFSET :page * :size"
     )
-    fun loadChatMessage(chatroomId: String): Flow<List<Message>>
+    suspend fun loadChatMessage(chatroomId: String, page: Int, size: Int): List<Message>
+
+    @Query(
+        "SELECT * FROM messages WHERE chatroom_id = :chatroomId ORDER BY created_at DESC LIMIT 1 "
+    )
+    fun loadChatFirstMessage(chatroomId: String): Flow<Message>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertMessage(message: Message)

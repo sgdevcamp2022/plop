@@ -32,6 +32,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -57,23 +58,37 @@ class ChatViewModel @Inject constructor(
     init {
         if(!chatState.value.chatroomId.isNullOrBlank()){
             getMessageList()
+            getFirstMessage()
             getChatroomInfo()
-            loadImage()
         }
         getUserId()
+        loadImage()
     }
 
-    private fun getMessageList() {
+    fun getMessageList() {
         viewModelScope.launch {
-            messageUseCase.getLocalMessageListUseCase(chatState.value.chatroomId!!).collect() { result ->
+            messageUseCase.getLocalMessageListUseCase(chatState.value.chatroomId!!, chatState.value.page)
+                .collect() { result ->
                 when (result) {
                     is Resource.Success -> {
-                        chatState.update {
-                            it.copy(
-                                isLoading = false,
-                                messages = result.data?: emptyList()
-                            )
+                        if(result.data.isNullOrEmpty()){
+                            chatState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    endReached = true
+                                )
+                            }
+                        } else {
+                            Log.d("ㅁㄴㅇㄹ", result.data?.toString()?: "")
+                            chatState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    messages = it.messages + result.data,
+                                    page = it.page + 1
+                                )
+                            }
                         }
+
                     }
                     is Resource.Loading -> {
                         chatState.update {
@@ -87,6 +102,35 @@ class ChatViewModel @Inject constructor(
                     }
                 }
 
+            }
+        }
+    }
+
+    private fun getFirstMessage() {
+        viewModelScope.launch {
+            messageUseCase.getFirstMessageUseCase(chatState.value.chatroomId!!).collect() { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        Log.d("ㅁㄴㅇㄹ", result.data?.toString()?: "")
+                        if(result.data != null && !chatState.value.messages.contains(result.data) ) {
+                            chatState.update {
+                                it.copy(
+                                    messages = listOf(result.data) + it.messages
+                                )
+                            }
+                        }
+                    }
+                    is Resource.Loading -> {
+                        chatState.update {
+                            it.copy(isLoading = true)
+                        }
+                    }
+                    is Resource.Error -> {
+                        chatState.update {
+                            it.copy(isLoading = false)
+                        }
+                    }
+                }
             }
         }
     }
@@ -286,5 +330,8 @@ data class ChatState(
     val userId: String = "",
     val isLoading: Boolean = false,
     val images: List<MediaStoreImage> = emptyList(),
-    val selectedImage: Uri? = null
+    val selectedImage: Uri? = null,
+    val page: Int = 0,
+    val error: String? = null,
+    val endReached: Boolean = false
 )
