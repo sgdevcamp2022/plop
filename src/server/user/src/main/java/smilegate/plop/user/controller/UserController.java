@@ -10,6 +10,7 @@ import smilegate.plop.user.domain.user.UserEntity;
 import smilegate.plop.user.dto.response.ResponseDto;
 import smilegate.plop.user.dto.response.ResponseFriend;
 import smilegate.plop.user.dto.response.ResponseProfile;
+import smilegate.plop.user.dto.response.ResponseUser;
 import smilegate.plop.user.model.FriendshipCode;
 import smilegate.plop.user.security.JwtTokenProvider;
 import smilegate.plop.user.service.FriendService;
@@ -69,6 +70,18 @@ public class UserController {
             responseDto = new ResponseDto<>("SUCCESS", "search users successfully", users);
         else
             responseDto = new ResponseDto<>("FAIL", "search users request failed", users);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+    }
+    @PostMapping("register")
+    public ResponseEntity<ResponseDto> registerFcmToken(
+            @RequestHeader("AUTHORIZATION") String bearerToken,
+            @RequestBody Map<String,Object> tokenId
+    ) {
+        String jwt = jwtTokenProvider.removeBearer(bearerToken);
+        String token = tokenId.get("tokenId").toString();
+        ResponseUser responseUser = userService.registerFcmToken(jwt, token);
+        ResponseDto responseDto = new ResponseDto<>("SUCCESS", "register token successfully", responseUser);
+
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 }

@@ -9,6 +9,8 @@ import smilegate.plop.user.domain.user.UserEntity;
 import smilegate.plop.user.domain.user.UserRepository;
 import smilegate.plop.user.dto.UserDto;
 import smilegate.plop.user.dto.response.ResponseProfile;
+import smilegate.plop.user.dto.response.ResponseUser;
+import smilegate.plop.user.model.JwtUser;
 import smilegate.plop.user.security.JwtTokenProvider;
 
 import java.util.ArrayList;
@@ -77,5 +79,14 @@ public class UserService {
             }
             return responseUserList;
         }
+    }
+    public ResponseUser registerFcmToken(String jwt, String tokenId) {
+        JwtUser sender = jwtTokenProvider.getUserInfo(jwt);
+        UserEntity user = userRepository.findByUserId(sender.getUserId());
+        user.setFcmToken(tokenId);
+        userRepository.save(user);
+
+        return new ResponseUser(
+                user.getEmail(),user.getProfile().get("nickname").toString(),user.getUserId());
     }
 }
