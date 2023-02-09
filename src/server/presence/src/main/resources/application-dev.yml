@@ -1,0 +1,17 @@
+
+spring:
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: plop
+      # uri : mongodb: //localhost:27017/plop
+
+  kafka:
+    consumer:
+      bootstrap-servers: localhost:9092
+    producer:
+      bootstrap-servers: localhost:9092
+
+
+

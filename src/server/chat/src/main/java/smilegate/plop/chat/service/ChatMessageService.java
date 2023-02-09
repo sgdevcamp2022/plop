@@ -1,6 +1,7 @@
 package smilegate.plop.chat.service;
 
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import smilegate.plop.chat.domain.chat.ChatMessageRepository;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class ChatMessageService {
     private final ChatMessageRepository chatMessageRepository;

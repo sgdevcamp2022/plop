@@ -1,0 +1,34 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: presence-service
+  profiles:
+    default: prod
+  kafka:
+    consumer:
+      group-id: presence-group
+      auto-offset-reset: latest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring:
+          json:
+            trusted:
+              packages: '*'
+
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+kafka:
+  topic:
+    name: presence
+
+token:
+  # 1분
+  access_expired_time: 6000000
+  secret_key: plip
+  # 1시간
+  refresh_expired_time: 3600000

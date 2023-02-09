@@ -35,7 +35,11 @@ public class ChatRoomService {
     }
 
     public RespRoomDto createDmRoom(ReqDmDto reqDmDto){
-        // type이 DM이고 멤버가 일치하면 해당 방정보를 전송
+        if(reqDmDto.getMessage_to() == null || reqDmDto.getMessage_to().equals("")) {
+            log.info("ErrorCode: {}","DM_MEMBER_ERROR");
+            throw new CustomAPIException(ErrorCode.DM_MEMBER_ERROR, "상대방id가 없음");
+        }
+
         RoomCollection savedRoom = matchDmMembers(reqDmDto);
         if(savedRoom == null){
             List<Member> members = new ArrayList<>();
@@ -57,6 +61,7 @@ public class ChatRoomService {
     }
     private void validateSizeOfGroup(ReqGroupDto reqGroupDto){
         if (reqGroupDto.getMembers().size() <= 1){
+            log.info("ErrorCode: {}","GROUP_MEMBER_SIZE_ERROR");
             throw new CustomAPIException(ErrorCode.GROUP_MEMBER_SIZE_ERROR, "초대된 멤버가 1명이하입니다.");
         }
     }
@@ -127,7 +132,12 @@ public class ChatRoomService {
     }
 
     public RespRoomDto getChatRoomInfo(String roomId) {
-        RoomCollection roomCollection = roomRepository.findByRoomId(roomId).get();
+        RoomCollection roomCollection = roomRepository.findByRoomId(roomId).orElseThrow(
+                ()-> {
+                    log.info("ErrorCode: {}, roomid: {}","ROOM_NOT_FOUND_ERROR", roomId);
+                    throw new CustomAPIException(ErrorCode.ROOM_NOT_FOUND_ERROR, "채팅방이 없음");
+                }
+        );
         return convertEntityToDto(roomCollection);
     }
 

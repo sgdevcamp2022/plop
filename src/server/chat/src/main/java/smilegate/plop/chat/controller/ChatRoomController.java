@@ -52,11 +52,15 @@ public class ChatRoomController {
     @PostMapping("/v1/invitation")
     public ResponseEntity<APIMessage> groupInvitation(@RequestBody ReqInviteDto reqInviteDto){
         if(chatRoomMongoService.inviteMembers(reqInviteDto)){
+            log.info("Error: {}","채팅방이 없거나 멤버가 없음");
             return new ResponseEntity<>(new APIMessage(APIMessage.ResultEnum.success,reqInviteDto),HttpStatus.OK);
         }
         return new ResponseEntity<>(new APIMessage(APIMessage.ResultEnum.failed,reqInviteDto),HttpStatus.OK);
     }
 
+    /**
+     * 나의 채팅방 리스트 조회
+     */
     @GetMapping("/v1/my-rooms")
     public ResponseEntity<APIMessage> myChatRooms(@RequestHeader("Authorization") String jwt){
         //jwt를 auth 서버를 통해 사용자 id 가져온다.
@@ -68,6 +72,9 @@ public class ChatRoomController {
         return new ResponseEntity<>(apiMessage,HttpStatus.OK);
     }
 
+    /**
+     * 채팅방 나가기
+     */
     @DeleteMapping("/v1/out/{roomid}")
     public ResponseEntity<APIMessage> outOfTheRoom(@RequestHeader("Authorization") String jwt, @PathVariable(value = "roomid") String roomId){
         String userId = getTokenToUserId(jwt);
@@ -77,6 +84,7 @@ public class ChatRoomController {
             }}), HttpStatus.OK);
         }
         return new ResponseEntity<>(new APIMessage(APIMessage.ResultEnum.failed, new HashMap<String,String>() {{
+            log.info("채팅방 나가기 실패: roomid: {}, userid: {}", roomId, userId);
             put("room_id",roomId);
         }}), HttpStatus.OK);
     }
