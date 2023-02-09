@@ -4,48 +4,34 @@
         <attribute name="block" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="image" optional="YES" attributeType="String" valueTransformerName="UIImageTransformer" customClassName="UIImage"/>
         <attribute name="name" attributeType="String"/>
-        <attribute name="uid" attributeType="Integer 64" defaultValueString="0.0" usesScalarValueType="YES"/>
-        <relationship name="user" maxCount="1" deletionRule="Nullify" destinationEntity="CDUser" inverseName="friends" inverseEntity="CDUser"/>
+        <attribute name="uid" attributeType="String"/>
     </entity>
     <entity name="CDMember" representedClassName="CDMember" syncable="YES">
         <attribute name="image" optional="YES" attributeType="String" valueTransformerName="UIImageTransformer" customClassName="UIImage"/>
         <attribute name="name" optional="YES" attributeType="String"/>
-        <attribute name="uid" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="uid" optional="YES" attributeType="String"/>
         <relationship name="room" maxCount="1" deletionRule="Nullify" destinationEntity="CDRoom" inverseName="members" inverseEntity="CDRoom"/>
     </entity>
     <entity name="CDMessage" representedClassName="CDMessage" syncable="YES">
         <attribute name="content" optional="YES" attributeType="String"/>
         <attribute name="contentType" optional="YES" attributeType="String"/>
         <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="from" attributeType="String"/>
-        <attribute name="roomID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="uid" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="roomID" attributeType="String"/>
+        <attribute name="senderID" attributeType="String"/>
+        <attribute name="uid" attributeType="String"/>
         <attribute name="unread" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
         <relationship name="room" maxCount="1" deletionRule="Nullify" destinationEntity="CDRoom" inverseName="messages" inverseEntity="CDRoom"/>
     </entity>
     <entity name="CDProfile" representedClassName="CDProfile" syncable="YES">
         <attribute name="imageURL" optional="YES" attributeType="String"/>
         <attribute name="nickname" optional="YES" attributeType="String"/>
-        <attribute name="uid" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <relationship name="user" maxCount="1" deletionRule="Nullify" destinationEntity="CDUser" inverseName="profile" inverseEntity="CDUser"/>
+        <attribute name="uid" optional="YES" attributeType="String"/>
     </entity>
     <entity name="CDRoom" representedClassName="CDRoom" syncable="YES">
         <attribute name="lastMessage" optional="YES" attributeType="String"/>
-        <attribute name="lastModified" optional="YES" attributeType="String"/>
         <attribute name="title" attributeType="String"/>
-        <attribute name="uid" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="unread" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="uid" attributeType="String"/>
         <relationship name="members" toMany="YES" deletionRule="Cascade" destinationEntity="CDMember" inverseName="room" inverseEntity="CDMember"/>
         <relationship name="messages" toMany="YES" deletionRule="Cascade" destinationEntity="CDMessage" inverseName="room" inverseEntity="CDMessage"/>
-        <relationship name="user" maxCount="1" deletionRule="Nullify" destinationEntity="CDUser" inverseName="rooms" inverseEntity="CDUser"/>
-    </entity>
-    <entity name="CDUser" representedClassName="CDUser" syncable="YES">
-        <attribute name="device" optional="YES" attributeType="String"/>
-        <attribute name="email" attributeType="String"/>
-        <attribute name="uid" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="userid" attributeType="String"/>
-        <relationship name="friends" toMany="YES" deletionRule="Cascade" destinationEntity="CDFriend" inverseName="user" inverseEntity="CDFriend"/>
-        <relationship name="profile" maxCount="1" deletionRule="Cascade" destinationEntity="CDProfile" inverseName="user" inverseEntity="CDProfile"/>
-        <relationship name="rooms" toMany="YES" deletionRule="Cascade" destinationEntity="CDRoom" inverseName="user" inverseEntity="CDRoom"/>
     </entity>
 </model>

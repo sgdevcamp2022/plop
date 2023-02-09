@@ -15,7 +15,7 @@ struct MemberResponse: Decodable {
 extension MemberResponse {
   func toDomain() -> Member {
     return Member(
-      uid: Int64(userID) ?? 0,
+      uid: userID,
       name: userID,
       image: ""
     )

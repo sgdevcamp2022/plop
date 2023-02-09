@@ -9,8 +9,7 @@ extension CDProfile {
 
     @NSManaged public var imageURL: String?
     @NSManaged public var nickname: String?
-    @NSManaged public var uid: Int64
-    @NSManaged public var user: CDUser?
+    @NSManaged public var uid: String?
 
 }
 

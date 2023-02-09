@@ -10,8 +10,7 @@ extension CDFriend {
     @NSManaged public var block: Bool
     @NSManaged public var image: String?
     @NSManaged public var name: String?
-    @NSManaged public var uid: Int64
-    @NSManaged public var user: CDUser?
+    @NSManaged public var uid: String?
 
 }
 

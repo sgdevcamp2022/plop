@@ -2,16 +2,16 @@ import Foundation
 import RxSwift
 
 final class UserUseCase {
-  private let userCoreDataUseCase = CDUsersUseCase()
   private let profileCoreDataUseCase = CDProfileUseCase()
   private let usersNetwork = UsersNetwork()
+  private let tokenUseCase = TokenUseCase()
   
   func signup(
     userid: String,
     email: String,
     password: String,
     nickname: String
-  ) -> Observable<Result<User, Error>> {
+  ) -> Observable<Result<Void, Error>> {
     let request = SignupRequest(
       userid: userid,
       email: email,
@@ -22,34 +22,20 @@ final class UserUseCase {
     return usersNetwork.signup(with: request)
       .map({ response in
         if response.message == "success" {
-          let user = User(
-            uid: response.id,
-            userid: userid,
-            email: email,
-            profile: Profile(uid: response.id,
-                             nickname: nickname,
-                             image: ""),
-            device: "",
-            rooms: [],
-            friends: []
-          )
-          return .success(user)
+          return .success(())
         } else {
           return .failure(UseCaseError.invalidResponse)
         }
       })
   }
   
-  func mockSignup() -> Observable<Result<User, Error>> {
-    let user = User(
-      uid: 0,
-      userid: "userid",
-      email: "email",
-      profile: Profile(uid: 0, nickname: "nickname",
-                       image: "image"),
-      device: "device",
-      rooms: [], friends: [])
-    return Observable.just(.success(user))
+  func mockSignup(success: Bool) -> Observable<Result<Void, Error>> {
+    if success {
+      return Observable.just(.success(()))
+    } else {
+      return Observable.just(
+        .failure(UseCaseError.invalidResponse))
+    }
   }
   
   func search(with email: String) -> Observable<Profile> {
@@ -63,36 +49,43 @@ final class UserUseCase {
       })
   }
   
-  func fetchProfile(email: String?, nickname: String?) -> Observable<Profile> {
+  func fetchProfile(
+    email: String?,
+    nickname: String?
+  ) -> Observable<Result<Profile, Error>> {
+    guard let token = tokenUseCase.fetchAccessToken() else {
+      return Observable.just(.failure(UseCaseError.invalidResponse))
+    }
+    
     return usersNetwork.fetchProfile(
-      token: "", email: email, nickname: nickname
+      token: token, email: email, nickname: nickname
     )
     .map({ response in
       if response.message == "success" {
         let profile = response.profile
-        return profile
+        return .success(profile)
       } else {
-        throw UseCaseError.invalidResponse
+        return .failure(UseCaseError.invalidResponse)
       }
     })
   }
   
-  func updateProfile(_ profile: Profile) -> Observable<Void> {
-    return Observable.combineLatest(
-      usersNetwork.updateProfile(token: "", to: profile),
-      profileCoreDataUseCase.save(profile: profile)
-    ).mapToVoid()
-  }
-  
-  func delete(_ user: User) -> Observable<Void> {
-    return Observable.combineLatest(
-      usersNetwork.delete(token: ""),
-      userCoreDataUseCase.delete(user: user)
+  func mockFetchProfile(email: String) -> Observable<Result<Profile, Error>> {
+    guard let token = tokenUseCase.fetchAccessToken() else {
+      return Observable.just(.failure(UseCaseError.invalidResponse))
+    }
+    
+    let mockProfile = Profile(
+      uid: email, nickname: "Joons", image: ""
     )
-    .mapToVoid()
+    
+    return Observable.just(.success(mockProfile))
   }
   
-  func save(user: User) -> Observable<Void> {
-    return userCoreDataUseCase.save(user: user)
+  func updateProfile(_ profile: Profile) -> Observable<Void> {
+    return usersNetwork.updateProfile(token: "", to: profile)
+      .map({ [unowned self] _ in
+        self.profileCoreDataUseCase.save(profile: profile)
+      })
   }
 }

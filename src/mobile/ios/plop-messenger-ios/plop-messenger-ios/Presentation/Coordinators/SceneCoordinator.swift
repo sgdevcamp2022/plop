@@ -19,12 +19,13 @@ final class SceneCoordinator: Coordinator {
   
   func toLogin() {
     let coordinator = LoginCoordinator(window: self.window)
+    childCoordinators.append(coordinator)
     coordinator.start()
   }
   
   func toHome() {
-    let viewController = HomeViewController()
-    
-    window.rootViewController = viewController
+    let coordinator = HomeCoordinator()
+    childCoordinators.append(coordinator)
+    coordinator.start()
   }
 }

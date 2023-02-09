@@ -3,6 +3,13 @@ import RxSwift
 import RxCocoa
 
 final class FriendsNetwork {
+  private let scheduler: ConcurrentDispatchQueueScheduler
+  
+  init() {
+    self.scheduler = ConcurrentDispatchQueueScheduler(
+      qos: .background)
+  }
+  
   func fetchFriendsList(token: String) -> Observable<FriendsListResponse> {
     guard var request = NetworkHelper.createRequest(
       path: "/user/v1/friend",
@@ -14,6 +21,7 @@ final class FriendsNetwork {
     request.addValue(token, forHTTPHeaderField: "Authorization")
     
     return URLSession.shared.rx.data(request: request)
+      .observe(on: scheduler)
       .map({ data in
         return try JSONDecoder().decode(FriendsListResponse.self, from: data)
       })
@@ -35,6 +43,7 @@ final class FriendsNetwork {
     request.addValue(token, forHTTPHeaderField: "Authorization")
     
     return URLSession.shared.rx.data(request: request)
+      .observe(on: scheduler)
       .mapToVoid()
   }
   
@@ -56,6 +65,7 @@ final class FriendsNetwork {
       request.addValue(token, forHTTPHeaderField: "Authorization")
       
       return URLSession.shared.rx.data(request: request)
+        .observe(on: scheduler)
         .mapToVoid()
     } catch {
       return Observable.error(error)
@@ -76,6 +86,7 @@ final class FriendsNetwork {
     request.addValue(token, forHTTPHeaderField: "Authorization")
     
     return URLSession.shared.rx.data(request: request)
+      .observe(on: scheduler)
       .mapToVoid()
   }
   
@@ -99,6 +110,7 @@ final class FriendsNetwork {
       request.addValue(token, forHTTPHeaderField: "Authorization")
       
       return URLSession.shared.rx.data(request: request)
+        .observe(on: scheduler)
         .mapToVoid()
       
     } catch {
@@ -118,6 +130,7 @@ final class FriendsNetwork {
     request.addValue(token, forHTTPHeaderField: "Authorization")
     
     return URLSession.shared.rx.data(request: request)
+      .observe(on: scheduler)
       .map({ data in
         return try JSONDecoder().decode(FriendsListResponse.self, from: data)
       })

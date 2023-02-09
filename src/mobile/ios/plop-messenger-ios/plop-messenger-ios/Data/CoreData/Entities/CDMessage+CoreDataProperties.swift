@@ -10,9 +10,9 @@ extension CDMessage {
     @NSManaged public var content: String?
     @NSManaged public var contentType: String?
     @NSManaged public var createdAt: Date?
-    @NSManaged public var from: String?
-    @NSManaged public var roomID: Int64
-    @NSManaged public var uid: Int64
+    @NSManaged public var senderID: String?
+    @NSManaged public var roomID: String?
+    @NSManaged public var uid: String?
     @NSManaged public var unread: Bool
     @NSManaged public var room: CDRoom?
 

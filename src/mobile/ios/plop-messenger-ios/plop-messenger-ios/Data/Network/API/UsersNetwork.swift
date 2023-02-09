@@ -3,6 +3,13 @@ import RxSwift
 import RxCocoa
 
 final class UsersNetwork {
+  private let scheduler: ConcurrentDispatchQueueScheduler
+  
+  init() {
+    self.scheduler = ConcurrentDispatchQueueScheduler(
+      qos: .background)
+  }
+  
   func signup(with signupRequest: SignupRequest) -> Observable<SignupResponse> {
     do {
       let requestBody = try JSONEncoder().encode(signupRequest)
@@ -17,6 +24,7 @@ final class UsersNetwork {
       
       return URLSession.shared.rx
         .data(request: request)
+        .observe(on: scheduler)
         .map({ data in
           return try JSONDecoder().decode(SignupResponse.self, from: data)
         })
@@ -40,6 +48,7 @@ final class UsersNetwork {
     request.addValue(token, forHTTPHeaderField: "Authorization")
     
     return URLSession.shared.rx.data(request: request)
+      .observe(on: scheduler)
       .mapToVoid()
   }
   
@@ -74,6 +83,7 @@ final class UsersNetwork {
     request.addValue(token, forHTTPHeaderField: "Authorization")
     
     return URLSession.shared.rx.data(request: request)
+      .observe(on: scheduler)
       .map({ data in
         return try JSONDecoder().decode(ProfileResponse.self, from: data)
       })
@@ -93,6 +103,7 @@ final class UsersNetwork {
       request.addValue(token, forHTTPHeaderField: "Authorization")
       
       return URLSession.shared.rx.data(request: request)
+        .observe(on: scheduler)
         .mapToVoid()
     } catch {
       return Observable.error(error)
@@ -125,6 +136,7 @@ final class UsersNetwork {
     request.addValue(token, forHTTPHeaderField: "Authorization")
     
     return URLSession.shared.rx.data(request: request)
+      .observe(on: scheduler)
       .map({ data in
         return try JSONDecoder().decode(ProfileResponse.self, from: data)
       })

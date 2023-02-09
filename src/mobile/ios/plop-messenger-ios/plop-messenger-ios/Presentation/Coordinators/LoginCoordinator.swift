@@ -14,6 +14,8 @@ final class LoginCoordinator: Coordinator {
     return vc
   }()
   
+  private var signupViewController: SignupViewController!
+  
   init(window: UIWindow) {
     self.window = window
   }
@@ -24,12 +26,52 @@ final class LoginCoordinator: Coordinator {
   
   func toSignup() {
     let viewModel = SignupViewModel(coordinator: self)
-    let viewController = SignupViewController(viewModel: viewModel)
-    loginViewController.present(viewController, animated: true)
+    signupViewController = SignupViewController(
+      viewModel: viewModel)
+    loginViewController.present(
+      signupViewController, animated: true)
   }
-
+  
   func toHome() {
     let coordinator = HomeCoordinator()
     coordinator.start()
+  }
+  
+  func presentLoginAlert(title: String, message: String) {
+    let alertController = UIAlertController(
+      title: title,
+      message: message,
+      preferredStyle: .alert)
+    
+    alertController.addAction(UIAlertAction(
+      title: "확인", style: .default)
+    )
+    
+    loginViewController.present(alertController, animated: true)
+  }
+  
+  func presentAlert(title: String, message: String, dismiss: Bool) {
+    let alertController = UIAlertController(
+      title: title,
+      message: message, preferredStyle: .alert)
+    
+    
+    if dismiss {
+      alertController.addAction(UIAlertAction(
+        title: "확인", style: .default, handler: { [weak self] _ in
+          self?.signupViewController.dismiss(animated: true)
+        })
+      )
+    } else {
+      alertController.addAction(UIAlertAction(
+        title: "확인", style: .default)
+      )
+    }
+    
+    signupViewController.present(alertController, animated: true)
+  }
+  
+  func dismissSignupScreen() {
+    signupViewController.dismiss(animated: true)
   }
 }

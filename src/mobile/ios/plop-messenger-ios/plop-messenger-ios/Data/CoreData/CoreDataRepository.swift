@@ -1,50 +1,32 @@
-import Foundation
 import CoreData
 import RxSwift
 
-protocol AbstractRepository {
-  associatedtype T
-  func query(
-    predicate: NSPredicate?,
-    sortDescriptors: [NSSortDescriptor]?
-  ) -> Observable<[T]>
-  func save(entity: T) -> Observable<Void>
-  func delete(entity: T) -> Observable<Void>
-}
-
-final class Repository<T: CoreDataRepresentable>: AbstractRepository where T == T.CoreDataType.DomainType {
+final class CoreDataRepository<P: Persistable> {
   private let context: NSManagedObjectContext
   private let scheduler: ContextScheduler
   
   init(context: NSManagedObjectContext) {
     self.context = context
-    self.scheduler = ContextScheduler(context: context)
+    self.scheduler = ContextScheduler(context)
   }
   
   func query(
     predicate: NSPredicate? = nil,
     sortDescriptors: [NSSortDescriptor]? = nil
-  ) -> Observable<[T]> {
-    let request = T.CoreDataType.fetchRequest()
-    request.predicate = predicate
-    request.sortDescriptors = sortDescriptors
-    return context.rx
-      .entities(fetchRequest: request)
-      .mapToDomain()
-      .subscribe(on: scheduler)
+  ) -> Observable<[P]> {
+    return context.rx.entities(
+      P.self,
+      predicate: predicate,
+      sortDescriptors: sortDescriptors
+    )
+    .subscribe(on: scheduler)
   }
   
-  func save(entity: T) -> Observable<Void> {
-    return entity
-      .sync(in: context)
-      .mapToVoid()
-      .flatMapLatest(context.rx.save)
-      .subscribe(on: scheduler)
+  func save(_ entity: P) {
+    try? context.rx.update(entity)
   }
   
-  func delete(entity: T) -> Observable<Void> {
-    return entity.sync(in: context)
-      .map({ $0 as! NSManagedObject })
-      .flatMapLatest(context.rx.delete)
+  func delete(_ entity: P) {
+    try? context.rx.delete(entity)
   }
 }

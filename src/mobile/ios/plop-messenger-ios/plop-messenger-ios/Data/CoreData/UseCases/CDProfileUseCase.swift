@@ -1,25 +1,27 @@
 import Foundation
+import CoreData
 import RxSwift
 
 final class CDProfileUseCase {
   private let coreDataStack: CoreDataStack
-  private var repository: Repository<Profile>
+  private var repository: CoreDataRepository<Profile>
   
   init() {
     coreDataStack = CoreDataStack()
-    repository = Repository<Profile>(context: coreDataStack.context)
+    repository = CoreDataRepository<Profile>(context: coreDataStack.context)
   }
   
-  func fetch(id: Int64) -> Observable<[Profile]> {
-    let predicate = NSPredicate(format: "%K = %d", #keyPath(CDProfile.uid), id)
-    return repository.query(predicate: predicate, sortDescriptors: [])
+  func fetch(_ email: String) -> Observable<Profile?> {
+    
+    return repository.query()
+      .map({ $0.first })
   }
   
-  func save(profile: Profile) -> Observable<Void> {
-    return repository.save(entity: profile)
+  func save(profile: Profile) {
+    return repository.save(profile)
   }
   
-  func delete(profile: Profile) -> Observable<Void> {
-    return repository.delete(entity: profile)
+  func delete(profile: Profile) {
+    return repository.delete(profile)
   }
 }

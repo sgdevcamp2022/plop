@@ -9,7 +9,7 @@ extension CDMember {
 
     @NSManaged public var image: String?
     @NSManaged public var name: String?
-    @NSManaged public var uid: Int64
+    @NSManaged public var uid: String?
     @NSManaged public var room: CDRoom?
 
 }

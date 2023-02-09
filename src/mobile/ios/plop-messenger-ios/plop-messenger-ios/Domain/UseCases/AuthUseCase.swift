@@ -4,7 +4,6 @@ import RxSwift
 final class AuthUseCase {
   private let network = AuthNetwork()
   private let tokenUseCase = TokenUseCase()
-  private let userCoreDataUseCase = CDUsersUseCase()
   
   func login(
     userid: String?,
@@ -32,8 +31,31 @@ final class AuthUseCase {
       .asResult()
   }
   
-  func mockLogin() -> Observable<Result<Void, Error>> {
-    return Observable.just(.success(()))
+  func mockLogin(email: String, password: String) -> Observable<Result<Void, Error>> {
+    let loginResponse = LoginResponse(
+      result: "success",
+      message: "success!!",
+      data: LoginData(
+        accessToken: "mock-access",
+        refreshToken: "mock-refresh",
+        accessExpire: 1675352728925,
+        refreshExpire: 1675356268925)
+    )
+    
+    if email == "email" && password == "password" {
+      guard let accessToken = self.tokenUseCase.fetchAccessToken(),
+            let refreshToken = self.tokenUseCase.fetchRefreshToken() else {
+        self.updateToken(loginResponse)
+        return Observable.just(.success(()))
+      }
+      if accessToken != loginResponse.data.accessToken ||
+          refreshToken != (loginResponse.data.refreshToken ?? "") {
+        self.updateToken(loginResponse)
+      }
+      return Observable.just(.success(()))
+    } else {
+      return Observable.just(.failure(UseCaseError.invalidResponse))
+    }
   }
   
   func autoLogin() -> Observable<Void> {
@@ -62,7 +84,19 @@ final class AuthUseCase {
   }
   
   func mockAutoLogin() -> Observable<Result<Void, Error>> {
-    return Observable.just(.failure(UseCaseError.invalidResponse))
+    guard let token = tokenUseCase.fetchAccessToken() else {
+      return Observable.just(
+        .failure(UseCaseError.invalidResponse))
+    }
+    
+    print(token)
+    
+    // 만료
+    if token != "mock-access" {
+      return Observable.just(.failure(UseCaseError.invalidResponse))
+    } else {
+      return Observable.just(.success(()))
+    }
   }
   
   func signout() -> Observable<Void> {

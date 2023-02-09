@@ -1,17 +1,22 @@
 import Foundation
 
 struct User: Codable {
-  let uid: Int64
-  let userid: String
+  let uid: String
   let email: String
   let profile: Profile
-  let device: String
   let rooms: [Room]
   let friends: [Friend]
 }
 
 struct Profile: Codable {
-  let uid: Int64
+  let uid: String
   let nickname: String
   let image: String
+}
+
+
+extension Profile {
+  static func empty() -> Profile {
+    return Profile(uid: "", nickname: "", image: "")
+  }
 }

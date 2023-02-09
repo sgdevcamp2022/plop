@@ -55,10 +55,8 @@ final class SignupViewController: UIViewController {
     output.signupButtonEnabled.drive(signupButton.rx.isEnabled)
       .disposed(by: disposeBag)
     
-    output.signupResult.drive(onNext: { success in
-      if success { self.dismiss(animated: true) }
-    })
-    .disposed(by: disposeBag)
+    output.signupResult.drive()
+      .disposed(by: disposeBag)
     
     output.dismiss.drive(onNext: { [weak self] in
       self?.dismiss(animated: true)

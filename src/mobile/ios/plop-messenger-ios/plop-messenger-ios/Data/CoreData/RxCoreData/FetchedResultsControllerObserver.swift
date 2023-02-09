@@ -2,14 +2,11 @@ import Foundation
 import CoreData
 import RxSwift
 
-final class FetchedResultsControllerEntityObserver<T: NSFetchRequestResult> : NSObject, NSFetchedResultsControllerDelegate {
-  
+final class FetchedResultsControllerEntityObserver<T: NSManagedObject>: NSObject, NSFetchedResultsControllerDelegate {
   typealias Observer = AnyObserver<[T]>
   
   private let observer: Observer
-  private let disposeBag = DisposeBag()
   private let frc: NSFetchedResultsController<T>
-  
   
   init(
     observer: Observer,
@@ -19,13 +16,11 @@ final class FetchedResultsControllerEntityObserver<T: NSFetchRequestResult> : NS
     cacheName: String?
   ) {
     self.observer = observer
-    
     self.frc = NSFetchedResultsController(
       fetchRequest: fetchRequest,
       managedObjectContext: context,
       sectionNameKeyPath: sectionNameKeyPath,
-      cacheName: cacheName
-    )
+      cacheName: cacheName)
     
     super.init()
     
@@ -34,30 +29,22 @@ final class FetchedResultsControllerEntityObserver<T: NSFetchRequestResult> : NS
       
       do {
         try self.frc.performFetch()
-      } catch let e {
-        observer.on(.error(e))
+        let entities = self.frc.fetchedObjects ?? []
+        self.observer.onNext(entities)
+      } catch let error {
+        observer.on(.error(error))
       }
-      
-      self.sendNextElement()
     }
   }
   
-  private func sendNextElement() {
-    self.frc.managedObjectContext.perform {
-      let entities = self.frc.fetchedObjects ?? []
-      self.observer.on(.next(entities))
-    }
-  }
-  
-  func controllerDidChangeContent(
-    _ controller: NSFetchedResultsController<NSFetchRequestResult>
-  ) {
-    sendNextElement()
+  func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+    let entities = self.frc.fetchedObjects ?? []
+    self.observer.onNext(entities)
   }
 }
 
-extension FetchedResultsControllerEntityObserver : Disposable {
-  public func dispose() {
+extension FetchedResultsControllerEntityObserver: Disposable {
+  func dispose() {
     frc.delegate = nil
   }
 }

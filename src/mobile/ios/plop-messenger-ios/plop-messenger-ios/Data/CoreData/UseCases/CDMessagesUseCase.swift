@@ -3,30 +3,30 @@ import RxSwift
 
 final class CDMessagesUseCase {
   private let coreDataStack: CoreDataStack
-  private var repository: Repository<Message>
+  private var repository: CoreDataRepository<Message>
   
   init() {
     coreDataStack = CoreDataStack()
-    repository = Repository<Message>(context: coreDataStack.context)
+    repository = CoreDataRepository<Message>(context: coreDataStack.context)
   }
   
-  func fetch(roomID: Int64) -> Observable<[Message]> {
+  func fetch(roomID: String) -> Observable<[Message]> {
     let predicate = NSPredicate(
-      format: "%K = %d",
-      #keyPath(Message.CoreDataType.roomID),
+      format: "%K = %@",
+      #keyPath(CDMessage.roomID),
       roomID
     )
     
     return repository.query(predicate: predicate, sortDescriptors: [
-      NSSortDescriptor(keyPath: \Message.CoreDataType.createdAt, ascending: false)
+      NSSortDescriptor(keyPath: \CDMessage.createdAt, ascending: false)
     ])
   }
   
-  func save(message: Message) -> Observable<Void> {
-    return repository.save(entity: message)
+  func save(message: Message) {
+    return repository.save(message)
   }
   
-  func delete(message: Message) -> Observable<Void> {
-    return repository.delete(entity: message)
+  func delete(message: Message) {
+    return repository.delete(message)
   }
 }

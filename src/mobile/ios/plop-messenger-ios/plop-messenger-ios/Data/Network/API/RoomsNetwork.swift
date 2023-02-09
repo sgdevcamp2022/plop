@@ -4,6 +4,12 @@ import RxCocoa
 
 final class RoomsNetwork {
   //TODO: - RoomID 요청
+  private let scheduler: ConcurrentDispatchQueueScheduler
+  
+  init() {
+    self.scheduler = ConcurrentDispatchQueueScheduler(
+      qos: .background)
+  }
   
   func createGroupChatRoom(with members: [String], token: String) -> Observable<RoomResponse> {
     let json: [String: Any] = [
@@ -22,6 +28,7 @@ final class RoomsNetwork {
       request.addValue(token, forHTTPHeaderField: "Authorization")
       
       return URLSession.shared.rx.data(request: request)
+        .observe(on: scheduler)
         .map({ data in
           return try JSONDecoder().decode(RoomResponse.self, from: data)
         })
@@ -47,6 +54,7 @@ final class RoomsNetwork {
       }
       
       return URLSession.shared.rx.data(request: request)
+        .observe(on: scheduler)
         .map({ data in
           return try JSONDecoder().decode(RoomInviteResponse.self, from: data)
         })
@@ -66,6 +74,7 @@ final class RoomsNetwork {
     request.addValue(token, forHTTPHeaderField: "Authorization")
     
     return URLSession.shared.rx.data(request: request)
+      .observe(on: scheduler)
       .map({ data in
         return try JSONDecoder().decode(RoomsListResponse.self, from: data)
       })
@@ -82,6 +91,7 @@ final class RoomsNetwork {
     request.addValue(token, forHTTPHeaderField: "Authorization")
     
     return URLSession.shared.rx.data(request: request)
+      .observe(on: scheduler)
       .mapToVoid()
   }
   
@@ -100,6 +110,7 @@ final class RoomsNetwork {
     request.addValue(token, forHTTPHeaderField: "Authorization")
     
     return URLSession.shared.rx.data(request: request)
+      .observe(on: scheduler)
       .map({ data in
         return try JSONDecoder().decode(MessageResponse.self, from: data)
       })
@@ -117,6 +128,7 @@ final class RoomsNetwork {
     }
     
     return URLSession.shared.rx.data(request: request)
+      .observe(on: scheduler)
       .map({ data in
         return try JSONDecoder().decode(RoomResponse.self, from: data)
       })

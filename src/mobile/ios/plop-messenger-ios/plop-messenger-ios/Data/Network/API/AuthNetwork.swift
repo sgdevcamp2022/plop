@@ -3,6 +3,13 @@ import RxSwift
 import RxCocoa
 
 final class AuthNetwork {
+  private let scheduler: ConcurrentDispatchQueueScheduler
+  
+  init() {
+    self.scheduler = ConcurrentDispatchQueueScheduler(
+      qos: .background)
+  }
+  
   func login(
     userid: String?,
     email: String?,
@@ -34,6 +41,7 @@ final class AuthNetwork {
     
     return URLSession.shared.rx
       .data(request: request)
+      .observe(on: scheduler)
       .map({ data -> LoginResponse in
         return try JSONDecoder().decode(LoginResponse.self, from: data)
       })
@@ -53,6 +61,7 @@ final class AuthNetwork {
     
     return URLSession.shared.rx
       .data(request: request)
+      .observe(on: scheduler)
       .map({ data in
         return try JSONDecoder().decode(LoginResponse.self, from: data)
       })
@@ -72,6 +81,7 @@ final class AuthNetwork {
     
     return URLSession.shared.rx
       .data(request: request)
+      .observe(on: scheduler)
       .mapToVoid()
   }
 }

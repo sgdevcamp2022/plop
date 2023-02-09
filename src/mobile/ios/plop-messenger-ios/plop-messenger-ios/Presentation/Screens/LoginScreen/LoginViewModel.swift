@@ -35,19 +35,27 @@ final class LoginViewModel: ViewModelType {
         }
       })
     
-    let login = input.loginTrigger.withLatestFrom(emailAndPassword)
+    let login = input.loginTrigger
+      .withLatestFrom(emailAndPassword)
       .flatMapLatest({ [unowned self] email, password in
-        return self.usecase.mockLogin()
-          .map({ result in
-            switch result {
-            case .success(_):
-              self.coordinator.toHome()
-            case .failure(_):
-              //TODO: - Error handling
-              break
-            }
-          })
-          .asDriver(onErrorJustReturn: ())
+        return self.usecase.mockLogin(
+          email: email,
+          password: password
+        )
+        .map({ result in
+          switch result {
+          case .success(_):
+            UserDefaults.standard.set(email, forKey: "currentEmail")
+            self.coordinator.toHome()
+          case .failure(_):
+            self.coordinator.presentLoginAlert(
+              title: "로그인 실패",
+              message: "로그인에 실패했습니다.\n다시 시도해주세요!"
+            )
+            break
+          }
+        })
+        .asDriver(onErrorJustReturn: ())
       })
     
     let presentSignup = input.signupTrigger

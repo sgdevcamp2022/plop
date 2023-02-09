@@ -3,22 +3,22 @@ import RxSwift
 
 final class CDRoomsUseCase {
   private let coreDataStack: CoreDataStack
-  private var repository: Repository<Room>
+  private var repository: CoreDataRepository<Room>
   
   init() {
     coreDataStack = CoreDataStack()
-    repository = Repository<Room>(context: coreDataStack.context)
+    repository = CoreDataRepository<Room>(context: coreDataStack.context)
   }
   
   func fetch() -> Observable<[Room]> {
     repository.query(predicate: nil, sortDescriptors: [])
   }
   
-  func save(room: Room) -> Observable<Void> {
-    repository.save(entity: room)
+  func save(room: Room) {
+    repository.save(room)
   }
   
-  func delete(room: Room) -> Observable<Void> {
-    repository.delete(entity: room)
+  func delete(room: Room) {
+    repository.delete(room)
   }
 }
