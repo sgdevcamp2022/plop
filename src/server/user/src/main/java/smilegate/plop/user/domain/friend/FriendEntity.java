@@ -7,6 +7,7 @@ import org.hibernate.annotations.TypeDef;
 import smilegate.plop.user.dto.response.ResponseFriend;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @ToString
 @Builder
@@ -14,17 +15,21 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @DynamicUpdate
-@Entity
+@Entity(name = "friend")
 @TypeDef(name = "json", typeClass = JsonType.class)
 @Table(name = "friend")
-
+@IdClass(FriendIdEntity.class)
 public class FriendEntity {
     @Id
-    @Column(name = "sender_id", nullable = false, unique = true)
+    @Column(name = "sender_id", nullable = false)
     private Long senderId;
-
-    @Column(name = "receiver_id", nullable = false, unique = true)
+    @Id
+    @Column(name = "receiver_id", nullable = false)
     private Long receiverId;
+//    @Column(name = "sender_email", nullable = false)
+//    private Long senderEmail;
+//    @Column(name = "receiver_email", nullable = false)
+//    private Long receiverEmail;
 
     @Column(name = "status")
     private Integer status;
