@@ -1,14 +1,17 @@
 package smilegate.plop.presence.dto.response;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
 @Data
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 public class ResponseDto {
-    private final String result;
-    private final String message;
-    private final List<ResponseProfile> data;
+    private String result;
+    private String message;
+    private List<ResponseProfile> data;
 }

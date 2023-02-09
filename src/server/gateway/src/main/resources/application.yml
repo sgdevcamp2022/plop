@@ -62,7 +62,20 @@ spring:
             - AuthorizationHeaderFilter
             - RewritePath=/auth/v1/(?<segment>.*), /$\{segment}
 
+        - id: presence-service
+          uri: lb://PRESENCE-SERVICE
+          predicates:
+            - Path=/presence/**
+          filters:
+            - AuthorizationHeaderFilter
+            - RewritePath=/presence/presence/(?<segment>.*), /$\{segment}
 
+        - id: chat-service
+          uri: lb://CHAT-SERVICE
+          predicates:
+            - Path=/chatting/**
+          filters:
+            - RewritePath=/chatting/chatting/(?<segment>.*), /$\{segment}
 
 
 #jwt :
