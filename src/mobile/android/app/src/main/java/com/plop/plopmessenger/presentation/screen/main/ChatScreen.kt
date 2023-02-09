@@ -1,14 +1,27 @@
 package com.plop.plopmessenger.presentation.screen.main
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.net.Uri
+import android.provider.MediaStore
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.launch
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.runtime.Composable
@@ -17,8 +30,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
@@ -27,15 +44,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.plop.plopmessenger.R
 import com.plop.plopmessenger.domain.model.ChatRoomType
 import com.plop.plopmessenger.domain.model.People
-import com.plop.plopmessenger.presentation.component.ChatTextBar
-import com.plop.plopmessenger.presentation.component.ChatTopBar
-import com.plop.plopmessenger.presentation.component.Messages
-import com.plop.plopmessenger.presentation.component.ProfileImages
+import com.plop.plopmessenger.presentation.component.*
+import com.plop.plopmessenger.presentation.model.MediaStoreImage
 import com.plop.plopmessenger.presentation.viewmodel.ChatViewModel
 import com.plop.plopmessenger.util.KeyLine
+import java.io.ByteArrayOutputStream
 
 enum class InputSelector {
     NONE,
@@ -76,20 +94,27 @@ fun ChatScreen(
     var textFieldFocusState = state.textFieldFocusState
     var currentInputSelector = state.currentInputSelector
     var focusManager = LocalFocusManager.current
+    var context = LocalContext.current
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicturePreview()) {
+        viewModel.setImage(getImageUriFromBitmap(context, it))
+    }
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight()
-            .padding(horizontal = KeyLine)
     ) {
         Column(
-            modifier = Modifier.clickable {
-                if (textFieldFocusState) {
-                    textFieldFocusState = false
-                    focusManager.clearFocus()
+            modifier = Modifier
+                .padding(horizontal = KeyLine)
+                .clickable {
+                    if (textFieldFocusState) {
+                        textFieldFocusState = false
+                        focusManager.clearFocus()
+                    }
                 }
-            }
         ) {
             Messages(
                 messages = messages,
@@ -128,6 +153,7 @@ fun ChatScreen(
             images = state.members.values.map { it.profileImg },
             chatId = state.chatroomId,
             modifier = Modifier
+                .padding(horizontal = KeyLine)
                 .background(MaterialTheme.colors.background)
                 .align(Alignment.TopCenter)
         )
@@ -144,21 +170,26 @@ fun ChatScreen(
                 .imePadding(),
             onTextFieldFocused = { focused ->
                 if (focused) {
-                    currentInputSelector = InputSelector.NONE
+                    viewModel.setCurrentInputSelector(InputSelector.NONE)
                 }
                 viewModel.setFocusState(focused)
             },
             focused = textFieldFocusState,
             currentInputSelector = currentInputSelector,
             onChangeCurrentInput = {
-                currentInputSelector = it
+                viewModel.setCurrentInputSelector(it)
 
                 if (textFieldFocusState) {
                     viewModel.setFocusState(false)
                     focusManager.clearFocus()
                 }
             },
-            dismissKeyboard = { viewModel.setInputSelector(InputSelector.NONE) }
+            onCameraClick = { launcher.launch() },
+            dismissKeyboard = { viewModel.setInputSelector(InputSelector.NONE) },
+            images = state.images,
+            onImageClick = viewModel::setImage,
+            selectedImage = state.selectedImage,
+            sendImage = viewModel::sendImage
         )
     }
 }
@@ -173,70 +204,91 @@ fun UserInput(
     onQueryChange: (TextFieldValue) -> Unit,
     currentInputSelector: InputSelector,
     onChangeCurrentInput: (InputSelector) -> Unit,
+    onCameraClick: () -> Unit,
     dismissKeyboard: () -> Unit,
+    images: List<MediaStoreImage>,
+    onImageClick: (Uri?) -> Unit,
+    selectedImage: Uri?,
+    sendImage: () -> Unit,
     modifier: Modifier
 ) {
 
-    Row(
-        modifier = modifier
-            .height(ChatScreenValue.UserInputHeightSize)
-            .fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        IconButton(
-            onClick = { onChangeCurrentInput(InputSelector.CAMERA) },
-            modifier = Modifier.size(ChatScreenValue.ChatBarIconBtnSize)
-        ) {
-            Icon(
-                imageVector = ImageVector.vectorResource(id = R.drawable.ic_outline_camera_alt_24),
-                contentDescription = null,
-                tint = MaterialTheme.colors.primary,
-                modifier = Modifier.size(ChatScreenValue.ChatBarIconSize)
-            )
-        }
-
-        IconButton(
-            onClick = { onChangeCurrentInput(InputSelector.PICTURE) },
-            modifier = Modifier.size(ChatScreenValue.ChatBarIconBtnSize)
-        ) {
-            Icon(
-                imageVector = ImageVector.vectorResource(id = R.drawable.ic_outline_photo_24),
-                contentDescription = null,
-                tint = MaterialTheme.colors.primary,
-                modifier = Modifier.size(ChatScreenValue.ChatBarIconSize)
-            )
-        }
-
-        ChatTextBar(
-            query = query,
-            onQueryChange = onQueryChange,
-            focused = focused,
-            onTextFieldFocused = onTextFieldFocused,
-            keyboardShown = currentInputSelector == InputSelector.NONE && focused,
+    Column(modifier = modifier) {
+        Row(
             modifier = Modifier
-                .weight(1f)
-                .padding(start = ChatScreenValue.ChatBarPadding)
-        )
-
-        if(query != TextFieldValue("")) {
+                .padding(horizontal = KeyLine)
+                .height(ChatScreenValue.UserInputHeightSize)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             IconButton(
                 onClick = {
-                    onMessageSent()
-                    resetScroll()
-                    dismissKeyboard()
+                    onChangeCurrentInput(InputSelector.CAMERA)
+                    onCameraClick()
                 },
-                modifier = Modifier
-                    .padding(start = ChatScreenValue.ChatBarPadding)
-                    .size(ChatScreenValue.ChatBarIconBtnSize)
-
+                modifier = Modifier.size(ChatScreenValue.ChatBarIconBtnSize)
             ) {
                 Icon(
-                    imageVector = Icons.Filled.Send,
+                    imageVector = ImageVector.vectorResource(id = R.drawable.ic_outline_camera_alt_24),
                     contentDescription = null,
                     tint = MaterialTheme.colors.primary,
                     modifier = Modifier.size(ChatScreenValue.ChatBarIconSize)
                 )
             }
+
+            IconButton(
+                onClick = {
+                    onChangeCurrentInput(InputSelector.PICTURE)
+                          },
+                modifier = Modifier.size(ChatScreenValue.ChatBarIconBtnSize)
+            ) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(id = R.drawable.ic_outline_photo_24),
+                    contentDescription = null,
+                    tint = MaterialTheme.colors.primary,
+                    modifier = Modifier.size(ChatScreenValue.ChatBarIconSize)
+                )
+            }
+
+            ChatTextBar(
+                query = query,
+                onQueryChange = onQueryChange,
+                focused = focused,
+                onTextFieldFocused = onTextFieldFocused,
+                keyboardShown = currentInputSelector == InputSelector.NONE && focused,
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(start = ChatScreenValue.ChatBarPadding)
+            )
+
+            if(query != TextFieldValue("")) {
+                IconButton(
+                    onClick = {
+                        onMessageSent()
+                        resetScroll()
+                        dismissKeyboard()
+                    },
+                    modifier = Modifier
+                        .padding(start = ChatScreenValue.ChatBarPadding)
+                        .size(ChatScreenValue.ChatBarIconBtnSize)
+
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Send,
+                        contentDescription = null,
+                        tint = MaterialTheme.colors.primary,
+                        modifier = Modifier.size(ChatScreenValue.ChatBarIconSize)
+                    )
+                }
+            }
+        }
+        if(currentInputSelector == InputSelector.PICTURE) {
+            ImageBox(
+                images = images,
+                onImageClick = onImageClick,
+                selectedImage = selectedImage,
+                sendImage = sendImage
+            )
         }
     }
 }
@@ -359,4 +411,76 @@ private fun GroupChatButtons(
             }
         }
     }
+}
+
+@Composable
+fun ImageBox(
+    images: List<MediaStoreImage>,
+    onImageClick: (Uri?) -> Unit,
+    selectedImage: Uri?,
+    sendImage: () -> Unit
+) {
+    Box() {
+        LazyVerticalGrid(
+            modifier = Modifier.defaultMinSize(minHeight = 300.dp),
+            columns = GridCells.Adaptive(minSize = 100.dp)
+        ) {
+            items(images) { image ->
+
+                val selected = image.contentUri == selectedImage
+                val alphaValue = if(selected) 0.5f else 1f
+
+                Box(modifier = Modifier.fillMaxWidth()) {
+
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(image.contentUri)
+                            .crossfade(true)
+                            .build(),
+                        contentDescription = "profile Image",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .alpha(alphaValue)
+                            .clickable { onImageClick(image.contentUri) }
+                            .fillMaxWidth()
+                            .size(100.dp),
+                        placeholder = painterResource(id = R.drawable.blank_profile)
+                    )
+
+                    if(selected) {
+                        Icon(
+                            imageVector = Icons.Filled.Done,
+                            contentDescription = null,
+                            tint = MaterialTheme.colors.onPrimary,
+                            modifier = Modifier
+                                .align(Alignment.Center)
+                                .background(
+                                    MaterialTheme.colors.primary,
+                                    CircleShape
+                                )
+                        )
+                    }
+                }
+            }
+        }
+
+        if(selectedImage != null) {
+            PlopButton(
+                onClick = sendImage,
+                content = stringResource(id = R.string.chat_image_send_btn),
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(KeyLine)
+                    .height(height = ButtonValue.LargeButtonHeight)
+                    .fillMaxWidth()
+            )
+        }
+    }
+}
+
+fun getImageUriFromBitmap(context: Context, bitmap: Bitmap?): Uri {
+    val bytes = ByteArrayOutputStream()
+    bitmap!!.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
+    val path = MediaStore.Images.Media.insertImage(context.contentResolver, bitmap, "Title", null)
+    return Uri.parse(path.toString())
 }

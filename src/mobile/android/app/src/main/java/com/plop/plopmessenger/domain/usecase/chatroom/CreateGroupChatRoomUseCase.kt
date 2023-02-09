@@ -18,7 +18,7 @@ class CreateGroupChatRoomUseCase @Inject constructor(
     private val repository: ChatRoomRepository,
     private val memberRepository: MemberRepository
 ) {
-    suspend operator fun invoke(friends: List<People>): Flow<Resource<String>> = flow{
+    suspend operator fun invoke(friends: List<People>): Flow<Resource<Boolean>> = flow{
         try {
             val response = repository.postGroupChatroom(PostGroupRoomRequest(friends.map{it.peopleId}))
             when(response.code()){
@@ -26,7 +26,7 @@ class CreateGroupChatRoomUseCase @Inject constructor(
                     val chatroom = response.body()
 
                     if (chatroom?.roomId != null) {
-                        emit(Resource.Success())
+                        emit(Resource.Success(true))
                         repository.insertChatRoom(
                             ChatRoom(chatroom.roomId, getChatRoomTitle(friends.map{it.nickname}), 0, "", Date(), 2)
                         )

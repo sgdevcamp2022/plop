@@ -64,5 +64,6 @@
     <string name="chat_add_btn">Add</string>
     <string name="chat_edit_btn">Name</string>
     <string name="chat_member_btn">Members</string>
+    <string name="chat_image_send_btn">보내기</string>
 
 </resources>
