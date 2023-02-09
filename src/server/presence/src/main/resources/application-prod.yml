@@ -1,0 +1,13 @@
+
+spring:
+  data:
+    mongodb:
+      uri: mongodb+srv://plop:smilegateplop@mycluster.xcoh78v.mongodb.net/plop?retryWrites=true&w=majority
+
+  kafka:
+    consumer:
+      bootstrap-servers: localhost:9092
+    producer:
+      bootstrap-servers: localhost:9092
+
+
