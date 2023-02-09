@@ -37,9 +37,7 @@ public class PresenceController {
         /**
          * 유저서버를 통해 친구리스트API 요청
           */
-        //List<String> f = friendService.getMyFriends(jwt);
-        List<String> friends = new ArrayList<>();
-        friends.add("imuser2"); friends.add("imuser3"); friends.add("imuser4");
+        List<String> friends = friendService.getMyFriends(jwt);
         if(friends.isEmpty()) return new ResponseEntity<>(new ResponsePresenceUsers(), HttpStatus.OK);
         return new ResponseEntity<>(presenceService.getUsersPresence(friends),HttpStatus.OK);
     }
@@ -49,9 +47,7 @@ public class PresenceController {
         String userId = getTokenToUserId(jwt);
         PresenceUserDto presenceUserDto = presenceService.presenceOn(userId);
 
-        //List<String> f = friendService.getMyFriends(jwt);
-        List<String> friends = new ArrayList<>();
-        friends.add("imuser2"); friends.add("imuser3"); friends.add("imuser4");
+        List<String> friends = friendService.getMyFriends(jwt);
 
         PresenceMessage presenceMessage = PresenceMessage.builder()
                         .user_id(presenceUserDto.getUser_id())
@@ -69,9 +65,7 @@ public class PresenceController {
         String userId = getTokenToUserId(jwt);
         PresenceUserDto presenceUserDto = presenceService.presenceOff(userId);
 
-        //List<String> f = friendService.getMyFriends(jwt);
-        List<String> friends = new ArrayList<>();
-        friends.add("imuser2"); friends.add("imuser3"); friends.add("imuser4");
+        List<String> friends = friendService.getMyFriends(jwt);
         PresenceMessage presenceMessage = PresenceMessage.builder()
                 .user_id(presenceUserDto.getUser_id())
                 .status(presenceUserDto.getStatus())
