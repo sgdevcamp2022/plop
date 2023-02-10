@@ -8,6 +8,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.plop.plopmessenger.presentation.state.ThemeConstants.DARK
+import com.plop.plopmessenger.presentation.state.ThemeConstants.LIGHT
+import com.plop.plopmessenger.presentation.state.UserState
 
 private val DarkColorPalette = darkColors(
     primary = Orange300,
@@ -31,8 +34,17 @@ private val LightColorPalette = lightColors(
 )
 
 @Composable
+fun rememberThemeMode(): Boolean {
+    return when (UserState.mode) {
+        LIGHT -> false
+        DARK -> true
+        else -> isSystemInDarkTheme()
+    }
+}
+
+@Composable
 fun PlopMessengerTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    darkTheme: Boolean = rememberThemeMode(),
     content: @Composable () -> Unit
 ) {
     val colors = if (darkTheme) {
