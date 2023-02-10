@@ -10,13 +10,13 @@ import androidx.compose.ui.graphics.Color
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 private val DarkColorPalette = darkColors(
-    primary = Orange200,
+    primary = Orange300,
     primaryVariant = Purple700,
-    secondary = Gray200,
-    background = Gray100,
-    onBackground = Gray800,
-    onPrimary = Gray100,
-    onSecondary = Gray800
+    secondary = Gray650,
+    background = Gray700,
+    onBackground = Gray100,
+    onPrimary = Gray700,
+    onSecondary = Gray100
 )
 
 private val LightColorPalette = lightColors(
@@ -42,7 +42,7 @@ fun PlopMessengerTheme(
     }
 
     val systemUiController = rememberSystemUiController()
-    systemUiController.setStatusBarColor( color = colors.primary )
+    systemUiController.setStatusBarColor( color = colors.background )
 
     MaterialTheme(
         colors = colors,
