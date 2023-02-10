@@ -1,6 +1,7 @@
 package smilegate.plop.presence.controller;
 
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -14,7 +15,6 @@ import smilegate.plop.presence.model.jwt.JwtTokenProvider;
 import smilegate.plop.presence.service.FriendService;
 import smilegate.plop.presence.service.PresenceService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -32,6 +32,7 @@ public class PresenceController {
         return jwtTokenProvider.getUserInfo(jwtTokenProvider.removeBearer(jwt)).getUserId();
     }
 
+    @Operation(summary = "친구리스트API", description = "online인 나의 친구 id 리스트 조회")
     @GetMapping("/v1/users")
     public ResponseEntity<ResponsePresenceUsers> presenceUsers(@RequestHeader("Authorization") String jwt){
         /**
@@ -42,6 +43,7 @@ public class PresenceController {
         return new ResponseEntity<>(presenceService.getUsersPresence(friends),HttpStatus.OK);
     }
 
+    @Operation(summary = "접속상태를 'online'으로 변경", description = "나의 접속상태를 'online'으로 변경하고 웹소켓으로 해당 정보 친구들에게 전달")
     @PutMapping("/v1/on")
     public ResponseEntity<String> sendPresenceOn(@RequestHeader("Authorization") String jwt){
         String userId = getTokenToUserId(jwt);
@@ -60,6 +62,7 @@ public class PresenceController {
         return ResponseEntity.ok("success");
     }
 
+    @Operation(summary = "접속상태를 'offline'으로 변경", description = "나의 접속상태를 'offline'으로 변경하고 웹소켓으로 해당 정보 친구들에게 전달")
     @PutMapping("/v1/off")
     public ResponseEntity<String> sendPresenceOff(@RequestHeader("Authorization") String jwt){
         String userId = getTokenToUserId(jwt);
