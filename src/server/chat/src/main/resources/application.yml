@@ -1,8 +1,35 @@
 server:
-  port: 8080
+  port: 8081
 
 spring:
   application:
     name: chat-service
   profiles:
     default: prod
+
+
+eureka:
+  instance:
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
+
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://127.0.0.1:8761/eureka
+
+
+springdoc:
+  api-docs:
+    path: /chat-api-docs
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  swagger-ui:
+    operations-sorter: alpha
+    tags-sorter: alpha
+#    http://localhost:8080/swagger-ui/index.html
+    path: /swagger-ui.html
+    disable-swagger-default-url: true
+    doc-expansion: none
+  paths-to-match:
+    - /chatting/**
