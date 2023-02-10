@@ -40,19 +40,19 @@ class SettingViewModel @Inject constructor(
 
     fun setThemeMode(mode: Boolean) {
         viewModelScope.launch {
-            userRepository.setThemeMode(mode)
+            userUseCase.setThemeUseCase(mode)
         }
     }
 
     fun setAlarm(mode: Boolean) {
         viewModelScope.launch {
-            userRepository.setAlarmMode(mode)
+            userUseCase.setAlarmUseCase(mode)
         }
     }
 
     fun setActiveMode(mode: Boolean) {
         viewModelScope.launch {
-            userRepository.setActiveMode(mode)
+            userUseCase.setActiveUseCase(mode)
         }
     }
 

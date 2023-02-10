@@ -21,5 +21,6 @@ data class UserUseCase @Inject constructor(
     val setNicknameUseCase: SetNicknameUseCase,
     val setProfileImgUseCase: SetProfileImgUseCase,
     val setThemeUseCase: SetThemeUseCase,
-    val setAlarmUseCase: SetAlarmUseCase
+    val setAlarmUseCase: SetAlarmUseCase,
+    val setActiveUseCase: SetActiveUseCase
 )
