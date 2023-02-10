@@ -1,5 +1,6 @@
 package smilegate.plop.chat.service;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import smilegate.plop.chat.domain.chat.ChatMessageRepository;
@@ -35,10 +36,6 @@ public class ChatRoomService {
     }
 
     public RespRoomDto createDmRoom(ReqDmDto reqDmDto){
-        if(reqDmDto.getMessage_to() == null || reqDmDto.getMessage_to().equals("")) {
-            log.info("ErrorCode: {}","DM_MEMBER_ERROR");
-            throw new CustomAPIException(ErrorCode.DM_MEMBER_ERROR, "상대방id가 없음");
-        }
 
         RoomCollection savedRoom = matchDmMembers(reqDmDto);
         if(savedRoom == null){
