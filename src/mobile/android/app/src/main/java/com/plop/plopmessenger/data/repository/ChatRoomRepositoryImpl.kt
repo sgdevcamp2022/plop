@@ -29,6 +29,10 @@ class ChatRoomRepositoryImpl @Inject constructor(
         return chatroomMemberImageDao.loadChatRoomAndMessage()
     }
 
+    override fun loadChatRoomIdList(): Flow<List<String>> {
+        return chatRoomDao.loadChatRoomIdList()
+    }
+
     override fun loadChatRoomAndMemberById(chatroomId: String): Flow<ChatRoomMemberImage> {
         return chatroomMemberImageDao.loadChatRoomAndMemberById(chatroomId)
     }
