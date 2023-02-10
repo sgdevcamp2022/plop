@@ -78,9 +78,19 @@ object AppModule {
     @Singleton
     @Provides
     fun provideWebSocketListener(
-        okHttpClient: OkHttpClient
+        okHttpClient: OkHttpClient,
+        chatRoomRepository: ChatRoomRepository,
+        messageRepository: MessageRepository,
+        memberRepository: MemberRepository,
+        userRepository: UserRepository
     ) : WebSocketListener {
-        return WebSocketListener(okHttpClient)
+        return WebSocketListener(
+            okHttpClient,
+            chatRoomRepository,
+            messageRepository,
+            memberRepository,
+            userRepository
+        )
     }
 
     @AuthInterceptor

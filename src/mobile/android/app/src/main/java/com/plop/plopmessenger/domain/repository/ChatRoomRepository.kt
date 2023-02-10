@@ -14,6 +14,7 @@ import java.util.*
 interface ChatRoomRepository {
     fun loadChatRoomTitle(chatroomId: String): Flow<String>
     fun loadChatRoomAndMessage(): Flow<List<ChatRoomMemberImage>>
+    fun loadChatRoomIdList(): Flow<List<String>>
     fun loadChatRoomAndMemberById(chatroomId: String): Flow<ChatRoomMemberImage>
     fun hasPersonalChatRoomByFriend(friendId: String): Flow<String?>
     suspend fun insertChatRoom(chatRoom: ChatRoom)

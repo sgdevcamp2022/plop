@@ -111,7 +111,6 @@ class ChatViewModel @Inject constructor(
             messageUseCase.getFirstMessageUseCase(chatState.value.chatroomId!!).collect() { result ->
                 when (result) {
                     is Resource.Success -> {
-                        Log.d("ㅁㄴㅇㄹ", result.data?.toString()?: "")
                         if(result.data != null && !chatState.value.messages.contains(result.data) ) {
                             chatState.update {
                                 it.copy(
