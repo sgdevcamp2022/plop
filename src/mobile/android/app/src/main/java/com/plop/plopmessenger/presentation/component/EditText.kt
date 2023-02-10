@@ -152,6 +152,10 @@ fun ChatTextBar(
         BasicTextField(
             value = query,
             onValueChange = onQueryChange,
+            textStyle = TextStyle(
+                fontSize = 16.sp,
+                color = MaterialTheme.colors.onSecondary
+            ),
             modifier = Modifier
                 .align(Alignment.CenterStart)
                 .fillMaxWidth()
@@ -195,7 +199,8 @@ fun LoginEditText(
             value = query,
             onValueChange = onQueryChange,
             textStyle = TextStyle(
-                fontSize = 16.sp
+                fontSize = 16.sp,
+                color = MaterialTheme.colors.onSecondary
             ),
             modifier = Modifier
                 .align(Alignment.CenterStart)
