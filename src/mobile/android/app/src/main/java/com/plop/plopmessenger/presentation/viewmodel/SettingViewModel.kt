@@ -3,6 +3,7 @@ package com.plop.plopmessenger.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.plop.plopmessenger.domain.repository.UserRepository
+import com.plop.plopmessenger.domain.usecase.user.UserUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
@@ -11,7 +12,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SettingViewModel @Inject constructor(
-    private val userRepository: UserRepository
+    private val userUseCase: UserUseCase
 ): ViewModel() {
 
     var settingState = MutableStateFlow(SettingState())
@@ -23,7 +24,7 @@ class SettingViewModel @Inject constructor(
 
     private fun getUserInfo() {
         viewModelScope.launch {
-            userRepository.getUser().collect() { result ->
+            userUseCase.getUserInfoUseCase().collect() { result ->
                 settingState.update {
                     it.copy(
                         nickname = result.nickname,
@@ -40,35 +41,18 @@ class SettingViewModel @Inject constructor(
     fun setThemeMode(mode: Boolean) {
         viewModelScope.launch {
             userRepository.setThemeMode(mode)
-            settingState.update {
-                it.copy(
-                    themeMode = mode
-                )
-            }
         }
     }
 
     fun setAlarm(mode: Boolean) {
         viewModelScope.launch {
             userRepository.setAlarmMode(mode)
-            settingState.update {
-                it.copy(
-                    alarmMode = mode
-                )
-            }
         }
     }
 
     fun setActiveMode(mode: Boolean) {
         viewModelScope.launch {
             userRepository.setActiveMode(mode)
-            userRepository.getActiveModel().collect(){ result ->
-                settingState.update {
-                    it.copy(
-                        activeMode = result
-                    )
-                }
-            }
         }
     }
 
