@@ -1,5 +1,11 @@
 package smilegate.plop.chat.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -12,12 +18,16 @@ import smilegate.plop.chat.dto.request.ReqGroupDto;
 import smilegate.plop.chat.dto.request.ReqInviteDto;
 import smilegate.plop.chat.dto.response.RespMyChatRoom;
 import smilegate.plop.chat.dto.response.RespRoomDto;
+import smilegate.plop.chat.exception.CustomAPIException;
+import smilegate.plop.chat.exception.ErrorCode;
+import smilegate.plop.chat.exception.ErrorResponseDto;
 import smilegate.plop.chat.model.jwt.JwtTokenProvider;
 import smilegate.plop.chat.service.ChatRoomService;
 
 import java.util.HashMap;
 import java.util.List;
 
+@Tag(name="room", description = "채팅방 API")
 @Slf4j
 @RestController
 @RequestMapping("/chatting/room")
@@ -32,13 +42,24 @@ public class ChatRoomController {
         return jwtTokenProvider.getUserInfo(jwtTokenProvider.removeBearer(jwt)).getUserId();
     }
 
+    @Operation(summary = "1:1 채팅방 생성", description = "채팅을 보내지 않아도 생성됨, 상대방과 채팅방 개설한 적이 있다면 이전에 생성된 채팅방 반환", responses = {
+            @ApiResponse(responseCode = "201", description = "생성 성공", content = @Content(schema = @Schema(implementation = RespRoomDto.class))),
+            @ApiResponse(responseCode = "404", description = "상대방id가 없음", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))) })
     @PostMapping("/v1/dm-creation")
     public ResponseEntity<RespRoomDto> dmCreation(@RequestHeader("Authorization") String jwt, @RequestBody ReqDmDto reqDmDto){
+        if(reqDmDto.getMessage_to() == null || reqDmDto.getMessage_to().equals("")) {
+            log.info("ErrorCode: {}","DM_MEMBER_ERROR");
+            throw new CustomAPIException(ErrorCode.DM_MEMBER_ERROR, "상대방id가 없음");
+        }
+
         String userId = getTokenToUserId(jwt);
         reqDmDto.setCreator(userId);
         return new ResponseEntity<>(chatRoomMongoService.createDmRoom(reqDmDto),HttpStatus.CREATED);
     }
 
+    @Operation(summary = "그룹 채팅방 생성", description = "그룹 채팅방 생성시 웹소켓으로 생성 정보 멤버들에게 전달", responses = {
+            @ApiResponse(responseCode = "201", description = "생성 성공", content = @Content(schema = @Schema(implementation = RespRoomDto.class))),
+            @ApiResponse(responseCode = "400", description = "초대한 상대방id가 없음", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))) })
     @PostMapping("/v1/group-creation")
     public ResponseEntity<RespRoomDto> groupCreation(@RequestHeader("Authorization") String jwt, @RequestBody ReqGroupDto reqGroupDto){
         String userId = getTokenToUserId(jwt);
@@ -49,6 +70,9 @@ public class ChatRoomController {
         return new ResponseEntity<>(respRoomDto,HttpStatus.CREATED);
     }
 
+    @Operation(summary = "그룹 채팅방에 멤버 초대", responses = {
+            @ApiResponse(responseCode = "200", description = "생성 성공", content = @Content(schema = @Schema(implementation = ReqInviteDto.class))),
+            @ApiResponse(responseCode = "200", description = "채팅방이 없거나 멤버가 없음", content = @Content(schema = @Schema(implementation = ReqInviteDto.class))) })
     @PostMapping("/v1/invitation")
     public ResponseEntity<APIMessage> groupInvitation(@RequestBody ReqInviteDto reqInviteDto){
         if(chatRoomMongoService.inviteMembers(reqInviteDto)){
@@ -58,12 +82,10 @@ public class ChatRoomController {
         return new ResponseEntity<>(new APIMessage(APIMessage.ResultEnum.failed,reqInviteDto),HttpStatus.OK);
     }
 
-    /**
-     * 나의 채팅방 리스트 조회
-     */
+    @Operation(summary = "채팅방 리스트 조회", description = "나의 채팅방 리스트 조회", responses = {
+            @ApiResponse(responseCode = "200", description = "생성 성공", content = @Content(schema = @Schema(implementation = APIMessage.class)))})
     @GetMapping("/v1/my-rooms")
     public ResponseEntity<APIMessage> myChatRooms(@RequestHeader("Authorization") String jwt){
-        //jwt를 auth 서버를 통해 사용자 id 가져온다.
         String userId = getTokenToUserId(jwt);
         List<RespMyChatRoom> respMyChatRooms = chatRoomMongoService.findMyRoomsByUserId(userId);
         APIMessage apiMessage = new APIMessage();
@@ -72,11 +94,12 @@ public class ChatRoomController {
         return new ResponseEntity<>(apiMessage,HttpStatus.OK);
     }
 
-    /**
-     * 채팅방 나가기
-     */
+
+    @Operation(summary = "채팅방 나가기", description = "그룹 채팅방에서 멤버 삭제", responses = {
+            @ApiResponse(responseCode = "200", description = "삭제 성공", content = @Content(schema = @Schema(implementation = APIMessage.class)))})
     @DeleteMapping("/v1/out/{roomid}")
-    public ResponseEntity<APIMessage> outOfTheRoom(@RequestHeader("Authorization") String jwt, @PathVariable(value = "roomid") String roomId){
+    public ResponseEntity<APIMessage> outOfTheRoom(@RequestHeader("Authorization") String jwt,
+                                                   @Parameter(description = "채팅방 id") @PathVariable(value = "roomid") String roomId){
         String userId = getTokenToUserId(jwt);
         if(chatRoomMongoService.outOfTheRoom(roomId, userId)){
             return new ResponseEntity<>(new APIMessage(APIMessage.ResultEnum.success, new HashMap<String,String>() {{
@@ -89,8 +112,11 @@ public class ChatRoomController {
         }}), HttpStatus.OK);
     }
 
+    @Operation(summary = "채팅방 정보", description = "하나의 채팅방 정보를 조회", responses = {
+            @ApiResponse(responseCode = "200", description = "조회 성공", content = @Content(schema = @Schema(implementation = RespRoomDto.class))),
+            @ApiResponse(responseCode = "400", description = "존재하지 않은 채팅방",content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))})
     @GetMapping("/v1/info/{roomid}")
     public ResponseEntity<RespRoomDto> chatRoomInfo(@PathVariable(value = "roomid") String roomId){
-        return new ResponseEntity<>(chatRoomMongoService.getChatRoomInfo(roomId),HttpStatus.OK);
+        return new ResponseEntity<>(chatRoomMongoService.getChatRoomInfo(roomId), HttpStatus.OK);
     }
 }
