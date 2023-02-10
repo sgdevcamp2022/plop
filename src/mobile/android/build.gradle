@@ -28,6 +28,9 @@ buildscript {
 
         //coil
         coil_version = "2.2.2"
+
+        //accompanist
+        accompanist_version = "0.28.0"
     }
 
     repositories {
