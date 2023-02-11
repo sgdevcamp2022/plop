@@ -46,7 +46,6 @@ spring:
             - Path=/auth/v1/password/new
           filters:
             - RewritePath=/auth/v1/(?<segment>.*), /$\{segment}
-
         - id: user-service
           uri: lb://USER-SERVICE
           predicates:
@@ -58,6 +57,19 @@ spring:
           uri: lb://AUTH-SERVICE
           predicates:
             - Path=/auth/v1/**
+          filters:
+            - AuthorizationHeaderFilter
+            - RewritePath=/auth/v1/(?<segment>.*), /$\{segment}
+        - id: push-service
+          uri: lb://PUSH-SERVICE
+          predicates:
+            - Path=/push/v1/send
+          filters:
+            - RewritePath=/auth/v1/(?<segment>.*), /$\{segment}
+        - id: push-service
+          uri: lb://PUSH-SERVICE
+          predicates:
+            - Path=/push/v1/**
           filters:
             - AuthorizationHeaderFilter
             - RewritePath=/auth/v1/(?<segment>.*), /$\{segment}
