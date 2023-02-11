@@ -40,6 +40,11 @@
     <string name="setting_profile_dialog_dismiss">취소</string>
     <string name="setting_profile_dialog_ok">저장</string>
 
+    <string name="setting_profile_logout_dialog">로그아웃 하시겠습니까?</string>
+    <string name="setting_profile_logout_ok">로그아웃</string>
+    <string name="setting_profile_withdraw_dialog">정말 탈퇴 하시겠습니까?</string>
+    <string name="setting_profile_withdrawal_ok">탈퇴</string>
+
     <string name="chat_info_add_group_btn">와 그룹채팅 만들기</string>
     <string name="chat_info_add_member_btn">사용자 추가하기</string>
     <string name="chat_info_alarm_btn">알림 및 소리</string>

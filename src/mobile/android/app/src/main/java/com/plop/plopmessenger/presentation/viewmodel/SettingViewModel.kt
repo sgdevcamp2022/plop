@@ -2,8 +2,8 @@ package com.plop.plopmessenger.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.plop.plopmessenger.domain.repository.UserRepository
 import com.plop.plopmessenger.domain.usecase.user.UserUseCase
+import com.plop.plopmessenger.domain.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
@@ -56,6 +56,83 @@ class SettingViewModel @Inject constructor(
         }
     }
 
+    fun closeDialog() {
+        settingState.update {
+            it.copy(
+                showLogoutDialog = false,
+                showWithdrawalDialog = false
+            )
+        }
+    }
+
+    fun showLogoutDialog() {
+        settingState.update {
+            it.copy(
+                showLogoutDialog = true
+            )
+        }
+    }
+
+    fun showWithdrawalDialog() {
+        settingState.update {
+            it.copy(
+                showWithdrawalDialog = true
+            )
+        }
+    }
+
+    fun logout() {
+        viewModelScope.launch {
+            userUseCase.logoutUseCase().collect() { result ->
+                when(result) {
+                    is Resource.Success -> {
+                        settingState.update {
+                            it.copy(
+                                shouldLoginState = false
+                            )
+                        }
+                    }
+                    is Resource.Error -> {
+                        settingState.update {
+                            it.copy(
+                                error = result.message?: ""
+                            )
+                        }
+                    }
+                    is Resource.Loading -> {
+
+                    }
+                }
+            }
+        }
+    }
+
+    fun withdrawal() {
+        viewModelScope.launch {
+            userUseCase.withdrawalUseCase().collect() { result ->
+                when(result) {
+                    is Resource.Success -> {
+                        settingState.update {
+                            it.copy(
+                                shouldLoginState = false
+                            )
+                        }
+                    }
+                    is Resource.Error -> {
+                        settingState.update {
+                            it.copy(
+                                error = result.message?: ""
+                            )
+                        }
+                    }
+                    is Resource.Loading -> {
+
+                    }
+                }
+            }
+        }
+    }
+
 }
 
 data class SettingState(
@@ -64,4 +141,8 @@ data class SettingState(
     val themeMode: Boolean = true,
     val alarmMode: Boolean = true,
     val activeMode: Boolean = false,
+    val showLogoutDialog: Boolean = false,
+    val showWithdrawalDialog: Boolean = false,
+    val error: String = "",
+    val shouldLoginState: Boolean = true
 )
