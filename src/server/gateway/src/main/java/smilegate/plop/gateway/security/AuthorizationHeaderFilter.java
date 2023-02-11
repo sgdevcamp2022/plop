@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
@@ -62,7 +63,6 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
                  UnsupportedJwtException | IllegalArgumentException | ExpiredJwtException jwtException) {
             throw jwtException;
         }
-
     }
     private Mono<Void> onError(ServerWebExchange exchange, String err, HttpStatus httpStatus) {
         ServerHttpResponse response = exchange.getResponse();

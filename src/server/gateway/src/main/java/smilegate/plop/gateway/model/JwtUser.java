@@ -8,5 +8,5 @@ import lombok.Data;
 public class JwtUser {
     String email;
     String userId;
-    //String nickname;
+    String nickname;
 }
