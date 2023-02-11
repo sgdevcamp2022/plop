@@ -57,12 +57,30 @@ class ChatViewModel @Inject constructor(
 
     init {
         if(!chatState.value.chatroomId.isNullOrBlank()){
-            getMessageList()
-            getFirstMessage()
-            getChatroomInfo()
+            viewModelScope.launch {
+                launch { getChatRoomNewMessage() }.join()
+                getMessageList()
+                getFirstMessage()
+                getChatroomInfo()
+            }
+        } else {
+            /** 내가 만든 새 채팅방에 들어갔을 경우 **/
+            viewModelScope.launch {
+                launch { getChatRoomNewId() }.join()
+                getFirstMessage()
+                getChatroomInfo()
+            }
         }
         getUserId()
         loadImage()
+    }
+
+    fun getChatRoomNewId() {
+        /** 채팅방 번호 얻고, 그걸 room 에다가 넣고, 최초 메세지를 넣는다.**/
+    }
+
+    fun getChatRoomNewMessage() {
+        /** 서버와 DB 동기화 작업 **/
     }
 
     fun getMessageList() {
