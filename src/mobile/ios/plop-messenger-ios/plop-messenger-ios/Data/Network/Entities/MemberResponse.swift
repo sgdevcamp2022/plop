@@ -16,8 +16,9 @@ extension MemberResponse {
   func toDomain() -> Member {
     return Member(
       uid: userID,
-      name: userID,
-      image: ""
+      email: "",
+      nickname: "",
+      imageURL: ""
     )
   }
 }

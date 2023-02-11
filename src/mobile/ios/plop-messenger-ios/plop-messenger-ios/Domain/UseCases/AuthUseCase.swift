@@ -6,112 +6,87 @@ final class AuthUseCase {
   private let tokenUseCase = TokenUseCase()
   
   func login(
-    userid: String?,
-    email: String?,
+    email: String,
     password: String
   ) -> Observable<Result<Void, Error>> {
-    network.login(userid: userid, email: email, password: password)
-      .map({ [unowned self] response -> Void in
-        if response.message == "success" {
-          guard let accessToken = self.tokenUseCase.fetchAccessToken(),
-                let refreshToken = self.tokenUseCase.fetchRefreshToken() else {
-            self.updateToken(response)
-            return
-          }
-          
-          if accessToken != response.data.accessToken ||
-              refreshToken != (response.data.refreshToken ?? "") {
-            self.updateToken(response)
-          }
-          return
-        } else {
-          throw UseCaseError.invalidResponse
-        }
-      })
-      .asResult()
-  }
-  
-  func mockLogin(email: String, password: String) -> Observable<Result<Void, Error>> {
-    let loginResponse = LoginResponse(
-      result: "success",
-      message: "success!!",
-      data: LoginData(
-        accessToken: "mock-access",
-        refreshToken: "mock-refresh",
-        accessExpire: 1675352728925,
-        refreshExpire: 1675356268925)
-    )
-    
-    if email == "email" && password == "password" {
-      guard let accessToken = self.tokenUseCase.fetchAccessToken(),
-            let refreshToken = self.tokenUseCase.fetchRefreshToken() else {
-        self.updateToken(loginResponse)
-        return Observable.just(.success(()))
-      }
-      if accessToken != loginResponse.data.accessToken ||
-          refreshToken != (loginResponse.data.refreshToken ?? "") {
-        self.updateToken(loginResponse)
-      }
-      return Observable.just(.success(()))
-    } else {
-      return Observable.just(.failure(UseCaseError.invalidResponse))
-    }
-  }
-  
-  func autoLogin() -> Observable<Void> {
-    guard let token = tokenUseCase.fetchAccessToken() else {
-      return Observable.error(UseCaseError.failedToFetchToken)
-    }
-    
-    return network.autoLogin(token: token)
-      .map({ [unowned self] response -> Void in
-        if response.message == "success" {
-          guard let accessToken = self.tokenUseCase.fetchAccessToken(),
-                let refreshToken = self.tokenUseCase.fetchRefreshToken() else {
-            self.updateToken(response)
-            return
-          }
-          
-          if accessToken != response.data.accessToken ||
-              refreshToken != (response.data.refreshToken ?? "") {
-            self.updateToken(response)
-          }
-          return
-        } else {
-          throw UseCaseError.invalidResponse
+    return network.login(email: email, password: password)
+      .map({ [unowned self] result in
+        switch result {
+        case .success(let token):
+          self.tokenUseCase.updateToken(token)
+          return .success(())
+        case .failure(let error):
+          return .failure(error)
         }
       })
   }
   
-  func mockAutoLogin() -> Observable<Result<Void, Error>> {
-    guard let token = tokenUseCase.fetchAccessToken() else {
-      return Observable.just(
-        .failure(UseCaseError.invalidResponse))
+  func autoLogin(email: String) -> Observable<Result<Void, Error>> {
+    guard let refreshToken = tokenUseCase.fetchRefreshToken() else {
+      return Observable.just(.failure(TokenError.failedToFetchRefreshToken))
     }
     
-    print(token)
+    return network.autoLogin(refreshToken: refreshToken, email: email)
+      .map({ [unowned self] result in
+        switch result {
+        case .success(let token):
+          self.tokenUseCase.updateToken(token)
+          return .success(())
+        case .failure(let error):
+          return .failure(error)
+        }
+      })
+  }
+  
+  func logout() -> Observable<Void> {
+    guard let accessToken = tokenUseCase.fetchAccessToken() else {
+      return Observable.error(TokenError.failedToFetchAccessToken)
+    }
     
-    // 만료
-    if token != "mock-access" {
-      return Observable.just(.failure(UseCaseError.invalidResponse))
-    } else {
-      return Observable.just(.success(()))
-    }
+    return network.logout(accessToken: accessToken)
   }
   
-  func signout() -> Observable<Void> {
-    guard let token = tokenUseCase.fetchAccessToken() else {
-      return Observable.error(UseCaseError.failedToFetchToken)
-    }
-    return network.signout(token: token)
+  func signup(
+    user: User,
+    password: String
+  ) -> Observable<Result<String, Error>> {
+    let requestForm = SignupRequest(
+      userID: user.userID,
+      email: user.email,
+      nickname: user.profile.nickname,
+      password: password)
+    
+    return network.signup(with: requestForm)
+      .map({ result in
+        switch result {
+        case .success(let user):
+          return .success(user.userID)
+        case .failure(let error):
+          return .failure(error)
+        }
+      })
   }
   
-  private func updateToken(_ response: LoginResponse) {
-    self.tokenUseCase.updateToken(Token(
-      accessToken: response.data.accessToken,
-      refreshToken: response.data.refreshToken ?? "",
-      accessExpire: response.data.accessExpire,
-      refreshExpire: response.data.refreshExpire ?? 0)
+  func requestVerifyCode(
+    email: String,
+    userID: String
+  ) -> Observable<Result<Void, Error>> {
+    guard let accessToken = tokenUseCase.fetchAccessToken() else {
+      return Observable.just(.failure(TokenError.failedToFetchAccessToken))
+    }
+    
+    return network.requestVerifyCode(
+      email: email,
+      userID: userID,
+      accessToken: accessToken
     )
+  }
+  
+  func verifyCode(
+    email: String,
+    userID: String,
+    code: String
+  ) -> Observable<Result<Void, Error>> {
+    return network.verifyCode(email: email, userID: userID, code: code)
   }
 }

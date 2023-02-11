@@ -6,24 +6,26 @@ final class ChatRoomsViewModel: ViewModelType {
   struct Input {
     //TODO: - WebSocket 관련 로직 작성
     
-    let fetchRoomsTrigger: Driver<Void>
+//    let fetchRoomsTrigger: Driver<Void>
+//    let presentCreateChatRoomTrigger: Driver<Void>
 //    let friendsStateTrigger: Driver<Void>
 //    let chatRoomSubscribeTrigger: Driver<Void>
 //    let newChatRoomSubscribeTrigger: Driver<Void>
   }
   
   struct Output {
-    let roomList: Driver<[RoomListModel]>
+//    let roomList: Driver<[RoomListModel]>
   }
   
-  private let roomsUseCase = RoomsUseCase()
+  private let usecase = RoomsUseCase()
   
   func transform(_ input: Input) -> Output {
-//    let roomList = roomsUseCase.fetchRooms()
-//      .asDriverOnErrorJustComplete()
-    let roomList = roomsUseCase.mockFetchRooms()
-      .asDriverOnErrorJustComplete()
+//    let roomList = input.fetchRoomsTrigger
+//      .flatMap({ [unowned self] in
+//        usecase.
+//      })
     
-    return Output(roomList: roomList)
+//    return Output(roomList: roomList)
+    return Output()
   }
 }

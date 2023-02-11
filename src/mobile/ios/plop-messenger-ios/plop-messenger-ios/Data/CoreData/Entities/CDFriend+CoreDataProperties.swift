@@ -8,12 +8,11 @@ extension CDFriend {
     }
 
     @NSManaged public var block: Bool
-    @NSManaged public var image: String?
-    @NSManaged public var name: String?
+    @NSManaged public var imageURL: String?
     @NSManaged public var uid: String?
+    @NSManaged public var email: String?
+    @NSManaged public var nickname: String?
 
 }
 
-extension CDFriend : Identifiable {
-
-}
+extension CDFriend : Identifiable {}

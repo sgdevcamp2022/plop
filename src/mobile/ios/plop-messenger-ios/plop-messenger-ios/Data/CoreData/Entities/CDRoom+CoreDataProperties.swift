@@ -49,6 +49,4 @@ extension CDRoom {
 
 }
 
-extension CDRoom : Identifiable {
-
-}
+extension CDRoom : Identifiable {}

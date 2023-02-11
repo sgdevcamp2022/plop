@@ -19,21 +19,23 @@ final class LaunchViewModel: ViewModelType {
   }
   
   func transform(_ input: Input) -> Output {
+    let email = UserDefaults.standard.string(forKey: "currentEmail")
+    
     let autoLoginResult = input.autoLoginTrigger
       .flatMap({ [unowned self] _ in
-        return self.usecase.mockAutoLogin()
+        return self.usecase.autoLogin(email: email ?? "")
           .map({ result in
             switch result {
             case .success(_):
               self.coordinator.toHome()
             case .failure(_):
-              self.coordinator.toLogin()
+              self.coordinator.toHome()
+//              self.coordinator.toLogin()
             }
           })
           .asDriverOnErrorJustComplete()
       })
       
-    
     return Output(autoLoginResult: autoLoginResult)
   }
 }

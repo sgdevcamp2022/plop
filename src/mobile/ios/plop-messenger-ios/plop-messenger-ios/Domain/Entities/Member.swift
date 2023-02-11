@@ -1,7 +1,8 @@
 import Foundation
 
-struct Member: Codable {
+struct Member {
   let uid: String
-  let name: String
-  let image: String
+  let email: String
+  let nickname: String
+  let imageURL: String?
 }

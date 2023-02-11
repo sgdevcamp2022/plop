@@ -4,7 +4,7 @@ import RxSwift
 final class RoomsUseCase {
   private let network = RoomsNetwork()
   private let tokenUseCase = TokenUseCase()
-  private let roomCoreDataUseCase = CDRoomsUseCase()
+  private let coredata = RoomCoreData()
   
   //MARK: - Network
   func createGroupChatRoom(with members: [String]) -> Observable<Room> {
@@ -102,15 +102,15 @@ final class RoomsUseCase {
   
   //MARK: - CoreData
   func save(_ room: Room) {
-    return roomCoreDataUseCase.save(room: room)
+    return coredata.save(room: room)
   }
   
   func fetch() -> Observable<[Room]> {
-    return roomCoreDataUseCase.fetch()
+    return coredata.fetch()
   }
   
   func delete(room: Room) {
-    return roomCoreDataUseCase.delete(room: room)
+    return coredata.delete(room: room)
   }
 }
 

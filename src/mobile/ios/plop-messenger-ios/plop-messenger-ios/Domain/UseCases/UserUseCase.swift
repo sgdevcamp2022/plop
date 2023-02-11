@@ -2,90 +2,128 @@ import Foundation
 import RxSwift
 
 final class UserUseCase {
-  private let profileCoreDataUseCase = CDProfileUseCase()
-  private let usersNetwork = UsersNetwork()
+  //TODO: - Core Data 연동
+  private let network = UserNetwork()
   private let tokenUseCase = TokenUseCase()
+  private let coreData = UserCoreData()
   
-  func signup(
-    userid: String,
-    email: String,
-    password: String,
-    nickname: String
-  ) -> Observable<Result<Void, Error>> {
-    let request = SignupRequest(
-      userid: userid,
-      email: email,
-      password: password,
-      nickname: nickname
-    )
+  func fetchUserInfo(
+    target: String
+  ) -> Observable<Result<User, Error>> {
+    guard let accessToken = tokenUseCase.fetchAccessToken() else {
+      return Observable.just(.failure(TokenError.failedToFetchAccessToken))
+    }
     
-    return usersNetwork.signup(with: request)
-      .map({ response in
-        if response.message == "success" {
-          return .success(())
-        } else {
-          return .failure(UseCaseError.invalidResponse)
+    return network.fetchUserInfo(accessToken: accessToken, target: target)
+  }
+  
+  func fetchCurrentUser() -> Observable<User> {
+    guard let currentEmail = UserDefaults.standard.string(forKey: "currentEmail") else {
+      return Observable.error(UseCaseError.failedToFetchEmail)
+    }
+    
+    return fetchUserInfo(target: currentEmail)
+      .map({ [unowned self] result in
+        switch result {
+        case .success(let user):
+          self.coreData.save(user)
+        case .failure(let error):
+          throw error
+        }
+      })
+      .flatMap({ [unowned self] _ in
+        return self.coreData.fetch(currentEmail)
+      })
+  }
+  
+  func updateUserInfo(
+    target: String,
+    updatedProfile: Profile
+  ) -> Observable<Result<User, Error>> {
+    guard let accessToken = tokenUseCase.fetchAccessToken() else {
+      return Observable.just(.failure(TokenError.failedToFetchAccessToken))
+    }
+    return network.updateUserInfo(
+      accessToken: accessToken,
+      target: target,
+      updatedProfile: updatedProfile
+    )
+  }
+  
+  func search(
+    target: String
+  ) -> Observable<[User]> {
+    guard let accessToken = tokenUseCase.fetchAccessToken() else {
+      return Observable.error(TokenError.failedToFetchAccessToken)
+    }
+    return network.searchUser(accessToken: accessToken, target: target)
+      .map({ result in
+        switch result {
+        case .success(let users):
+          return users
+        case .failure(let error):
+          throw error
         }
       })
   }
   
-  func mockSignup(success: Bool) -> Observable<Result<Void, Error>> {
-    if success {
-      return Observable.just(.success(()))
-    } else {
-      return Observable.just(
-        .failure(UseCaseError.invalidResponse))
+  //TODO: - Core data logic 추가
+  func fetchFriendList() -> Observable<[User]> {
+    guard let accessToken = tokenUseCase.fetchAccessToken() else {
+      return Observable.error(TokenError.failedToFetchAccessToken)
     }
-  }
-  
-  func search(with email: String) -> Observable<Profile> {
-    return usersNetwork.searchUser(token: "", email: email, nickname: nil)
-      .map({ response in
-        if response.message == "success" {
-          return response.profile
-        } else {
-          throw UseCaseError.invalidResponse
+    return network.fetchFriendList(accessToken: accessToken)
+      .map({ result in
+        switch result {
+        case .success(let users):
+          return users
+        case .failure(let error):
+          throw error
         }
       })
   }
   
-  func fetchProfile(
-    email: String?,
-    nickname: String?
-  ) -> Observable<Result<Profile, Error>> {
-    guard let token = tokenUseCase.fetchAccessToken() else {
-      return Observable.just(.failure(UseCaseError.invalidResponse))
+  func requestFriend(to target: String) -> Observable<Void> {
+    guard let accessToken = tokenUseCase.fetchAccessToken() else {
+      return Observable.error(TokenError.failedToFetchAccessToken)
     }
-    
-    return usersNetwork.fetchProfile(
-      token: token, email: email, nickname: nickname
-    )
-    .map({ response in
-      if response.message == "success" {
-        let profile = response.profile
-        return .success(profile)
-      } else {
-        return .failure(UseCaseError.invalidResponse)
-      }
-    })
+    return network.requestFriend(accessToken: accessToken,
+                                 target: target)
   }
   
-  func mockFetchProfile(email: String) -> Observable<Result<Profile, Error>> {
-    guard let token = tokenUseCase.fetchAccessToken() else {
-      return Observable.just(.failure(UseCaseError.invalidResponse))
+  func cancelRequestFriend(to target: String) -> Observable<Void> {
+    guard let accessToken = tokenUseCase.fetchAccessToken() else {
+      return Observable.error(TokenError.failedToFetchAccessToken)
     }
-    
-    let mockProfile = Profile(
-      uid: email, nickname: "Joons", image: ""
-    )
-    
-    return Observable.just(.success(mockProfile))
+    return network.cancelRequestFriend(accessToken: accessToken,
+                                       target: target)
   }
   
-  func updateProfile(_ profile: Profile) -> Observable<Void> {
-    return usersNetwork.updateProfile(token: "", to: profile)
-      .map({ [unowned self] _ in
-        self.profileCoreDataUseCase.save(profile: profile)
+  func fetchFriendRequestList() -> Observable<[User]> {
+    guard let accessToken = tokenUseCase.fetchAccessToken() else {
+      return Observable.error(TokenError.failedToFetchAccessToken)
+    }
+    return network.friendRequestList(accessToken: accessToken)
+      .map({ result in
+        switch result {
+        case .success(let users):
+          return users
+        case .failure(let error):
+          throw error
+        }
       })
+  }
+  
+  func respondToFriendRequest(
+    to target: String,
+    method: String
+  ) -> Observable<Void> {
+    guard let accessToken = tokenUseCase.fetchAccessToken() else {
+      return Observable.error(TokenError.failedToFetchAccessToken)
+    }
+    return network.respondToFriendRequest(
+      accessToken: accessToken,
+      target: target,
+      method: method)
   }
 }

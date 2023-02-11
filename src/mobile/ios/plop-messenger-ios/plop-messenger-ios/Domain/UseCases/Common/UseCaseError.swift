@@ -5,4 +5,5 @@ enum UseCaseError: Error {
   case failedToFetchToken
   case invalidURL
   case failedToSendMessage
+  case failedToFetchEmail
 }

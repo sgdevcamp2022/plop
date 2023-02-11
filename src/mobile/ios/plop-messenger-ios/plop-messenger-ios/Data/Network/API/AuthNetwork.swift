@@ -11,65 +11,90 @@ final class AuthNetwork {
   }
   
   func login(
-    userid: String?,
-    email: String?,
+    email: String,
     password: String
-  ) -> Observable<LoginResponse> {
-    var jsonBody: [String: Any] = [:]
+  ) -> Observable<Result<Token, Error>> {
+    let body: [String: Any] = [
+      "email": email,
+      "password": password
+    ]
     
-    if let userid = userid {
-      jsonBody = [
-        "userid": userid,
-        "password": password
-      ]
-    } else if let email = email {
-      jsonBody = [
-        "email": email,
-        "password": password
-      ]
+    guard let data = try? JSONSerialization.data(withJSONObject: body) else {
+      return Observable.just(.failure(NetworkError.failedToLogin))
     }
     
-    let jsonData = try? JSONSerialization.data(withJSONObject: jsonBody)
     guard let request = NetworkHelper.createRequest(
       path: "/auth/v1/login",
       httpMethod: "POST",
-      httpBody: jsonData,
+      httpBody: data,
       queries: []
     ) else {
-      return Observable.error(NetworkError.failedToCreateRequest)
+      return Observable.just(.failure(NetworkError.failedToLogin))
     }
-    
-    return URLSession.shared.rx
-      .data(request: request)
-      .observe(on: scheduler)
-      .map({ data -> LoginResponse in
-        return try JSONDecoder().decode(LoginResponse.self, from: data)
-      })
-  }
-  
-  func autoLogin(token: String) -> Observable<LoginResponse> {
-    guard var request = NetworkHelper.createRequest(
-      path: "/auth/v1/refresh",
-      httpMethod: "POST",
-      httpBody: nil,
-      queries: []
-    ) else {
-      return Observable.error(NetworkError.failedToCreateRequest)
-    }
-    
-    request.setValue(token, forHTTPHeaderField: "Authorization")
     
     return URLSession.shared.rx
       .data(request: request)
       .observe(on: scheduler)
       .map({ data in
-        return try JSONDecoder().decode(LoginResponse.self, from: data)
+        do {
+          let response = try JSONDecoder().decode(
+            LoginResponse.self, from: data)
+          
+          if response.message == "SUCCESS" {
+            return .success(response.data.toDomain())
+          }
+          throw NetworkError.failedToLogin
+        } catch {
+          return .failure(error)
+        }
       })
   }
   
-  func signout(token: String) -> Observable<Void> {
+  func autoLogin(
+    refreshToken: String,
+    email: String
+  ) -> Observable<Result<Token, Error>> {
+    let body: [String: Any] = ["email": email]
+    guard let data = try? JSONSerialization.data(withJSONObject: body) else {
+      return Observable.just(.failure(NetworkError.failedToAutoLogin))
+    }
+    
     guard var request = NetworkHelper.createRequest(
-      path: "/auth/v1/signout",
+      path: "/auth/v1/reissue",
+      httpMethod: "POST",
+      httpBody: data,
+      queries: []
+    ) else {
+      return Observable.just(.failure(NetworkError.failedToAutoLogin))
+    }
+    
+    request.setValue(
+      refreshToken,
+      forHTTPHeaderField: "Authorization"
+    )
+    
+    return URLSession.shared.rx
+      .data(request: request)
+      .observe(on: scheduler)
+      .map({ data in
+        do {
+          let response = try JSONDecoder().decode(
+            LoginResponse.self,
+            from: data)
+          
+          if response.message == "SUCCESS" {
+            return .success(response.data.toDomain())
+          }
+          throw NetworkError.failedToAutoLogin
+        } catch {
+          return .failure(error)
+        }
+      })
+  }
+  
+  func logout(accessToken: String) -> Observable<Void> {
+    guard var request = NetworkHelper.createRequest(
+      path: "/auth/v1/logout",
       httpMethod: "DELETE",
       httpBody: nil,
       queries: []
@@ -77,11 +102,124 @@ final class AuthNetwork {
       return Observable.error(NetworkError.failedToCreateRequest)
     }
     
-    request.addValue(token, forHTTPHeaderField: "Authorization")
+    request.addValue(
+      accessToken,
+      forHTTPHeaderField: "Authorization")
     
     return URLSession.shared.rx
       .data(request: request)
       .observe(on: scheduler)
       .mapToVoid()
   }
+  
+  func signup(
+    with signupRequest: SignupRequest
+  ) -> Observable<Result<User, Error>> {
+    guard let body = try? JSONEncoder().encode(signupRequest) else {
+      return Observable.just(.failure(NetworkError.failedToSignup))
+    }
+    
+    guard let request = NetworkHelper.createRequest(
+      path: "/auth/v1/signup",
+      httpMethod: "POST",
+      httpBody: body,
+      queries: []
+    ) else {
+      return Observable.just(.failure(NetworkError.failedToSignup))
+    }
+    
+    return URLSession.shared.rx
+      .data(request: request)
+      .observe(on: scheduler)
+      .map({ data in
+        do {
+          let response = try JSONDecoder().decode(
+            SignupResponse.self,
+            from: data)
+          
+          if response.message == "SUCCESS" {
+            return .success(response.data.toDomain())
+          }
+          throw NetworkError.failedToSignup
+        } catch {
+          return .failure(error)
+        }
+      })
+  }
+  
+  func requestVerifyCode(
+    email: String,
+    userID: String,
+    accessToken: String
+  ) -> Observable<Result<Void, Error>> {
+    let body: [String: Any] = [
+      "email": email,
+      "userId": userID
+    ]
+    let data = try? JSONSerialization.data(withJSONObject: body)
+    
+    guard var request = NetworkHelper.createRequest(
+      path: "/auth/v1/email/code",
+      httpMethod: "POST",
+      httpBody: data,
+      queries: []
+    ) else {
+      return Observable.just(.failure(NetworkError.failedToCreateRequest))
+    }
+    
+    request.setValue(accessToken, forHTTPHeaderField: "Authorization")
+    
+    return URLSession.shared.rx.data(request: request)
+      .observe(on: scheduler)
+      .mapToVoid()
+      .asResult()
+  }
+  
+  func verifyCode(
+    email: String,
+    userID: String,
+    code: String
+  ) -> Observable<Result<Void, Error>> {
+    let body: [String: Any] = [
+      "email": email,
+      "userId": userID,
+      "verificationCode": code
+    ]
+    
+    let data = try? JSONSerialization.data(withJSONObject: body)
+    
+    guard let request = NetworkHelper.createRequest(
+      path: "/auth/v1/email/verify",
+      httpMethod: "POST",
+      httpBody: data,
+      queries: []
+    ) else {
+      return Observable.just(.failure(NetworkError.invalidVerifyCode))
+    }
+    
+    return URLSession.shared.rx.data(request: request)
+      .observe(on: scheduler)
+      .mapToVoid()
+      .asResult()
+  }
+  
+  func withdrawal(accessToken: String) -> Observable<Void> {
+    guard var request = NetworkHelper.createRequest(
+      path: "/auth/v1/withdrawal",
+      httpMethod: "DELETE",
+      httpBody: nil,
+      queries: []
+    ) else {
+      return Observable.error(NetworkError.failedWithdrawal)
+    }
+    
+    request.setValue(accessToken, forHTTPHeaderField: "Authorization")
+    
+    return URLSession.shared.rx.data(request: request)
+      .mapToVoid()
+  }
+  
+  //TODO: - 아이디 찾기
+  
+  //TODO: - 비밀번호 찾기
 }

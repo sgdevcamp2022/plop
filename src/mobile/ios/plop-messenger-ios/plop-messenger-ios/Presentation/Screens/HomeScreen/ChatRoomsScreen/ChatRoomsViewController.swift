@@ -27,21 +27,6 @@ final class ChatRoomsViewController: UIViewController {
   }
   
   private func bind() {
-    let viewWillAppear = rx.sentMessage(#selector(UIViewController.viewWillAppear(_:)))
-      .mapToVoid()
-      .asDriverOnErrorJustComplete()
-    
-    let input = ChatRoomsViewModel.Input(
-      fetchRoomsTrigger: viewWillAppear)
-    
-    let output = viewModel.transform(input)
-    
-    output.roomList
-      .drive(onNext: { [unowned self] rooms in
-        self.chatRooms = rooms
-        self.chatRoomList.reloadData()
-      })
-      .disposed(by: disposeBag)
   }
   
   //MARK: - Actions
@@ -54,7 +39,6 @@ final class ChatRoomsViewController: UIViewController {
 extension ChatRoomsViewController {
   private func configureViews() {
     view.backgroundColor = .systemBackground
-    title = "Chats"
   }
   
   private func configureNavigationBarAppearance() {
@@ -79,6 +63,13 @@ extension ChatRoomsViewController {
       action: nil
     )
     
+    let leftTitle = UIBarButtonItem(
+      title: "Chat",
+      style: .done,
+      target: nil,
+      action: nil
+    )
+    
     let rightBarButton = UIBarButtonItem(
       image: UIImage(systemName: "square.and.pencil"),
       style: .plain,
@@ -86,9 +77,9 @@ extension ChatRoomsViewController {
       action: #selector(didTappedCreateChatRoom)
     )
     
-    navigationItem.leftBarButtonItem = leftBarButton
+    navigationItem.leftBarButtonItems = [leftBarButton, leftTitle]
     navigationItem.rightBarButtonItem = rightBarButton
-    navigationController?.navigationBar.tintColor = UIConstants.plopColor
+    navigationController?.navigationBar.tintColor = .label
     
     searchController.searchBar.placeholder = "Search room..."
     searchController.hidesNavigationBarDuringPresentation = false
@@ -96,8 +87,6 @@ extension ChatRoomsViewController {
   }
   
   private func configureChatRoomListView() {
-//    chatRoomList.backgroundColor = .systemRed
-    
     chatRoomList.register(
       ChatRoomListCell.self,
       forCellReuseIdentifier: ChatRoomListCell.reuseIdentifier)

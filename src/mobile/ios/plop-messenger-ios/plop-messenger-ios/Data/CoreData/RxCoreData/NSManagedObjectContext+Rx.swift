@@ -76,6 +76,6 @@ extension Reactive where Base:  NSManagedObjectContext {
   }
   
   func update<P: Persistable>(_ persistable: P) throws {
-    persistable.update(try get(persistable) ?? self.create(P.self))
+    try persistable.update(try get(persistable) ?? self.create(P.self))
   }
 }

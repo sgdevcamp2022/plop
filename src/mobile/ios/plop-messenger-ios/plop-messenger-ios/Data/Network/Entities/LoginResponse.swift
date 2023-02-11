@@ -12,3 +12,14 @@ struct LoginData: Decodable {
   let accessExpire: Int
   let refreshExpire: Int?
 }
+
+extension LoginData {
+  func toDomain() -> Token {
+    return Token(
+      accessToken: accessToken,
+      refreshToken: refreshToken ?? "",
+      accessExpire: accessExpire,
+      refreshExpire: refreshExpire ?? 0
+    )
+  }
+}

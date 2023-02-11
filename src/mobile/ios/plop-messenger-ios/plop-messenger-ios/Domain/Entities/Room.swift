@@ -1,6 +1,6 @@
 import Foundation
 
-struct Room: Codable {
+struct Room {
   let uid: String
   let title: String
   let lastMessage: String

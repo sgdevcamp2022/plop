@@ -2,7 +2,7 @@ import Foundation
 import CoreData
 
 extension Friend: Persistable {
-  typealias T = NSManagedObject
+  typealias T = CDFriend
   
   static var entityName: String {
     return "CDFriend"
@@ -16,23 +16,26 @@ extension Friend: Persistable {
     return uid
   }
   
-  init(entity: NSManagedObject) {
-    uid = entity.value(forKeyPath: #keyPath(CDFriend.uid)) as! String
-    block = entity.value(forKeyPath: #keyPath(CDFriend.block)) as! Bool
-    imageURL = entity.value(forKeyPath: #keyPath(CDFriend.image)) as? String
-    name = entity.value(forKeyPath: #keyPath(CDFriend.name)) as! String
+  init(entity: CDFriend) {
+    uid = entity.uid ?? ""
+    block = entity.block
+    imageURL = entity.imageURL ?? ""
+    nickname = entity.nickname ?? "No Nickname"
+    email = entity.email ?? ""
   }
   
-  func update(_ entity: NSManagedObject) {
-    entity.setValue(uid, forKeyPath: #keyPath(CDFriend.uid))
-    entity.setValue(block, forKeyPath: #keyPath(CDFriend.block))
-    entity.setValue(imageURL, forKeyPath: #keyPath(CDFriend.image))
-    entity.setValue(name, forKeyPath: #keyPath(CDFriend.name))
+  func update(_ entity: CDFriend) throws {
+    entity.uid = uid
+    entity.email = email
+    entity.block = block
+    
+    entity.imageURL = imageURL
+    entity.nickname = nickname
     
     do {
       try entity.managedObjectContext?.save()
     } catch let error {
-      print(error)
+      throw error
     }
   }
 }

@@ -1,7 +1,7 @@
 import Foundation
 import RxSwift
 
-final class CDMessagesUseCase {
+final class MessageCoreData {
   private let coreDataStack: CoreDataStack
   private var repository: CoreDataRepository<Message>
   

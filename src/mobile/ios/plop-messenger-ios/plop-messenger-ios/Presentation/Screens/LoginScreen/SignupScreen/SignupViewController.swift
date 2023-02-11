@@ -9,10 +9,14 @@ final class SignupViewController: UIViewController {
     title: "취소",
     titleColor: .systemRed,
     font: .headline)
+  private let userIDTextField = PlopTextField(
+    placeholder: "아이디를 입력해 주세요...", isSecure: false)
   private let emailTextField = PlopTextField(
-    placeholder: "Email을 입력해 주세요...", isSecure: false)
+    placeholder: "이메일을 입력해 주세요...", isSecure: false)
+  private let nicknameTextField = PlopTextField(
+    placeholder: "닉네임을 입력해 주세요...", isSecure: false)
   private let passwordTextField = PlopTextField(
-    placeholder: "Password를 입력해 주세요", isSecure: true)
+    placeholder: "비밀번호를 입력해 주세요", isSecure: true)
   private let signupStackView = UIStackView()
   private let signupButton = PlopOrangeButton(title: "회원가입")
   
@@ -46,7 +50,9 @@ final class SignupViewController: UIViewController {
   
   private func bind() {
     let input = SignupViewModel.Input(
+      userID: userIDTextField.rx.text.orEmpty.asDriver(),
       email: emailTextField.rx.text.orEmpty.asDriver(),
+      nickname: nicknameTextField.rx.text.orEmpty.asDriver(),
       password: passwordTextField.rx.text.orEmpty.asDriver(),
       cancelTrigger: cancelButton.rx.tap.asDriver(),
       signupTrigger: signupButton.rx.tap.asDriver())
@@ -61,6 +67,7 @@ final class SignupViewController: UIViewController {
     output.dismiss.drive(onNext: { [weak self] in
       self?.dismiss(animated: true)
     })
+    
     .disposed(by: disposeBag)
   }
 }
@@ -79,12 +86,16 @@ extension SignupViewController {
   
   private func layout() {
     cancelButton.translatesAutoresizingMaskIntoConstraints = false
+    userIDTextField.translatesAutoresizingMaskIntoConstraints = false
     emailTextField.translatesAutoresizingMaskIntoConstraints = false
+    nicknameTextField.translatesAutoresizingMaskIntoConstraints = false
     passwordTextField.translatesAutoresizingMaskIntoConstraints = false
     signupStackView.translatesAutoresizingMaskIntoConstraints = false
     signupButton.translatesAutoresizingMaskIntoConstraints = false
     
+    signupStackView.addArrangedSubview(userIDTextField)
     signupStackView.addArrangedSubview(emailTextField)
+    signupStackView.addArrangedSubview(nicknameTextField)
     signupStackView.addArrangedSubview(passwordTextField)
     
     view.addSubview(cancelButton)
@@ -108,7 +119,7 @@ extension SignupViewController {
       view.safeAreaLayoutGuide.trailingAnchor.constraint(
         equalToSystemSpacingAfter: signupStackView.trailingAnchor,
         multiplier: 3),
-      signupStackView.heightAnchor.constraint(equalToConstant: 80),
+      signupStackView.heightAnchor.constraint(equalToConstant: 152),
       view.safeAreaLayoutGuide.bottomAnchor.constraint(
         equalToSystemSpacingBelow: signupButton.bottomAnchor,
         multiplier: 3),

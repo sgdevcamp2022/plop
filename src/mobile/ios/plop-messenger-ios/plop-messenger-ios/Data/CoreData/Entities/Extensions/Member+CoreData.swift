@@ -18,19 +18,21 @@ extension Member: Persistable {
   
   init(entity: CDMember) {
     uid = entity.uid ?? ""
-    name = entity.name ?? ""
-    image = entity.image ?? ""
+    email = entity.email ?? ""
+    nickname = entity.nickname ?? ""
+    imageURL = entity.imageURL
   }
   
-  func update(_ entity: CDMember) {
+  func update(_ entity: CDMember) throws {
     entity.uid = uid
-    entity.name = name
-    entity.image = image
+    entity.email = email
+    entity.nickname = nickname
+    entity.imageURL = imageURL
     
     do {
       try entity.managedObjectContext?.save()
     } catch let error {
-      print(error)
+      throw error
     }
   }
 }

@@ -11,7 +11,7 @@ protocol Persistable {
   
   init(entity: T)
   
-  func update(_ entity: T)
+  func update(_ entity: T) throws
   func predicate() -> NSPredicate
 }
 

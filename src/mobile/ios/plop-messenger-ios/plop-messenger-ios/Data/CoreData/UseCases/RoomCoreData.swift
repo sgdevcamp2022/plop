@@ -1,7 +1,7 @@
 import Foundation
 import RxSwift
 
-final class CDRoomsUseCase {
+final class RoomCoreData {
   private let coreDataStack: CoreDataStack
   private var repository: CoreDataRepository<Room>
   

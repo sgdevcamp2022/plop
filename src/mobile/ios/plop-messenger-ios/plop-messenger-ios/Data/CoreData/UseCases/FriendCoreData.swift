@@ -1,7 +1,7 @@
 import Foundation
 import RxSwift
 
-final class CDFriendsUseCase {
+final class FriendCoreData {
   private let coreDataStack: CoreDataStack
   private var repository: CoreDataRepository<Friend>
   

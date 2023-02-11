@@ -2,6 +2,4 @@ import Foundation
 import CoreData
 
 @objc(CDRoom)
-final class CDRoom: NSManagedObject {
-
-}
+final class CDRoom: NSManagedObject {}

@@ -1,8 +1,10 @@
 import Foundation
 
-struct Friend: Codable {
+struct Friend {
   let uid: String
+  let email: String
   let block: Bool
+  
   let imageURL: String?
-  let name: String
+  let nickname: String
 }

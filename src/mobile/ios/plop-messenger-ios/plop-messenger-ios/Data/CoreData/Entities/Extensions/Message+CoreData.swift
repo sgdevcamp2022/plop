@@ -26,7 +26,7 @@ extension Message: Persistable {
     roomID = entity.roomID ?? ""
   }
   
-  func update(_ entity: CDMessage) {
+  func update(_ entity: CDMessage) throws {
     entity.uid = uid
     entity.contentType = type
     entity.content = content
@@ -38,7 +38,7 @@ extension Message: Persistable {
     do {
       try entity.managedObjectContext?.save()
     } catch let error {
-      print(error)
+      throw error
     }
   }
   
