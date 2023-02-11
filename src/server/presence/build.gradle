@@ -32,6 +32,8 @@ dependencies {
 	implementation 'org.springframework.kafka:spring-kafka'
 	implementation "org.springframework.cloud:spring-cloud-starter-openfeign"
 	implementation group: 'org.glassfish.jaxb', name: 'jaxb-runtime', version: '2.3.2'
+	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+	implementation 'org.springdoc:springdoc-openapi-ui:1.6.14'
 
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
@@ -40,11 +42,6 @@ dependencies {
 	testImplementation 'org.springframework.kafka:spring-kafka-test'
 }
 
-dependencyManagement {
-	imports {
-		mavenBom "org.springframework.cloud:spring-cloud-dependencies:2021.0.3"
-	}
-}
 
 dependencyManagement {
 	imports {
