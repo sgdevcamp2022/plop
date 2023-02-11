@@ -34,15 +34,12 @@ object SettingValue{
 }
 
 @Composable
-fun SettingScreen() {
+fun SettingScreen(
+    navigateToModifyProfile: () -> Unit
+) {
 
     val viewModel = hiltViewModel<SettingViewModel>()
     val state by viewModel.settingState.collectAsState()
-
-
-    var state1 by remember { mutableStateOf(false) }
-    var state2 by remember { mutableStateOf(false) }
-    var state3 by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier.padding(horizontal = KeyLine)
@@ -94,7 +91,7 @@ fun SettingScreen() {
         SettingComponent(
             content = stringResource(id = R.string.setting_profile_btn),
             image = ImageVector.vectorResource(id = R.drawable.ic_set_active),
-            onClick = { /*TODO*/ }
+            onClick = { navigateToModifyProfile() }
         )
 
         SettingComponent(

@@ -10,6 +10,6 @@ class SetThemeUseCase @Inject constructor(
 ){
     suspend operator fun invoke(mode: Boolean) {
         userRepository.setThemeMode(mode)
-        UserState.mode = if(mode) ThemeConstants.LIGHT else ThemeConstants.DARK
+        UserState.mode = if(mode) ThemeConstants.DARK else ThemeConstants.LIGHT
     }
 }

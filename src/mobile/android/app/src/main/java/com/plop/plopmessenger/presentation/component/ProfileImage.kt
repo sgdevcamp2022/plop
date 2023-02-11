@@ -1,8 +1,9 @@
 package com.plop.plopmessenger.presentation.component
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
+import android.net.Uri
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
@@ -23,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.plop.plopmessenger.R
+import com.plop.plopmessenger.presentation.screen.main.SettingValue
 import com.plop.plopmessenger.presentation.theme.Green100
 
 
@@ -190,5 +192,40 @@ fun BlankProfileImage(
             painter = painterResource(id = R.drawable.blank_profile),
             contentDescription = "blank profile image",
             contentScale = ContentScale.Crop)
+    }
+}
+
+
+@Composable
+fun ProfileImage(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+    profileSize: Int = SettingValue.ProfileImageSize,
+    uri: Uri? = null
+) {
+    Surface(
+        shape = CircleShape,
+        modifier = modifier
+            .size(profileSize.dp)
+            .clickable { onClick() }
+    ) {
+        if(uri == null) {
+            Image(
+                painter = painterResource(id = R.drawable.blank_profile),
+                contentDescription = "blank profile image",
+                contentScale = ContentScale.Crop
+            )
+        } else {
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(uri?: "")
+                    .crossfade(true)
+                    .build(),
+                contentDescription = "profile Image",
+                contentScale = ContentScale.Crop,
+                placeholder = painterResource(id = R.drawable.blank_profile),
+                modifier = Modifier
+            )
+        }
     }
 }
