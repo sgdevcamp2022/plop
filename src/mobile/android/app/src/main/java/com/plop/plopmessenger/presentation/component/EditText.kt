@@ -21,8 +21,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.plop.plopmessenger.presentation.theme.Gray400
@@ -213,4 +215,30 @@ fun LoginEditText(
 
 
     }
+}
+
+@Composable
+fun NicknameEditText(
+    query: TextFieldValue,
+    onQueryChange: (TextFieldValue) -> Unit,
+    onSearchFocusChange: (Boolean) -> Unit,
+    onDone: (KeyboardActionScope.() -> Unit)?,
+    modifier: Modifier = Modifier
+) {
+
+    BasicTextField(
+        value = query,
+        onValueChange = onQueryChange,
+        textStyle = TextStyle(
+            textAlign = TextAlign.Center,
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colors.onSecondary
+        ),
+        modifier = modifier
+            .onFocusChanged { onSearchFocusChange(it.isFocused) },
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+        singleLine = true,
+        keyboardActions = KeyboardActions(onDone = onDone),
+    )
 }

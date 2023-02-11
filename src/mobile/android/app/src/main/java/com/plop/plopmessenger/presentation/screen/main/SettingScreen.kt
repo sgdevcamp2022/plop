@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.plop.plopmessenger.R
+import com.plop.plopmessenger.presentation.component.PlopDialog
 import com.plop.plopmessenger.presentation.component.ProfileImage
 import com.plop.plopmessenger.presentation.component.SubTitle
 import com.plop.plopmessenger.presentation.theme.Gray400
@@ -34,15 +35,33 @@ object SettingValue{
 }
 
 @Composable
-fun SettingScreen() {
+fun SettingScreen(
+    navigateToModifyProfile: () -> Unit
+) {
 
     val viewModel = hiltViewModel<SettingViewModel>()
     val state by viewModel.settingState.collectAsState()
 
+    if(state.showLogoutDialog) {
+        PlopDialog(
+            onDismiss = viewModel::closeDialog,
+            onClick = { viewModel.logout(); viewModel.closeDialog()},
+            title = stringResource(id = R.string.setting_profile_logout_dialog),
+            dismissContent = stringResource(id = R.string.setting_profile_dialog_dismiss),
+            content = stringResource(id = R.string.setting_profile_logout_ok),
+        )
+    }
 
-    var state1 by remember { mutableStateOf(false) }
-    var state2 by remember { mutableStateOf(false) }
-    var state3 by remember { mutableStateOf(false) }
+    if(state.showWithdrawalDialog) {
+        PlopDialog(
+            onDismiss = viewModel::closeDialog,
+            onClick = { viewModel.withdrawal(); viewModel.closeDialog()},
+            title = stringResource(id = R.string.setting_profile_withdraw_dialog),
+            dismissContent = stringResource(id = R.string.setting_profile_dialog_dismiss),
+            content = stringResource(id = R.string.setting_profile_withdrawal_ok),
+        )
+    }
+
 
     Column(
         modifier = Modifier.padding(horizontal = KeyLine)
@@ -94,19 +113,19 @@ fun SettingScreen() {
         SettingComponent(
             content = stringResource(id = R.string.setting_profile_btn),
             image = ImageVector.vectorResource(id = R.drawable.ic_set_active),
-            onClick = { /*TODO*/ }
+            onClick = { navigateToModifyProfile() }
         )
 
         SettingComponent(
             content = stringResource(id = R.string.setting_logout_btn),
             image = ImageVector.vectorResource(id = R.drawable.ic_set_out),
-            onClick = { /*TODO*/ }
+            onClick = viewModel::showLogoutDialog
         )
 
         SettingComponent(
             content = stringResource(id = R.string.setting_withdraw_btn),
             image = ImageVector.vectorResource(id = R.drawable.ic_set_out),
-            onClick = { /*TODO*/ }
+            onClick = viewModel::showWithdrawalDialog
         )
     }
 }

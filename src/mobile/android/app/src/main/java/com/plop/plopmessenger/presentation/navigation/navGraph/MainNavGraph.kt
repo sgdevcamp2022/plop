@@ -48,8 +48,11 @@ private fun NavGraphBuilder.bottomNavGraph(
         peopleGraph(navigationAction)
     }
 
-    composable(BottomBarDestinations.SETTING_ROUTE) { from ->
-        SettingScreen()
+    navigation(
+        route = MainDestinations.SETTING_GRAPH_ROUTE,
+        startDestination = BottomBarDestinations.SETTING_ROUTE
+    ) {
+        settingGraph(navigationAction)
     }
 
 }
@@ -152,5 +155,17 @@ private fun NavGraphBuilder.peopleGraph(
         AddPeopleScreen(
             upPress = navigationAction.upPress
         )
+    }
+}
+
+private fun NavGraphBuilder.settingGraph(
+    navigationAction: MainNavigationAction
+) {
+    composable(BottomBarDestinations.SETTING_ROUTE) { from ->
+        SettingScreen(navigationAction.navigateToModifyProfile)
+    }
+
+    composable(MainDestinations.MODIFY_PROFILE) { from ->
+        ModifyProfileScreen(upPress = navigationAction.upPress)
     }
 }

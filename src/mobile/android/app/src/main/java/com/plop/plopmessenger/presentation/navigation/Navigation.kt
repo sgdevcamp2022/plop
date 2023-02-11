@@ -28,6 +28,8 @@ object MainDestinations {
     const val ADD_CHAT_ROUTE = "addChat"
     const val ADD_CHAT_GROUP_ROUTE = "addGroupChat"
     const val ADD_PEOPLE_ROUTE = "addPeople"
+    const val MODIFY_PROFILE = "modifyProfile"
+    const val SETTING_GRAPH_ROUTE = "settingGraph"
 }
 
 object DestinationID {
@@ -111,6 +113,10 @@ class MainNavigationAction(val navController: NavController) {
 
     val navigateToAddPeople: () -> Unit = {
         navController.navigate(MainDestinations.ADD_PEOPLE_ROUTE)
+    }
+
+    val navigateToModifyProfile: () -> Unit = {
+        navController.navigate(MainDestinations.MODIFY_PROFILE)
     }
 }
 
