@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import java.time.LocalDateTime
 import java.util.*
 
 /**
@@ -34,6 +35,6 @@ data class Message(
     val chatroomId: String,
     var content: String,
     @ColumnInfo(name = "created_at")
-    val createdAt: Date,
+    val createdAt: LocalDateTime,
     val type: Int
 )

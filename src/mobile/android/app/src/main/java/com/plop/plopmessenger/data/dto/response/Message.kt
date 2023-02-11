@@ -2,13 +2,14 @@ package com.plop.plopmessenger.data.dto.response
 
 
 import com.google.gson.annotations.SerializedName
+import java.time.LocalDateTime
 import java.util.*
 import com.plop.plopmessenger.data.local.entity.Message as MessageEntity
 
 data class Message(
     val content: String,
     @SerializedName("created_at")
-    val createdAt: String,
+    val createdAt: LocalDateTime,
     @SerializedName("message_id")
     val messageId: String,
     @SerializedName("message_type")
@@ -24,7 +25,7 @@ fun Message.toMessage() = MessageEntity(
     messageFromID = this.senderId,
     chatroomId = this.roomId,
     content = this.content,
-    createdAt = Date(),
+    createdAt = this.createdAt,
     type = MessageTypeConverter(this.messageType)
 )
 

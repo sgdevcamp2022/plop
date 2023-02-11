@@ -13,6 +13,7 @@ import com.plop.plopmessenger.data.remote.api.ChatApi
 import com.plop.plopmessenger.domain.repository.ChatRoomRepository
 import kotlinx.coroutines.flow.Flow
 import retrofit2.Response
+import java.time.LocalDateTime
 import java.util.*
 import javax.inject.Inject
 
@@ -69,7 +70,7 @@ class ChatRoomRepositoryImpl @Inject constructor(
         return chatRoomDao.plusChatRoomUnreadById(chatroomId, unread)
     }
 
-    override suspend fun updateChatRoomContentById(chatroomId: String, content: String, updatedAt: Date) {
+    override suspend fun updateChatRoomContentById(chatroomId: String, content: String, updatedAt: LocalDateTime) {
         return chatRoomDao.updateChatRoomContentById(chatroomId, content, updatedAt)
     }
 

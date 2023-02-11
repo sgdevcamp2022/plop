@@ -10,6 +10,7 @@ import com.plop.plopmessenger.domain.repository.MemberRepository
 import com.plop.plopmessenger.domain.util.Resource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import java.time.LocalDateTime
 import java.util.*
 import javax.inject.Inject
 
@@ -27,7 +28,7 @@ class CreateDmChatRoomUseCase @Inject constructor(
                     if (chatroom?.roomId != null) {
                         emit(Resource.Success(true))
                         repository.insertChatRoom(
-                            ChatRoom(chatroom.roomId, friend.nickname, 0, "", Date(), 1)
+                            ChatRoom(chatroom.roomId, friend.nickname, 0, "", LocalDateTime.now(), 1)
                         )
                         memberRepository.insertMember(
                             Member(chatroom.roomId, friend.peopleId, friend.nickname, friend.profileImg, null)

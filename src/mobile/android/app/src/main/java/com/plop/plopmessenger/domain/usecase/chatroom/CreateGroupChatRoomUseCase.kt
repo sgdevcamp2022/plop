@@ -11,6 +11,7 @@ import com.plop.plopmessenger.domain.util.Resource
 import com.plop.plopmessenger.util.getChatRoomTitle
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import java.time.LocalDateTime
 import java.util.*
 import javax.inject.Inject
 
@@ -28,7 +29,7 @@ class CreateGroupChatRoomUseCase @Inject constructor(
                     if (chatroom?.roomId != null) {
                         emit(Resource.Success(true))
                         repository.insertChatRoom(
-                            ChatRoom(chatroom.roomId, getChatRoomTitle(friends.map{it.nickname}), 0, "", Date(), 2)
+                            ChatRoom(chatroom.roomId, getChatRoomTitle(friends.map{it.nickname}), 0, "", LocalDateTime.now(), 2)
                         )
                         memberRepository.insertAllMember(
                             friends.map {

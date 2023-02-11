@@ -21,6 +21,7 @@ import okhttp3.*
 import okhttp3.WebSocketListener
 import okio.ByteString
 import java.io.StringReader
+import java.time.LocalDateTime
 import java.util.*
 import java.util.regex.Pattern
 import javax.inject.Inject
@@ -128,7 +129,7 @@ class WebSocketListener @Inject constructor(
 
     fun updateChatRoom(roomId: String, content: String) {
         CoroutineScope(Dispatchers.IO).launch {
-            chatRoomRepository.updateChatRoomContentById(roomId, content, Date())
+            chatRoomRepository.updateChatRoomContentById(roomId, content, LocalDateTime.now())
         }
     }
 

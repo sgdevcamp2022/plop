@@ -79,7 +79,6 @@ class ChatViewModel @Inject constructor(
                                 )
                             }
                         } else {
-                            Log.d("ㅁㄴㅇㄹ", result.data?.toString()?: "")
                             chatState.update {
                                 it.copy(
                                     isLoading = false,
@@ -109,12 +108,19 @@ class ChatViewModel @Inject constructor(
     private fun getFirstMessage() {
         viewModelScope.launch {
             messageUseCase.getFirstMessageUseCase(chatState.value.chatroomId!!).collect() { result ->
+                Log.d("가희", "ㅁㄴㅇㄹ")
                 when (result) {
                     is Resource.Success -> {
                         if(result.data != null && !chatState.value.messages.contains(result.data) ) {
                             chatState.update {
                                 it.copy(
                                     messages = listOf(result.data) + it.messages
+                                )
+                            }
+                        }else{
+                            chatState.update {
+                                it.copy(
+                                    isLoading = false
                                 )
                             }
                         }

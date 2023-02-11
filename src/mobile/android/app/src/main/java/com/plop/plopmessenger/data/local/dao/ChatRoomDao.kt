@@ -3,7 +3,7 @@ package com.plop.plopmessenger.data.local.dao
 import androidx.room.*
 import com.plop.plopmessenger.data.local.entity.ChatRoom
 import kotlinx.coroutines.flow.Flow
-import java.util.Date
+import java.time.LocalDateTime
 
 @Dao
 interface ChatRoomDao {
@@ -52,7 +52,7 @@ interface ChatRoomDao {
     @Query(
         "UPDATE chatroom SET content = :content AND updated_at = :updatedAt WHERE chatroom_id = :chatroomId"
     )
-    suspend fun updateChatRoomContentById(chatroomId: String, content: String, updatedAt: Date)
+    suspend fun updateChatRoomContentById(chatroomId: String, content: String, updatedAt: LocalDateTime)
 
     @Query(
         "DELETE FROM chatroom WHERE chatroom_id = :chatroomId"
