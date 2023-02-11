@@ -67,7 +67,6 @@ spring:
           predicates:
             - Path=/presence/**
           filters:
-            - AuthorizationHeaderFilter
             - RewritePath=/presence/presence/(?<segment>.*), /$\{segment}
 
         - id: chat-service

@@ -20,11 +20,18 @@ public class PresenceService {
 
     private final PresenceRepository presenceRepository;
 
-    public ResponsePresenceUsers getUsersPresence(List<String> friends) {
-        List<PresenceCollection> presenceCollections = presenceRepository.findByUserIdInFriends(friends);
+    public ResponsePresenceUsers getOnlineUsersPresence(List<String> users){
+        List<PresenceCollection> presenceCollections = presenceRepository.findByUserIdInUsers(users);
         List<String> members = presenceCollections.stream().map(PresenceCollection::getUserId).collect(Collectors.toList());
         return new ResponsePresenceUsers(members);
     }
+
+    public ResponsePresenceUsers getOfflineUsersPresence(List<String> users){
+        List<PresenceCollection> presenceCollections = presenceRepository.findOfflineByUserIdInUsers(users);
+        List<String> members = presenceCollections.stream().map(PresenceCollection::getUserId).collect(Collectors.toList());
+        return new ResponsePresenceUsers(members);
+    }
+
 
     public PresenceUserDto presenceOn(String userId) {
         return changePresence(userId, "online");

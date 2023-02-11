@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import smilegate.plop.presence.config.kafka.PresenceMessage;
 import smilegate.plop.presence.config.kafka.Producer;
 import smilegate.plop.presence.dto.PresenceUserDto;
+import smilegate.plop.presence.dto.request.RequestUsers;
 import smilegate.plop.presence.dto.response.ResponsePresenceUsers;
 import smilegate.plop.presence.model.jwt.JwtTokenProvider;
 import smilegate.plop.presence.service.FriendService;
@@ -32,7 +33,7 @@ public class PresenceController {
         return jwtTokenProvider.getUserInfo(jwtTokenProvider.removeBearer(jwt)).getUserId();
     }
 
-    @Operation(summary = "친구리스트API", description = "online인 나의 친구 id 리스트 조회")
+    @Operation(summary = "접속상태가 online인 유저id리스트 조회", description = "상태가 online인 나의 친구 id 리스트 조회")
     @GetMapping("/v1/users")
     public ResponseEntity<ResponsePresenceUsers> presenceUsers(@RequestHeader("Authorization") String jwt){
         /**
@@ -40,7 +41,13 @@ public class PresenceController {
           */
         List<String> friends = friendService.getMyFriends(jwt);
         if(friends.isEmpty()) return new ResponseEntity<>(new ResponsePresenceUsers(), HttpStatus.OK);
-        return new ResponseEntity<>(presenceService.getUsersPresence(friends),HttpStatus.OK);
+        return new ResponseEntity<>(presenceService.getOnlineUsersPresence(friends), HttpStatus.OK);
+    }
+
+    @Operation(summary = "접속상태가 offline인 유저id리스트 조회", description = "유저 리스트를 받아 offline인 유저 id 리스트 조회")
+    @PostMapping("/v1/offline-users")
+    public ResponseEntity<ResponsePresenceUsers> offlineUsers(@RequestBody RequestUsers requestUsers){
+        return new ResponseEntity<>(presenceService.getOfflineUsersPresence(requestUsers.getMembers()), HttpStatus.OK);
     }
 
     @Operation(summary = "접속상태를 'online'으로 변경", description = "나의 접속상태를 'online'으로 변경하고 웹소켓으로 해당 정보 친구들에게 전달")

@@ -16,6 +16,8 @@ import smilegate.plop.chat.config.kafka.Producers;
 import smilegate.plop.chat.dto.APIMessage;
 import smilegate.plop.chat.dto.ChatMessageDto;
 import smilegate.plop.chat.service.ChatMessageService;
+import smilegate.plop.chat.service.PushService;
+
 
 @Tag(name="chat", description = "채팅 메시지 API")
 @Slf4j
@@ -25,11 +27,14 @@ import smilegate.plop.chat.service.ChatMessageService;
 public class ChatMessageController {
     private final Producers producers;
     private final ChatMessageService chatMessageService;
+    private final PushService pushService;
 
     @Operation(summary = "메시지 전송")
     @PostMapping(value="/v1/message", consumes = "application/json",produces = "application/json")
     public void sendMessage(@RequestBody ChatMessageDto chatMessageDto){
         ChatMessageDto savedMessage = chatMessageService.saveChatMessage(chatMessageDto);
+
+        pushService.pushMessageToUsers(chatMessageDto);
 
         producers.sendMessage(savedMessage);
     }

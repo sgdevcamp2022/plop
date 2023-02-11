@@ -15,9 +15,16 @@ public class PresenceRepositoryImpl implements PresenceTemplateRepository{
     }
 
     @Override
-    public List<PresenceCollection> findByUserIdInFriends(List<String> friends) {
-        Query query = Query.query(Criteria.where("userId").in(friends))
+    public List<PresenceCollection> findByUserIdInUsers(List<String> users) {
+        Query query = Query.query(Criteria.where("userId").in(users))
                 .addCriteria(Criteria.where("status").is("online"));
+        return mongoTemplate.find(query, PresenceCollection.class);
+    }
+
+    @Override
+    public List<PresenceCollection> findOfflineByUserIdInUsers(List<String> users) {
+        Query query = Query.query(Criteria.where("userId").in(users))
+                .addCriteria(Criteria.where("status").is("offline"));
         return mongoTemplate.find(query, PresenceCollection.class);
     }
 }
