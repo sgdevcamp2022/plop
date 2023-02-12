@@ -1,13 +1,10 @@
 package com.plop.plopmessenger.presentation.navigation.navGraph
 
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
+import androidx.navigation.*
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
-import androidx.navigation.navigation
 import com.plop.plopmessenger.presentation.navigation.*
 import com.plop.plopmessenger.presentation.screen.main.*
 
@@ -61,7 +58,8 @@ private fun NavGraphBuilder.chatGraph(
     navigationAction: MainNavigationAction
 ) {
     composable(
-        route = "${MainDestinations.CHAT_ROUTE}/{${DestinationID.CHAT_ID}}"
+        route = "${MainDestinations.CHAT_ROUTE}/{${DestinationID.CHAT_ID}}",
+        deepLinks = listOf(navDeepLink { uriPattern = "https://plopmessenger/{${DestinationID.CHAT_ID}}" })
     ) { from ->
         ChatScreen(
             upPress = navigationAction.upPress,
