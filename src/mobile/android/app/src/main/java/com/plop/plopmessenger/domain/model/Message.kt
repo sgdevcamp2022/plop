@@ -1,5 +1,6 @@
 package com.plop.plopmessenger.domain.model
 
+import java.time.LocalDateTime
 import java.util.*
 import com.plop.plopmessenger.data.local.entity.Message as MessageEntity
 
@@ -8,7 +9,7 @@ data class Message(
     val messageFromId: String,
     val chatroomId: String,
     var content: String,
-    var createdAt: Date,
+    var createdAt: LocalDateTime,
     var type: MessageType
 )
 

@@ -77,9 +77,9 @@ fun Messages(
             val nextAuthor = messages.getOrNull(index + 1)?.messageFromId
             val content = messages[index]
             val prevTimeDiffIsOverMin = if(messages.getOrNull(index - 1) == null) false
-            else (content.createdAt.time/60000 - messages.getOrNull(index - 1)?.createdAt!!.time/60000) >= 1
+            else (content.createdAt.minute - messages.getOrNull(index - 1)?.createdAt!!.minute) >= 1
             val nextTimeDiffIsOverMin = if(messages.getOrNull(index + 1) == null) false
-            else (messages.getOrNull(index + 1)?.createdAt!!.time/60000 - content.createdAt.time/60000) >= 1
+            else (messages.getOrNull(index + 1)?.createdAt!!.minute - content.createdAt.minute) >= 1
             val isFirstMessageByAuthor = (nextAuthor != content.messageFromId || nextTimeDiffIsOverMin)
             val isLastMessageByAuthor = (prevAuthor != content.messageFromId || prevTimeDiffIsOverMin)
 

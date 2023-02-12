@@ -1,6 +1,7 @@
 package com.plop.plopmessenger.domain.model
 
 import com.plop.plopmessenger.data.local.dao.ChatRoomMemberImage
+import java.time.LocalDateTime
 import java.util.*
 
 data class ChatRoom(
@@ -8,7 +9,7 @@ data class ChatRoom(
     var title: String,
     var unread: Int,
     var content: String,
-    var createdAt: Date,
+    var createdAt: LocalDateTime,
     var members: List<Member>,
     val type: ChatRoomType
 )

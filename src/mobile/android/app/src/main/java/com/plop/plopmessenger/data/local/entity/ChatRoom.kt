@@ -3,6 +3,7 @@ package com.plop.plopmessenger.data.local.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.time.LocalDateTime
 import java.util.*
 
 /**
@@ -19,6 +20,6 @@ data class ChatRoom(
     var unread: Int,
     var content: String = "",
     @ColumnInfo(name = "updated_at")
-    var updatedAt: Date,
+    var updatedAt: LocalDateTime,
     var type: Int
 )

@@ -18,7 +18,6 @@ class ModifyUserUseCase @Inject constructor(
         image: Uri?
     ) {
         try {
-            Log.d("ㅁㄴㅇㄹ", nickname)
             userRepository.setNickname(nickname)
             userRepository.setProfileImg(image.toString())
             UserState.nickname = nickname
