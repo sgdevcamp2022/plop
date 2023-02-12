@@ -31,6 +31,11 @@ import com.plop.plopmessenger.presentation.component.*
 import com.plop.plopmessenger.presentation.viewmodel.ChatsViewModel
 import com.plop.plopmessenger.util.Constants
 import com.plop.plopmessenger.util.KeyLine
+import com.plop.plopmessenger.util.dayFormatter
+import com.plop.plopmessenger.util.timeFormatter
+import java.lang.Math.abs
+import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 object ChatsScreenValue {
@@ -38,7 +43,7 @@ object ChatsScreenValue {
     val SpacerBetweenProfileAndMessage = 7.dp
     val SpacerBetweenMessageAndUnread = 17.dp
     val UnreadSize = 23.dp
-    val MessageDateSize = 50.dp
+    val MessageDateSize = 70.dp
 
     val SpacerBetweenChatRooms = 12.dp
 }
@@ -206,11 +211,15 @@ fun ChatItem(
                         .padding(end = 4.dp)
                 )
 
+                val formatter = if(LocalDate.now().isEqual(chatRoom.createdAt.toLocalDate())) timeFormatter
+                                else dayFormatter
+
                 Text(
-                    text = chatRoom.createdAt.toString(),
+                    text = chatRoom.createdAt.format(formatter),
                     fontSize = 14.sp,
                     maxLines = 1,
-                    modifier = Modifier.width(ChatsScreenValue.MessageDateSize)
+                    modifier = Modifier.width(ChatsScreenValue.MessageDateSize),
+                    textAlign = TextAlign.End
                 )
             }
         }
