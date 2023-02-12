@@ -54,11 +54,11 @@ public class UserController {
         UserDto savedUser = authService.signUp(userDto);
         ResponseDto responseDto;
         if (savedUser == null ) {
-            responseDto = new ResponseDto<>("SUCCESS", "signup successfully", savedUser);
-        }
-        else {
             ResponseUser responseUser = mapper.map(savedUser, ResponseUser.class);
             responseDto = new ResponseDto("FAIL", "user already exists", responseUser);
+        }
+        else {
+            responseDto = new ResponseDto<>("SUCCESS", "signup successfully", savedUser);
         }
 
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
