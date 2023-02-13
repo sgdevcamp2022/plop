@@ -8,6 +8,6 @@ import java.util.Map;
 
 @FeignClient(name="register", url="http://localhost:8000/user/v1")
 public interface RegisterClient {
-    @PostMapping("/register")
-    ResponseDto register(String bearerToken, Map<String,Object> tokenId);
+//    @PostMapping("/register")
+//    ResponseDto register(String bearerToken, Map<String,Object> tokenId);
 }

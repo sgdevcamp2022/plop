@@ -6,10 +6,16 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.messaging.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
+import smilegate.plop.push.domain.UserEntity;
+import smilegate.plop.push.domain.UserRepository;
 import smilegate.plop.push.dto.request.RequestMessage;
+import smilegate.plop.push.dto.response.ResponseUser;
+import smilegate.plop.push.model.JwtUser;
+import smilegate.plop.push.security.JwtTokenProvider;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
@@ -27,6 +33,9 @@ public class NotificationService {
     @Value("${fcm.key.scope")
     private String firebaseScope;
 
+    UserRepository userRepository;
+    JwtTokenProvider jwtTokenProvider;
+
     @PostConstruct
     public void init() {
         try {
@@ -37,26 +46,36 @@ public class NotificationService {
                     .build();
             if (FirebaseApp.getApps().isEmpty()) {
                 FirebaseApp.initializeApp(options);
-                log.info("Firebase application has been initialiezed");
+                log.info("Firebase application has been initialized");
             }
         } catch (IOException e) {
             log.error(e.getMessage());
             throw new RuntimeException();
         }
     }
-//비동기 처리 ?
-    public void sendByTokenList(List<String> tokenList, RequestMessage message) {
+
+    @Autowired
+    public NotificationService(UserRepository userRepository, JwtTokenProvider jwtTokenProvider) {
+        this.userRepository = userRepository;
+        this.jwtTokenProvider = jwtTokenProvider;
+    }
+//비동기 처리?
+    // data 에 객체 형식으로 다 넣어야 하는 지
+    public void sendByTokenList(RequestMessage message) {
+        List<String> tokenList = message.getTarget();
         List<Message> messages = tokenList.stream().map(token-> Message.builder()
                 .putData("time", LocalDateTime.now().toString())
+                .putData("title", message.getTitle())
+                .putData("body", message.getBody())
                 .setNotification(new Notification(message.getTitle(),message.getBody()))
                 .setToken(token)
                 .build()).collect(Collectors.toList());
+//        MulticastMessage.builder().addAllTokens(tokenList)
 
         BatchResponse response;
         try {
             //알림 발송
             response = FirebaseMessaging.getInstance().sendAll(messages);
-
             if (response.getFailureCount() > 0) {
                 List<SendResponse> responses = response.getResponses();
                 List<String> failedTokens = new ArrayList<>();
@@ -66,11 +85,22 @@ public class NotificationService {
                         failedTokens.add(tokenList.get(i));
                     }
                 }
+                log.error("List of tokens are not valid FCM token : " + failedTokens);
             }
 
         } catch (FirebaseMessagingException e ) {
             log.error("can not send to memberList push message. error info : {}", e.getMessage());
         }
+    }
+
+    public ResponseUser registerFcmToken(String jwt, String tokenId) {
+        JwtUser sender = jwtTokenProvider.getUserInfo(jwt);
+        UserEntity user = userRepository.findByUserId(sender.getUserId());
+        user.setFcmToken(tokenId);
+        userRepository.save(user);
+
+        return new ResponseUser(
+                user.getEmail(),user.getProfile().get("nickname").toString(),user.getUserId());
     }
 }
 
