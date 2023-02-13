@@ -24,6 +24,8 @@ object Constants {
     const val GET_SEARCH_USER = "/user/v1/search"
 
     const val GET_FRIEND_LIST = "/user/v1/friend"
+    const val GET_FRIEND_REQUEST_LIST = "/user/v1/friend/request"
+    const val GET_FRIEND_RESPONSE_LIST = "/user/v1/friend/response"
     const val POST_FRIEND_REQUEST = "/user/v1/friend/request"
     const val DELETE_FRIEND_REQUEST = "/user/v1/friend/request"
     const val DELETE_FRIEND = "/user/v1/friend/{friendid}"

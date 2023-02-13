@@ -1,5 +1,6 @@
 package com.plop.plopmessenger.presentation.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.plop.plopmessenger.domain.model.People
@@ -23,6 +24,27 @@ class PeopleViewModel @Inject constructor(
 
     init {
         getFriendList()
+        getFriendResponseList()
+    }
+
+    private fun getFriendResponseList() {
+        viewModelScope.launch {
+            friendUseCase.getFriendResponseListUseCase().collect() { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        peopleState.update {
+                            it.copy(
+                                requests = result.data ?: emptyList(),
+                                isLoading = false,
+                            )
+                        }
+                    }
+                    else -> {
+                        Log.d("GetFriendRequestListUseCase", "실패...실패오..")
+                    }
+                }
+            }
+        }
     }
 
     private fun getFriendList() {

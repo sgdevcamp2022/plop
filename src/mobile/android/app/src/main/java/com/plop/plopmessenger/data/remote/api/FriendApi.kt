@@ -6,6 +6,8 @@ import com.plop.plopmessenger.data.dto.response.user.*
 import com.plop.plopmessenger.data.remote.api.Constants.DELETE_FRIEND
 import com.plop.plopmessenger.data.remote.api.Constants.DELETE_FRIEND_REQUEST
 import com.plop.plopmessenger.data.remote.api.Constants.GET_FRIEND_LIST
+import com.plop.plopmessenger.data.remote.api.Constants.GET_FRIEND_REQUEST_LIST
+import com.plop.plopmessenger.data.remote.api.Constants.GET_FRIEND_RESPONSE_LIST
 import com.plop.plopmessenger.data.remote.api.Constants.POST_FRIEND_REQUEST
 import com.plop.plopmessenger.data.remote.api.Constants.PUT_FRIEND_REQUEST
 import retrofit2.Response
@@ -14,6 +16,12 @@ import retrofit2.http.*
 interface FriendApi {
     @GET(GET_FRIEND_LIST)
     suspend fun getFriendList(): Response<GetFriendListResponse>
+
+    @GET(GET_FRIEND_REQUEST_LIST)
+    suspend fun getFriendRequestList(): Response<GetFriendRequestListResponse>
+
+    @GET(GET_FRIEND_RESPONSE_LIST)
+    suspend fun getFriendResponseList(): Response<GetFriendResponseListResponse>
 
     @POST(POST_FRIEND_REQUEST)
     suspend fun postFriendRequest(

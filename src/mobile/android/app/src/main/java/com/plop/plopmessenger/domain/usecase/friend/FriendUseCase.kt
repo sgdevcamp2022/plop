@@ -9,5 +9,6 @@ data class FriendUseCase @Inject constructor(
     val requestFriendUseCase: RequestFriendUseCase,
     val refuseRequestUseCase: RefuseRequestUseCase,
     val deleteFriendUseCase: DeleteFriendUseCase,
-    val getFriendRequestListUseCase: GetFriendRequestListUseCase
+    val getFriendRequestListUseCase: GetFriendRequestListUseCase,
+    val getFriendResponseListUseCase: GetFriendResponseListUseCase
 )

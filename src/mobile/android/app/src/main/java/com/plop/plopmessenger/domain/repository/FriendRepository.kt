@@ -20,6 +20,8 @@ interface FriendRepository {
     suspend fun updateAllFriend(friends: List<Friend>)
     suspend fun getFriendList(): Response<GetFriendListResponse>
     suspend fun postFriendRequest(postFriendRequest: PostFriendRequest): Response<PostFriendResponse>
+    suspend fun getFriendRequestList(): Response<GetFriendRequestListResponse>
+    suspend fun getFriendResponseList(): Response<GetFriendResponseListResponse>
     suspend fun deleteFriendRequest(deleteFriendRequestRequest: DeleteFriendRequestRequest): Response<DeleteFriendRequestResponse>
     suspend fun deleteFriend(friendid: String): Response<DeleteFriendResponse>
     suspend fun putFriendRequest(friendid: String, status: Boolean): Response<PutFriendResponse>

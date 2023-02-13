@@ -10,23 +10,23 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class GetFriendRequestListUseCase @Inject constructor(
+class GetFriendResponseListUseCase @Inject constructor(
     private val friendRepository: FriendRepository
 ) {
     operator fun invoke(): Flow<Resource<List<People>>> = flow {
         try {
-            val response = friendRepository.getFriendRequestList()
+            val response = friendRepository.getFriendResponseList()
             if(response.isSuccessful) {
                 if(response.body() != null) {
                     emit(Resource.Success(response.body()?.profiles?.map { it.toPeople() }?: emptyList()))
                 }
-                Log.d("GetFriendRequestListUseCase", "성공..성공이오...!")
+                Log.d("GetFriendResponseListUseCase", "성공..성공이오...!")
             } else {
-                Log.d("GetFriendRequestListUseCase", "실패...실패오..")
+                Log.d("GetFriendResponseListUseCase", "실패...실패오..")
                 emit(Resource.Error("error"))
             }
         }catch (e: Exception) {
-            Log.d("GetFriendRequestListUseCase", "${e.message}")
+            Log.d("GetFriendResponseListUseCase", "${e.message}")
             emit(Resource.Error("error"))
         }
     }

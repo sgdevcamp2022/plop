@@ -51,6 +51,14 @@ class FriendRepositoryImpl @Inject constructor(
         return friendApi.getFriendList()
     }
 
+    override suspend fun getFriendRequestList(): Response<GetFriendRequestListResponse> {
+        return friendApi.getFriendRequestList()
+    }
+
+    override suspend fun getFriendResponseList(): Response<GetFriendResponseListResponse> {
+        return friendApi.getFriendResponseList()
+    }
+
     override suspend fun postFriendRequest(postFriendRequest: PostFriendRequest): Response<PostFriendResponse> {
         return friendApi.postFriendRequest(postFriendRequest)
     }
