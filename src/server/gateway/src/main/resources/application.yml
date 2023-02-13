@@ -65,14 +65,14 @@ spring:
           predicates:
             - Path=/push/v1/send
           filters:
-            - RewritePath=/auth/v1/(?<segment>.*), /$\{segment}
+            - RewritePath=/push/v1/(?<segment>.*), /$\{segment}
         - id: push-service
           uri: lb://PUSH-SERVICE
           predicates:
             - Path=/push/v1/**
           filters:
             - AuthorizationHeaderFilter
-            - RewritePath=/auth/v1/(?<segment>.*), /$\{segment}
+            - RewritePath=/push/v1/(?<segment>.*), /$\{segment}
 
         - id: presence-service
           uri: lb://PRESENCE-SERVICE
