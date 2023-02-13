@@ -112,8 +112,8 @@ class UserRepositoryImpl @Inject constructor(
         return userApi.postEmailVerify(postEmailVerifyRequest)
     }
 
-    override suspend fun putWithdrawal(): Response<PutWithdrawalResponse> {
-        return userApi.putWithdrawal()
+    override suspend fun deleteWithdrawal(): Response<DeleteWithdrawalResponse> {
+        return userApi.deleteWithdrawal()
     }
 
     override suspend fun postPasswordNew(postPasswordNewRequest: PostPasswordNewRequest): Response<PostPasswordNewResponse> {

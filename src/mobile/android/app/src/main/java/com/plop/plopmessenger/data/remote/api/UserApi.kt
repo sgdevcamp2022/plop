@@ -3,16 +3,15 @@ package com.plop.plopmessenger.data.remote.api
 import com.plop.plopmessenger.data.dto.request.user.*
 import com.plop.plopmessenger.data.dto.response.user.*
 import com.plop.plopmessenger.data.remote.api.Constants.DELETE_LOGOUT
+import com.plop.plopmessenger.data.remote.api.Constants.DELETE_WITHDRAWAL
 import com.plop.plopmessenger.data.remote.api.Constants.GET_SEARCH_USER
 import com.plop.plopmessenger.data.remote.api.Constants.GET_USER_PROFILE
-import com.plop.plopmessenger.data.remote.api.Constants.POST_AUTO_LOGIN
 import com.plop.plopmessenger.data.remote.api.Constants.POST_EMAIL_CODE
 import com.plop.plopmessenger.data.remote.api.Constants.POST_EMAIL_VERIFY
 import com.plop.plopmessenger.data.remote.api.Constants.POST_LOGIN
 import com.plop.plopmessenger.data.remote.api.Constants.POST_PASSWORD_NEW
 import com.plop.plopmessenger.data.remote.api.Constants.POST_SIGN_UP
 import com.plop.plopmessenger.data.remote.api.Constants.PUT_USER_PROFILE
-import com.plop.plopmessenger.data.remote.api.Constants.PUT_WITHDRAWAL
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -40,8 +39,8 @@ interface UserApi {
         @Body postEmailVerifyRequest: PostEmailVerifyRequest
     ): Response<PostEmailVerifyResponse>
 
-    @PUT(PUT_WITHDRAWAL)
-    suspend fun putWithdrawal(): Response<PutWithdrawalResponse>
+    @DELETE(DELETE_WITHDRAWAL)
+    suspend fun deleteWithdrawal(): Response<DeleteWithdrawalResponse>
 
     @POST(POST_PASSWORD_NEW)
     suspend fun postPasswordNew(
