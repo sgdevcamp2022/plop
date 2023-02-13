@@ -4,6 +4,7 @@ import com.plop.plopmessenger.data.dto.request.user.*
 import com.plop.plopmessenger.data.dto.response.user.*
 import com.plop.plopmessenger.data.pref.PrefDataSource
 import com.plop.plopmessenger.data.pref.model.UserPref
+import com.plop.plopmessenger.data.remote.api.RefreshApi
 import com.plop.plopmessenger.data.remote.api.UserApi
 import com.plop.plopmessenger.domain.repository.UserRepository
 import kotlinx.coroutines.flow.Flow
@@ -12,7 +13,8 @@ import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(
     private val pref: PrefDataSource,
-    private val userApi: UserApi
+    private val userApi: UserApi,
+    private val refreshApi: RefreshApi
 ): UserRepository {
     override fun getAccessToken(): Flow<String> {
         return pref.getAccessToken()
@@ -27,7 +29,7 @@ class UserRepositoryImpl @Inject constructor(
     }
 
     override suspend fun setRefreshToken(refreshToken: String) {
-        pref.setAccessToken(refreshToken)
+        pref.setRefreshToken(refreshToken)
     }
 
     override fun getUser(): Flow<UserPref> {
@@ -91,7 +93,7 @@ class UserRepositoryImpl @Inject constructor(
     }
 
     override suspend fun postAutoLogin(postAutoLoginRequest: PostAutoLoginRequest): Response<PostAutoLoginResponse> {
-        return userApi.postAutoLogin(postAutoLoginRequest)
+        return refreshApi.postAutoLogin(postAutoLoginRequest)
     }
 
     override suspend fun deleteLogout(): Response<DeleteLogoutResponse> {

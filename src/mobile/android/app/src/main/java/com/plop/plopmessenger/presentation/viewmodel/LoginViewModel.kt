@@ -24,7 +24,7 @@ class LoginViewModel @Inject constructor(
         private set
 
     init {
-        //checkLogin()
+        checkToken()
     }
 
     fun login() {
@@ -36,7 +36,7 @@ class LoginViewModel @Inject constructor(
                 when(result) {
                     is Resource.Success -> {
                         setLoginState(true)
-                        Log.d("Login", "로그인 성공")
+                        Log.d("Login", "로그인성공")
                     }
                     else -> {
                         Log.d("Login", result.message.toString())
@@ -51,10 +51,25 @@ class LoginViewModel @Inject constructor(
         loginState.update { it.copy(isLogin = state) }
     }
 
-    private fun checkLogin() {
+    private fun checkToken() {
         viewModelScope.launch {
-            userRepository.getRefreshToken().collect(){
-                if(!it.isNullOrBlank()) { setLoginState(true) }
+            userRepository.getUser().collect(){
+                if(!it.refreshToken.isNullOrBlank() && !loginState.value.isLogin) {
+                    autoLogin(it.email)
+                }
+            }
+        }
+    }
+
+    private suspend fun autoLogin(email: String) {
+        userUseCase.autoLoginUseCase(email).collect() { result ->
+            when(result) {
+                is Resource.Success -> {
+                    setLoginState(true)
+                }
+                else -> {
+                    Log.d("AutoLogin", "error")
+                }
             }
         }
     }

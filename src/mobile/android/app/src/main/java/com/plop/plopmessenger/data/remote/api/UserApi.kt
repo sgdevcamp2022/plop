@@ -22,11 +22,6 @@ interface UserApi {
         @Body loginRequest: PostLoginRequest
     ): Response<PostLoginResponse>
 
-    @POST(POST_AUTO_LOGIN)
-    suspend fun postAutoLogin(
-        @Body postAutoLoginRequest: PostAutoLoginRequest
-    ): Response<PostAutoLoginResponse>
-
     @DELETE(DELETE_LOGOUT)
     suspend fun deleteLogout(): Response<DeleteLogoutResponse>
 
