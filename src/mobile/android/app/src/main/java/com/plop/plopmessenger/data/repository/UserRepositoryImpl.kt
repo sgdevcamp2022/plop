@@ -128,8 +128,8 @@ class UserRepositoryImpl @Inject constructor(
         return userApi.putUserProfile(putUserProfileRequest)
     }
 
-    override suspend fun getSearchUser(getSearchUserRequest: GetSearchUserRequest): Response<GetSearchUserResponse> {
-        return userApi.getSearchUser(getSearchUserRequest)
+    override suspend fun getSearchUser(target: String): Response<GetSearchUserResponse> {
+        return userApi.getSearchUser(target)
     }
 }
 

@@ -1,16 +1,44 @@
 package com.plop.plopmessenger.presentation.viewmodel
 
+import android.app.appsearch.AppSearchResult
+import android.util.Log
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.plop.plopmessenger.domain.model.People
+import com.plop.plopmessenger.domain.usecase.user.UserUseCase
+import com.plop.plopmessenger.domain.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class AddPeopleViewModel @Inject constructor(): ViewModel() {
+class AddPeopleViewModel @Inject constructor(
+    private val userUseCase: UserUseCase
+): ViewModel() {
     var addPeopleState = MutableStateFlow(AddPeopleState())
         private set
+
+    private fun searchPeople() {
+        viewModelScope.launch {
+            userUseCase.searchUserUseCase(addPeopleState.value.query.text).collect() { result ->
+                when(result){
+                    is Resource.Success -> {
+                        addPeopleState.update {
+                            it.copy(searchResult = result.data?: emptyList())
+                        }
+                        Log.d("SearchPeople", "success")
+                    }
+                    else -> {
+                        Log.d("SearchPeople", "error")
+                    }
+                }
+            }
+        }
+    }
 
 
     fun addPeople(people: People) {
@@ -24,8 +52,25 @@ class AddPeopleViewModel @Inject constructor(): ViewModel() {
             it.copy(checkedPeople = addPeopleState.value.checkedPeople.minusElement(people))
         }
     }
+
+    fun setQuery(query: TextFieldValue) {
+        addPeopleState.update {
+            it.copy(query = query)
+        }
+        if(query != TextFieldValue("")) searchPeople()
+    }
+
+    fun setFocusState(isFocus: Boolean) {
+        addPeopleState.update {
+            it.copy(textFieldFocusState = isFocus)
+        }
+    }
 }
 
 data class AddPeopleState(
-    val checkedPeople: List<People> = emptyList()
+    val friendList: List<People> = emptyList(),
+    val checkedPeople: List<People> = emptyList(),
+    val query: TextFieldValue = TextFieldValue(""),
+    val textFieldFocusState: Boolean = false,
+    val searchResult: List<People> = emptyList()
 )

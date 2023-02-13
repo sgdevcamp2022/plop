@@ -38,5 +38,5 @@ interface UserRepository {
     suspend fun postPasswordNew(postPasswordNewRequest: PostPasswordNewRequest): Response<PostPasswordNewResponse>
     suspend fun getUserProfile(email: String): Response<GetUserProfileResponse>
     suspend fun putUserProfile(putUserProfileRequest: PutUserProfileRequest): Response<PutUserProfileResponse>
-    suspend fun getSearchUser(getSearchUserRequest: GetSearchUserRequest): Response<GetSearchUserResponse>
+    suspend fun getSearchUser(target: String): Response<GetSearchUserResponse>
 }

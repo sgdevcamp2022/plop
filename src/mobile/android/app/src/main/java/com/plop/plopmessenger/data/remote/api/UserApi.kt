@@ -57,8 +57,8 @@ interface UserApi {
         @Body putUserProfileRequest: PutUserProfileRequest
     ): Response<PutUserProfileResponse>
 
-    @GET(GET_SEARCH_USER)
+    @GET("$GET_SEARCH_USER")
     suspend fun getSearchUser(
-        @Body getSearchUserRequest: GetSearchUserRequest
+        @Query("target") target: String
     ): Response<GetSearchUserResponse>
 }
