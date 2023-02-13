@@ -1,11 +1,11 @@
 package com.plop.plopmessenger.presentation.viewmodel
 
-import android.app.appsearch.AppSearchResult
 import android.util.Log
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.plop.plopmessenger.domain.model.People
+import com.plop.plopmessenger.domain.usecase.friend.FriendUseCase
 import com.plop.plopmessenger.domain.usecase.user.UserUseCase
 import com.plop.plopmessenger.domain.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,7 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddPeopleViewModel @Inject constructor(
-    private val userUseCase: UserUseCase
+    private val userUseCase: UserUseCase,
+    private val friendUseCase: FriendUseCase
 ): ViewModel() {
     var addPeopleState = MutableStateFlow(AddPeopleState())
         private set
@@ -42,8 +43,19 @@ class AddPeopleViewModel @Inject constructor(
 
 
     fun addPeople(people: People) {
-        addPeopleState.update {
-            it.copy(checkedPeople = addPeopleState.value.checkedPeople.plus(people))
+        viewModelScope.launch {
+            friendUseCase.requestFriendUseCase(people.email).collect(){ result ->
+                when(result) {
+                    is Resource.Success -> {
+                        addPeopleState.update {
+                            it.copy(checkedPeople = addPeopleState.value.checkedPeople.plus(people))
+                        }
+                    }
+                    else -> {
+                        Log.d("AddPeopleRequest", "실패...실패요..")
+                    }
+                }
+            }
         }
     }
 
