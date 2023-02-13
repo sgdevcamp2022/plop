@@ -25,7 +25,7 @@ object Constants {
 
     const val GET_FRIEND_LIST = "/user/v1/friend"
     const val POST_FRIEND_REQUEST = "/user/v1/friend/request"
-    const val DELETE_FRIEND_REQUEST = "/user/v1/friend/"
+    const val DELETE_FRIEND_REQUEST = "/user/v1/friend/request"
     const val DELETE_FRIEND = "/user/v1/friend/{friendid}"
     const val PUT_FRIEND_REQUEST = "/user/v1/friend/{friendid}"
 

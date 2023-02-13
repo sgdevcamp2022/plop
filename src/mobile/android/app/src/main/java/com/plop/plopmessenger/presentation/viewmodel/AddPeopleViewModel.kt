@@ -60,8 +60,19 @@ class AddPeopleViewModel @Inject constructor(
     }
 
     fun deletePeople(people: People) {
-        addPeopleState.update {
-            it.copy(checkedPeople = addPeopleState.value.checkedPeople.minusElement(people))
+        viewModelScope.launch {
+            friendUseCase.deleteFriendUseCase(people.email).collect(){ result ->
+                when(result) {
+                    is Resource.Success -> {
+                        addPeopleState.update {
+                            it.copy(checkedPeople = addPeopleState.value.checkedPeople.minusElement(people))
+                        }
+                    }
+                    else -> {
+                        Log.d("DeletePeopleRequest", "실패...실패요..")
+                    }
+                }
+            }
         }
     }
 

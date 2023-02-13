@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class PostFriendResponse(
     @SerializedName("data")
-    val requestFriendList: PostFriendResponseItem,
+    val requestFriendList: RequestFriendResponseItem,
     val result: String,
     val message: String
 )
