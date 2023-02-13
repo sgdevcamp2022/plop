@@ -1,7 +1,7 @@
 package com.plop.plopmessenger.data.remote.api
 
 object Constants {
-    const val BASE_URL = "http://todayeouido.co.kr:10304/yeouido/v0/"
+    const val BASE_URL = "http://3.39.130.186:8000"
     const val POST_DM_CHATROOM = "/chatting/room/v1/dm-creation"
     const val POST_GROUP_CHATROOM = "/chatting/room/v1/group-creation"
     const val POST_INVITATION = "/chatting/room/v1/invitation"

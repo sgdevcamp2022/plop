@@ -40,6 +40,7 @@ object AppModule {
         return Retrofit.Builder().apply {
             addConverterFactory(GsonConverterFactory.create())
             baseUrl(BASE_URL)
+            client(okHttpClient)
         }.build()
     }
 
