@@ -39,6 +39,16 @@ logging:
   level:
     smilegate.plop.auth: DEBUG
 
-
+cloud:
+  aws:
+    region:
+      static: ap-northeast-2
+    s3:
+      bucket: plop-s3
+    credentials:
+      accessKey: AKIARBBIBVZBDFUP4J5I
+      secretKey: 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
+    stack:
+      auto: false
 
 
