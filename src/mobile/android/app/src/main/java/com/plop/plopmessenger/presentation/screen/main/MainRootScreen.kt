@@ -9,7 +9,7 @@ import com.plop.plopmessenger.presentation.state.rememberAppState
 import com.plop.plopmessenger.presentation.theme.PlopMessengerTheme
 
 @Composable
-fun MainRootScreen() {
+fun MainRootScreen(navigateToLogin:() -> Unit) {
     PlopMessengerTheme() {
         val appState = rememberAppState()
         val navigationAction = appState.navigationAction
@@ -29,7 +29,8 @@ fun MainRootScreen() {
             MainNavGraph(
                 navController = appState.navController,
                 startDestination = MainDestinations.MAIN_ROUTE,
-                navigationAction = navigationAction
+                navigationAction = navigationAction,
+                navigateToLogin = navigateToLogin
             )
         }
 

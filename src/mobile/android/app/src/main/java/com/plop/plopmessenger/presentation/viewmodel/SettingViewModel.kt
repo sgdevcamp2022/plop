@@ -1,5 +1,6 @@
 package com.plop.plopmessenger.presentation.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.plop.plopmessenger.domain.usecase.user.UserUseCase
@@ -91,6 +92,7 @@ class SettingViewModel @Inject constructor(
                                 shouldLoginState = false
                             )
                         }
+                        Log.d("로그아웃", "성공..성공입니다..!")
                     }
                     is Resource.Error -> {
                         settingState.update {
@@ -117,6 +119,7 @@ class SettingViewModel @Inject constructor(
                                 shouldLoginState = false
                             )
                         }
+                        Log.d("탈퇴", "성공..성공입니다..!")
                     }
                     is Resource.Error -> {
                         settingState.update {
