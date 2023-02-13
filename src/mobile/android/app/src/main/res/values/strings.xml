@@ -8,12 +8,16 @@
 
     <string name="initial_email_et">이메일을 입력해주세요</string>
     <string name="initial_password_et">패스워드를 입력해주세요</string>
+    <string name="initial_nickname_et">닉네임을 입력해주세요</string>
+    <string name="initial_user_id_et">아이디를 입력해주세요</string>
 
     <string name="login_login_btn">로그인</string>
     <string name="login_signUp_btn">새 계정 만들기</string>
     <string name="login_find">아이디 / 비밀번호 찾기</string>
 
     <string name="signup_create_btn">계정 생성</string>
+    <string name="signup_dialog_ok">확인</string>
+    <string name="signup_dialog_success">성공적으로 회원가입 되었습니다.</string>
 
     <string name="chats_title">Chat</string>
     <string name="people_title">People</string>
