@@ -23,6 +23,7 @@ import com.plop.plopmessenger.R
 import com.plop.plopmessenger.presentation.component.ButtonValue
 import com.plop.plopmessenger.presentation.component.LoginEditText
 import com.plop.plopmessenger.presentation.component.PlopButton
+import com.plop.plopmessenger.presentation.component.PlopDialog
 import com.plop.plopmessenger.presentation.viewmodel.LoginViewModel
 import com.plop.plopmessenger.util.KeyLine
 
@@ -48,6 +49,16 @@ fun LoginScreen(
         if (state.isLogin) {
             navigateToMain()
         }
+    }
+
+    if(state.showLoginDialog) {
+        PlopDialog(
+            onDismiss = viewModel::closeDialog,
+            onClick = { viewModel.closeDialog() },
+            title = stringResource(id = R.string.login_dialog_title),
+            dismissContent = "",
+            content = stringResource(id = R.string.login_dialog_ok),
+        )
     }
 
     var focusManager = LocalFocusManager.current
@@ -101,7 +112,7 @@ fun LoginScreen(
         Spacer(modifier = Modifier.size(LoginScreenValue.SpacerBetweenEtAndBtnSize))
 
         PlopButton(
-            onClick = navigateToMain,
+            onClick = viewModel::login,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(ButtonValue.LargeButtonHeight),
