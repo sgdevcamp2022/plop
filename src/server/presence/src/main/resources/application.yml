@@ -1,11 +1,11 @@
 server:
-  port: 8082
+  port: 8021
 
 spring:
   application:
     name: presence-service
   profiles:
-    default: prod
+    default: dev
   kafka:
     consumer:
       group-id: presence-group
