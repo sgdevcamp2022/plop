@@ -1,18 +1,25 @@
 package com.plop.plopmessenger.data.repository
 
+import com.google.gson.Gson
 import com.plop.plopmessenger.data.dto.request.user.*
 import com.plop.plopmessenger.data.dto.response.user.*
 import com.plop.plopmessenger.data.pref.PrefDataSource
 import com.plop.plopmessenger.data.pref.model.UserPref
+import com.plop.plopmessenger.data.remote.api.RefreshApi
 import com.plop.plopmessenger.data.remote.api.UserApi
 import com.plop.plopmessenger.domain.repository.UserRepository
 import kotlinx.coroutines.flow.Flow
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import retrofit2.Response
+import java.io.File
 import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(
     private val pref: PrefDataSource,
-    private val userApi: UserApi
+    private val userApi: UserApi,
+    private val refreshApi: RefreshApi
 ): UserRepository {
     override fun getAccessToken(): Flow<String> {
         return pref.getAccessToken()
@@ -27,7 +34,7 @@ class UserRepositoryImpl @Inject constructor(
     }
 
     override suspend fun setRefreshToken(refreshToken: String) {
-        pref.setAccessToken(refreshToken)
+        pref.setRefreshToken(refreshToken)
     }
 
     override fun getUser(): Flow<UserPref> {
@@ -36,6 +43,10 @@ class UserRepositoryImpl @Inject constructor(
 
     override fun getUserId(): Flow<String> {
         return pref.getUserId()
+    }
+
+    override suspend fun setUserId(userId: String) {
+        return pref.setUserId(userId)
     }
 
     override fun getNickname(): Flow<String> {
@@ -91,7 +102,7 @@ class UserRepositoryImpl @Inject constructor(
     }
 
     override suspend fun postAutoLogin(postAutoLoginRequest: PostAutoLoginRequest): Response<PostAutoLoginResponse> {
-        return userApi.postAutoLogin(postAutoLoginRequest)
+        return refreshApi.postAutoLogin(postAutoLoginRequest)
     }
 
     override suspend fun deleteLogout(): Response<DeleteLogoutResponse> {
@@ -110,24 +121,29 @@ class UserRepositoryImpl @Inject constructor(
         return userApi.postEmailVerify(postEmailVerifyRequest)
     }
 
-    override suspend fun putWithdrawal(): Response<PutWithdrawalResponse> {
-        return userApi.putWithdrawal()
+    override suspend fun deleteWithdrawal(): Response<DeleteWithdrawalResponse> {
+        return userApi.deleteWithdrawal()
     }
 
     override suspend fun postPasswordNew(postPasswordNewRequest: PostPasswordNewRequest): Response<PostPasswordNewResponse> {
         return userApi.postPasswordNew(postPasswordNewRequest)
     }
 
-    override suspend fun getUserProfile(email: String): Response<GetUserProfileResponse> {
-        return userApi.getUserProfile(email = email)
+    override suspend fun getUserProfile(target: String): Response<GetUserProfileResponse> {
+        return userApi.getUserProfile(target)
     }
 
-    override suspend fun putUserProfile(putUserProfileRequest: PutUserProfileRequest): Response<PutUserProfileResponse> {
-        return userApi.putUserProfile(putUserProfileRequest)
+    override suspend fun putUserProfile(img: File, target: String, nickname: String): Response<PutUserProfileResponse> {
+        val multipartBody = MultipartBody.Part.createFormData(
+            name = "postImg",
+            filename = img.name,
+            body = img.asRequestBody("image/*".toMediaType())
+        )
+        return userApi.putUserProfile(img = multipartBody, target = target, nickname = nickname)
     }
 
-    override suspend fun getSearchUser(getSearchUserRequest: GetSearchUserRequest): Response<GetSearchUserResponse> {
-        return userApi.getSearchUser(getSearchUserRequest)
+    override suspend fun getSearchUser(target: String): Response<GetSearchUserResponse> {
+        return userApi.getSearchUser(target)
     }
 }
 

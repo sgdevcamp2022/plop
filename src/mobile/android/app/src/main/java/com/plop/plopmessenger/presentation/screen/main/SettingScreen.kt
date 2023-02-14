@@ -36,11 +36,15 @@ object SettingValue{
 
 @Composable
 fun SettingScreen(
-    navigateToModifyProfile: () -> Unit
+    navigateToModifyProfile: () -> Unit,
+    navigateToLogin:() -> Unit
 ) {
-
     val viewModel = hiltViewModel<SettingViewModel>()
     val state by viewModel.settingState.collectAsState()
+
+    LaunchedEffect(key1 = state.shouldLoginState) {
+        if(!state.shouldLoginState) navigateToLogin()
+    }
 
     if(state.showLogoutDialog) {
         PlopDialog(

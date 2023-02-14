@@ -14,16 +14,14 @@ class LogoutUseCase @Inject constructor(
     operator fun invoke(): Flow<Resource<Boolean>> = flow {
         try {
             val response = userRepository.deleteLogout()
-            when(response.code()) {
-                200 -> {
-                    userRepository.logoutUser()
-                    emit(Resource.Success(true))
-                }
-                else -> {
-                    Log.d("LogoutUseCase", "error")
-                    emit(Resource.Error("error"))
-                }
+            if(response.isSuccessful) {
+                userRepository.logoutUser()
+                emit(Resource.Success(true))
+            } else {
+                Log.d("LogoutUseCase", "error")
+                emit(Resource.Error("error"))
             }
+
         }catch (e: Exception) {
             Log.d("LogoutUseCase", "error")
             emit(Resource.Error("error"))

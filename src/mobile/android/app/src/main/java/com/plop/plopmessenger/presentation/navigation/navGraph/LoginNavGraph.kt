@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.plop.plopmessenger.presentation.navigation.LoginDestinations
 import com.plop.plopmessenger.presentation.navigation.LoginNavigationAction
+import com.plop.plopmessenger.presentation.screen.login.FindPasswordScreen
 import com.plop.plopmessenger.presentation.screen.login.LoginScreen
 import com.plop.plopmessenger.presentation.screen.login.SignUpScreen
 
@@ -25,12 +26,17 @@ fun LoginNavGraph(
         composable(LoginDestinations.LOGIN_ROUTE) {
             LoginScreen(
                 navigateToSignUp = navigationAction.navigateToSignUp,
-                navigateToMain = navigateToMain
+                navigateToMain = navigateToMain,
+                navigateToFindPassword = navigationAction.navigateToFindPassword
             )
         }
 
         composable(LoginDestinations.SIGN_UP_ROUTE) {
             SignUpScreen(navigationAction.upPress)
+        }
+
+        composable(LoginDestinations.FIND_PASSWORD_ROUTE) {
+            FindPasswordScreen(navigationAction.upPress)
         }
     }
 }

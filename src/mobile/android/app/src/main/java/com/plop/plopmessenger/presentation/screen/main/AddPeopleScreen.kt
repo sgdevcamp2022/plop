@@ -34,24 +34,15 @@ object AddPeopleScreenValue {
 fun AddPeopleScreen(
     upPress: () -> Unit
 ) {
-    var query by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue(""))
-    }
-    //검색결과
-    val result by remember{ mutableStateOf(listOf<People>()) }
-    //모든 친구 목록
-    val default by remember{ mutableStateOf(listOf<People>(
-    )) }
-    var textFieldFocusState by remember { mutableStateOf(false) }
-    var focusManager = LocalFocusManager.current
-    var searchDisplay : SearchDisplay = when {
-        query == TextFieldValue("") -> SearchDisplay.Default
-        result.isNotEmpty() -> SearchDisplay.Results
-        else -> SearchDisplay.NoResults
-    }
 
     val viewModel = hiltViewModel<AddPeopleViewModel>()
-    val checkedPeople = viewModel.addPeopleState.collectAsState()
+    val state by viewModel.addPeopleState.collectAsState()
+    var searchDisplay : SearchDisplay = when {
+        state.query == TextFieldValue("") -> SearchDisplay.Default
+        state.searchResult != null -> SearchDisplay.Results
+        else -> SearchDisplay.NoResults
+    }
+    var focusManager = LocalFocusManager.current
 
     Column(
         modifier = Modifier
@@ -64,13 +55,13 @@ fun AddPeopleScreen(
         )
 
         SearchBar(
-            query = query,
-            onQueryChange = { query = it },
-            searchFocused = textFieldFocusState,
-            onSearchFocusChange = { textFieldFocusState = it },
+            query = state.query,
+            onQueryChange = viewModel::setQuery,
+            searchFocused = state.textFieldFocusState,
+            onSearchFocusChange = viewModel::setFocusState,
             onClearQuery = {
                 focusManager.clearFocus()
-                query = TextFieldValue("")
+                viewModel.setQuery(TextFieldValue(""))
             },
             modifier = Modifier.padding(vertical = 8.dp)
         )
@@ -80,21 +71,14 @@ fun AddPeopleScreen(
                 NoResultScreen()
             }
             SearchDisplay.Default -> {
-                PeopleList(
-                    result = default,
-                    onClick = viewModel::addPeople,
-                    onClickedClick = viewModel::deletePeople,
-                    checkedPeople = checkedPeople.value.checkedPeople
-                ) {
-                    SubTitle(content = stringResource(id = R.string.add_chat_friend_subtitle))
-                }
+                NoResultScreen()
             }
             SearchDisplay.Results -> {
                 PeopleList(
-                    result = result,
+                    result = state.searchResult,
                     onClick = viewModel::addPeople,
                     onClickedClick = viewModel::deletePeople,
-                    checkedPeople = checkedPeople.value.checkedPeople
+                    checkedPeople = state.checkedPeople
                 ){}
             }
         }

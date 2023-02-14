@@ -5,23 +5,23 @@ import com.plop.plopmessenger.domain.model.People
 import com.plop.plopmessenger.domain.model.PeopleStatusType
 
 data class FriendDto(
-    val userid: String,
+    val userId: String,
     val email: String,
     val profile: UserProfileDto
 )
 
 fun FriendDto.toFriend() = Friend(
-    friendId = this.userid,
+    friendId = this.userId,
     nickname = this.profile.nickname,
-    profileImg = this.profile.image,
+    profileImg = this.profile.img,
     email = this.email,
     status = 4
 )
 
 fun FriendDto.toPeople() = People(
-    peopleId = this.userid,
+    peopleId = this.userId,
     nickname = this.profile.nickname,
-    profileImg = this.profile.image,
+    profileImg = this.profile.img,
     email = this.email,
     status = PeopleStatusType.NONE
 )

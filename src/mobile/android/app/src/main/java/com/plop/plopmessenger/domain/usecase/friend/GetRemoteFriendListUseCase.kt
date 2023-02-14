@@ -22,6 +22,7 @@ class GetRemoteFriendListUseCase @Inject constructor(
                            response.body()!!.profiles.map { it.toFriend() }
                        )
                    }
+                    Log.d("GetRemoteFriendListUseCase", "성공..성공이요..")
                 }
                 else -> {
                     Log.d("GetRemoteFriendListUseCase", "error")

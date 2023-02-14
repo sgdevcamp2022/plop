@@ -12,20 +12,17 @@ import javax.inject.Inject
 class DeleteFriendUseCase @Inject constructor(
     private val friendRepository: FriendRepository
 ) {
-    operator fun invoke(friendId: String): Flow<Resource<Boolean>> = flow {
+    operator fun invoke(target: String): Flow<Resource<Boolean>> = flow {
         try {
-            val response = friendRepository.deleteFriendRequest(DeleteFriendRequestRequest(friendId))
-            when(response.code()) {
-                200 -> {
-                    emit(Resource.Success(true))
-                }
-                else -> {
-                    Log.d("DeleteFriendUseCase", "error")
-                    emit(Resource.Error("error"))
-                }
+            val response = friendRepository.deleteFriendRequest(DeleteFriendRequestRequest(target))
+            if(response.isSuccessful) {
+                emit(Resource.Success(true))
+                Log.d("DeleteFriendUseCase", "성공..성공이오..")
+            } else {
+                Log.d("DeleteFriendUseCase", "실패..실패요.... + ${response.code()}")
             }
         }catch (e: Exception) {
-            Log.d("DeleteFriendUseCase", "error")
+            Log.d("DeleteFriendUseCase", e.message.toString())
             emit(Resource.Error("error"))
         }
     }

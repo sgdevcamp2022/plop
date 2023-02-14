@@ -1,6 +1,7 @@
 package com.plop.plopmessenger.domain.model
 
 import com.plop.plopmessenger.data.local.entity.Friend
+import com.plop.plopmessenger.data.dto.response.People as PeopleDto
 
 data class People(
     val peopleId: String,
@@ -32,5 +33,13 @@ fun Member.toPeople(): People = People(
     nickname = this.nickname,
     profileImg = this.profileImg,
     email = "",
+    status = PeopleStatusType.NONE
+)
+
+fun PeopleDto.toPeople(): People = People(
+    peopleId = this.userId,
+    nickname = this.profile.nickname,
+    profileImg = this.profile.img,
+    email = this.email,
     status = PeopleStatusType.NONE
 )

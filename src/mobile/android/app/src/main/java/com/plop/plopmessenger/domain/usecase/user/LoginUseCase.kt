@@ -24,16 +24,21 @@ class LoginUseCase @Inject constructor(
                             user?.refreshToken ?: "",
                             "",
                             email
-                        ))
+                        )
+                    )
                     emit(Resource.Success(true))
                 }
+                401 -> {
+                    Log.d("LoginUserCase", response.code().toString())
+                    emit(Resource.Error("error ${response.code()}"))
+                }
                 else -> {
-                    Log.d("LoginUserCase", "error")
-                    emit(Resource.Error("error"))
+                    Log.d("LoginUserCase", response.code().toString())
+                    emit(Resource.Error("error ${response.code()}"))
                 }
             }
         }catch (e: Exception) {
-            Log.d("LoginUserCase", "error")
+            Log.d("LoginUserCase", e.message.toString())
             emit(Resource.Error("error"))
         }
     }

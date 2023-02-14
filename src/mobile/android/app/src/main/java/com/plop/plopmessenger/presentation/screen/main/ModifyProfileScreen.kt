@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,10 +34,14 @@ fun ModifyProfileScreen(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? -> uri?.let { viewModel.setImage(it) } }
 
+    LaunchedEffect(key1 = state.value.saved) {
+        if(state.value.saved) upPress()
+    }
+
     if(state.value.showDialog) {
         PlopDialog(
             onDismiss = upPress,
-            onClick = { viewModel.saveUser(); upPress()},
+            onClick = viewModel::saveUser,
             title = stringResource(id = R.string.setting_profile_dialog),
             dismissContent = stringResource(id = R.string.setting_profile_dialog_dismiss),
             content = stringResource(id = R.string.setting_profile_dialog_ok),

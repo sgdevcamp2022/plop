@@ -21,14 +21,10 @@ class SignUpUseCase @Inject constructor(
     ): Flow<Resource<Boolean>> = flow {
         try {
             val response = userRepository.postSignUp(PostSignUpRequest(email, nickname, password, userId))
-            when(response.code()) {
-                200 -> {
-                    emit(Resource.Success(true))
-                }
-                else -> {
-                    Log.d("SignUpUseCase", "error")
-                    emit(Resource.Error("error"))
-                }
+            if(response.isSuccessful) {
+                emit(Resource.Success(true))
+            } else {
+                emit(Resource.Error("${response.code()} :${response.message()}"))
             }
         }catch (e: Exception) {
             Log.d(" SignUpUseCase", "error")

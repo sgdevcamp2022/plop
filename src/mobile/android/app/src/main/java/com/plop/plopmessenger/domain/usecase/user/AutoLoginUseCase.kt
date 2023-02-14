@@ -16,21 +16,18 @@ class AutoLoginUseCase @Inject constructor(
     operator fun invoke(email: String): Flow<Resource<Boolean>> = flow {
         try {
             val response = userRepository.postAutoLogin(PostAutoLoginRequest(email))
-            when(response.code()) {
-                200 -> {
-                    val user = response.body()?.postAutoLoginDto
-                    userRepository.setAccessToken(user?.accessToken ?: "")
-                    userRepository.setRefreshToken(user?.refreshToken ?: "")
-                    emit(Resource.Success(true))
-                }
-                else -> {
-                    Log.d("AutoLoginUseCase", "error")
-                    emit(Resource.Error("error"))
-                }
+            if(response.isSuccessful) {
+                val user = response.body()?.postAutoLoginDto
+                userRepository.setAccessToken(user?.accessToken ?: "")
+                userRepository.setRefreshToken(user?.refreshToken ?: "")
+                emit(Resource.Success(true))
+            } else {
+                Log.d("AutoLoginUseCase", "error ${response.message()} + ${response.code()}")
+                emit(Resource.Error("error ${response.code()}"))
             }
         }catch (e: Exception) {
-            Log.d("AutoLoginUseCase", "error")
-            emit(Resource.Error("error"))
+            Log.d("AutoLoginUseCase", "error ${e.message}")
+            emit(Resource.Error("error ${e.message}"))
         }
     }
 }
