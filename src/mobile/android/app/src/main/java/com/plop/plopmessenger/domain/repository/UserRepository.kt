@@ -15,6 +15,7 @@ interface UserRepository {
     suspend fun setRefreshToken(refreshToken: String)
     fun getUser(): Flow<UserPref>
     fun getUserId(): Flow<String>
+    suspend fun setUserId(userId: String)
     fun getNickname(): Flow<String>
     suspend fun setNickname(nickname: String)
     fun getProfileImg(): Flow<String>

@@ -4,7 +4,9 @@ import android.util.Log
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.plop.plopmessenger.domain.model.People
 import com.plop.plopmessenger.domain.repository.UserRepository
+import com.plop.plopmessenger.domain.usecase.friend.FriendUseCase
 import com.plop.plopmessenger.domain.usecase.user.UserUseCase
 import com.plop.plopmessenger.domain.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,15 +29,40 @@ class LoginViewModel @Inject constructor(
         checkToken()
     }
 
+    fun getMyInfo() {
+        viewModelScope.launch {
+            userUseCase.getUserProfileUseCase(loginState.value.emailQuery.text).collect() { result ->
+                when(result) {
+                    is Resource.Success -> {
+                        if(result.data != null) saveMyInfo(result.data)
+                    }
+                    else -> {
+                        Log.d("Login", result.message.toString())
+                        showLoginDialog()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun saveMyInfo(people: People) {
+        viewModelScope.launch {
+            launch { userRepository.setNickname(people.nickname) }
+            launch { userRepository.setProfileImg(people.profileImg) }
+            launch { userRepository.setUserId(people.peopleId) }
+        }
+    }
+
     fun login() {
         viewModelScope.launch {
             userUseCase.loginUseCase(
                 email = loginState.value.emailQuery.text,
-                password = loginState.value.pwdQuery.text
+                password = loginState.value.pwdQuery.text,
             ).collect() { result ->
                 when(result) {
                     is Resource.Success -> {
                         setLoginState(true)
+                        getMyInfo()
                         Log.d("Login", "로그인성공")
                     }
                     else -> {

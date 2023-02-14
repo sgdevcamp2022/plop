@@ -40,6 +40,10 @@ class UserRepositoryImpl @Inject constructor(
         return pref.getUserId()
     }
 
+    override suspend fun setUserId(userId: String) {
+        return pref.setUserId(userId)
+    }
+
     override fun getNickname(): Flow<String> {
         return pref.getNickname()
     }
