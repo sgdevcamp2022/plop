@@ -1,9 +1,10 @@
 package com.plop.plopmessenger.data.dto.response.user
 
 
+
 data class LoginDto(
-    val accessExpire: Long,
+    val accessExpire: String,
     val accessToken: String,
-    val refreshExpire: Long,
+    val refreshExpire: String,
     val refreshToken: String
 )

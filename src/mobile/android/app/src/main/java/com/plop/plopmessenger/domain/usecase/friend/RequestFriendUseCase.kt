@@ -12,17 +12,16 @@ import javax.inject.Inject
 class RequestFriendUseCase @Inject constructor(
     private val friendRepository: FriendRepository
 ) {
-    operator fun invoke(friendId: String): Flow<Resource<Boolean>> = flow {
+    operator fun invoke(target: String): Flow<Resource<Boolean>> = flow {
         try {
-            val response = friendRepository.postFriendRequest(PostFriendRequest(friendId))
-            when(response.code()) {
-                200 -> {
-                    emit(Resource.Success(true))
-                }
-                else -> {
-                    Log.d("RequestFriendUseCase", "error")
-                    emit(Resource.Error("error"))
-                }
+            val response = friendRepository.postFriendRequest(PostFriendRequest(target))
+            if(response.isSuccessful) {
+                emit(Resource.Success(true))
+                Log.d("RequestFriendUseCase", "성공..성공이오..")
+            }
+            else {
+                Log.d("RequestFriendUseCase", "error + ${response.code()}")
+                emit(Resource.Error("error"))
             }
         }catch (e: Exception) {
             Log.d("RequestFriendUseCase", "error")

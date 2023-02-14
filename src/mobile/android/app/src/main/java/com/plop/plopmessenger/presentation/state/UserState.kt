@@ -9,6 +9,7 @@ import com.plop.plopmessenger.presentation.state.ThemeConstants.SYSTEM
 object UserState {
     var mode by mutableStateOf(SYSTEM)
     var nickname by mutableStateOf("nickname")
+    var userId by mutableStateOf("")
     var profileImg by mutableStateOf<Uri?>(null)
 }
 

@@ -13,15 +13,14 @@ class WithdrawalUseCase @Inject constructor(
 ) {
     operator fun invoke(): Flow<Resource<Boolean>> = flow {
         try {
-            val response = userRepository.putWithdrawal()
-            when(response.code()) {
-                200 -> {
-                    emit(Resource.Success(true))
-                }
-                else -> {
-                    Log.d("WithdrawalUseCase", "error")
-                    emit(Resource.Error("error"))
-                }
+            val response = userRepository.deleteWithdrawal()
+            if(response.isSuccessful) {
+                userRepository.logoutUser()
+                emit(Resource.Success(true))
+            }
+            else {
+                Log.d("WithdrawalUseCase", "error")
+                emit(Resource.Error("error"))
             }
         }catch (e: Exception) {
             Log.d(" WithdrawalUseCase", "error")

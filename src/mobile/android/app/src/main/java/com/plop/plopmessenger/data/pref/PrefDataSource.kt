@@ -72,6 +72,12 @@ class PrefDataSource @Inject constructor(@ApplicationContext val context: Contex
             .map { it[LOGIN_USER_ID]?: ""}
     }
 
+    suspend fun setUserId(userId: String) {
+        context.dataStore.edit {
+            it[LOGIN_USER_ID] = userId
+        }
+    }
+
     fun getNickname(): Flow<String> {
         return context.dataStore.data
             .map { it[LOGIN_USER_NICKNAME]?: ""}

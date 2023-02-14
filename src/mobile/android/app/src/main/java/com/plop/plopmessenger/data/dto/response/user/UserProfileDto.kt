@@ -2,5 +2,5 @@ package com.plop.plopmessenger.data.dto.response.user
 
 data class UserProfileDto(
     val nickname: String,
-    val image: String
+    val img: String
 )
