@@ -15,8 +15,13 @@ import org.springframework.web.bind.annotation.*;
 import smilegate.plop.chat.config.kafka.Producers;
 import smilegate.plop.chat.dto.APIMessage;
 import smilegate.plop.chat.dto.ChatMessageDto;
+import smilegate.plop.chat.exception.CustomAPIException;
+import smilegate.plop.chat.exception.ErrorCode;
 import smilegate.plop.chat.service.ChatMessageService;
+import smilegate.plop.chat.service.ChatRoomService;
 import smilegate.plop.chat.service.PushService;
+
+import javax.validation.Valid;
 
 
 @Tag(name="chat", description = "채팅 메시지 API")
@@ -27,16 +32,20 @@ import smilegate.plop.chat.service.PushService;
 public class ChatMessageController {
     private final Producers producers;
     private final ChatMessageService chatMessageService;
+    private final ChatRoomService chatRoomService;
     private final PushService pushService;
 
     @Operation(summary = "메시지 전송")
     @PostMapping(value="/v1/message", consumes = "application/json",produces = "application/json")
-    public void sendMessage(@RequestBody ChatMessageDto chatMessageDto){
+    public void sendMessage(@Valid @RequestBody ChatMessageDto chatMessageDto){
+        if(!chatRoomService.existsRoom(chatMessageDto.getRoom_id())){
+            throw new CustomAPIException(ErrorCode.ROOM_NOT_FOUND_ERROR, "채팅방이 없음-"+chatMessageDto.getRoom_id());
+        }
         ChatMessageDto savedMessage = chatMessageService.saveChatMessage(chatMessageDto);
-
-        pushService.pushMessageToUsers(chatMessageDto);
-
         producers.sendMessage(savedMessage);
+
+        // 비동기 푸시 알림
+        pushService.pushMessageToUsers(chatMessageDto);
     }
 
     @Operation(summary = "채팅방 새 메시지 받기")
@@ -68,7 +77,6 @@ public class ChatMessageController {
         APIMessage apiMessage = new APIMessage();
         apiMessage.setMessage(APIMessage.ResultEnum.success);
         apiMessage.setData(chatMessageService.chatMessagePagination(roomId,page));
-
         return new ResponseEntity<>(apiMessage, HttpStatus.OK);
     }
 }
