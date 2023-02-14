@@ -8,4 +8,6 @@ import java.util.Optional;
 @Repository
 public interface RoomRepository extends MongoRepository<RoomCollection,String> , RoomMongoTemplateRepository{
     Optional<RoomCollection> findByRoomId(String roomId);
+
+    boolean existsByRoomId(String roomId);
 }
