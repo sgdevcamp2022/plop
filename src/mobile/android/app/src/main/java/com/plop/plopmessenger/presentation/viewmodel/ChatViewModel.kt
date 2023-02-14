@@ -84,6 +84,21 @@ class ChatViewModel @Inject constructor(
         }
     }
 
+    suspend fun getGroupChatRoomNewId(people: List<People>) {
+        chatRoomUseCase.createGroupChatRoomUseCase(people).collect() { result ->
+            when(result) {
+                is Resource.Success -> {
+                    chatState.update { it.copy(chatroomId = result.data) }
+                    getMessageList()
+                    getFirstMessage()
+                    getChatroomInfo()
+                } else -> {
+                Log.d("GetGroupChatRoomNewId", result.message.toString())
+                }
+            }
+        }
+    }
+
     suspend fun getChatRoomNewMessage() {
         /** 서버와 DB 동기화 작업 **/
 
@@ -242,12 +257,15 @@ class ChatViewModel @Inject constructor(
                     }
                 }
             } else {
-                chatState.update {
-                    it.copy(
-                        title = getChatRoomTitle(people.map { it.nickname }),
-                        members = people.map { it.peopleId to it.toMember() }.toMap(),
-                        chatRoomType = ChatRoomType.GROUP
-                    )
+                viewModelScope.launch{
+                    getGroupChatRoomNewId(people)
+                    chatState.update {
+                        it.copy(
+                            title = getChatRoomTitle(people.map { it.nickname }),
+                            members = people.map { it.peopleId to it.toMember() }.toMap(),
+                            chatRoomType = ChatRoomType.GROUP
+                        )
+                    }
                 }
             }
         }else {
