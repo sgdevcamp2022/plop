@@ -1,5 +1,6 @@
 package com.plop.plopmessenger.data.repository
 
+import com.google.gson.Gson
 import com.plop.plopmessenger.data.dto.request.user.*
 import com.plop.plopmessenger.data.dto.response.user.*
 import com.plop.plopmessenger.data.pref.PrefDataSource
@@ -8,7 +9,11 @@ import com.plop.plopmessenger.data.remote.api.RefreshApi
 import com.plop.plopmessenger.data.remote.api.UserApi
 import com.plop.plopmessenger.domain.repository.UserRepository
 import kotlinx.coroutines.flow.Flow
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import retrofit2.Response
+import java.io.File
 import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(
@@ -128,8 +133,13 @@ class UserRepositoryImpl @Inject constructor(
         return userApi.getUserProfile(target)
     }
 
-    override suspend fun putUserProfile(putUserProfileRequest: PutUserProfileRequest): Response<PutUserProfileResponse> {
-        return userApi.putUserProfile(putUserProfileRequest)
+    override suspend fun putUserProfile(img: File, target: String, nickname: String): Response<PutUserProfileResponse> {
+        val multipartBody = MultipartBody.Part.createFormData(
+            name = "postImg",
+            filename = img.name,
+            body = img.asRequestBody("image/*".toMediaType())
+        )
+        return userApi.putUserProfile(img = multipartBody, target = target, nickname = nickname)
     }
 
     override suspend fun getSearchUser(target: String): Response<GetSearchUserResponse> {

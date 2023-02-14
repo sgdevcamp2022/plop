@@ -12,6 +12,7 @@ import com.plop.plopmessenger.data.remote.api.Constants.POST_LOGIN
 import com.plop.plopmessenger.data.remote.api.Constants.POST_PASSWORD_NEW
 import com.plop.plopmessenger.data.remote.api.Constants.POST_SIGN_UP
 import com.plop.plopmessenger.data.remote.api.Constants.PUT_USER_PROFILE
+import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -52,9 +53,12 @@ interface UserApi {
         @Query("target") target: String
     ): Response<GetUserProfileResponse>
 
+    @Multipart
     @PUT(PUT_USER_PROFILE)
     suspend fun putUserProfile(
-        @Body putUserProfileRequest: PutUserProfileRequest
+        @Part img: MultipartBody.Part?,
+        @Part("target") target: String,
+        @Part("nickname") nickname: String
     ): Response<PutUserProfileResponse>
 
     @GET("$GET_SEARCH_USER")
