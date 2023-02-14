@@ -47,9 +47,9 @@ class LoginViewModel @Inject constructor(
 
     private fun saveMyInfo(people: People) {
         viewModelScope.launch {
-            launch { userRepository.setNickname(people.nickname) }
-            launch { userRepository.setProfileImg(people.profileImg) }
-            launch { userRepository.setUserId(people.peopleId) }
+            launch { userUseCase.setNicknameUseCase(people.nickname) }
+            launch { userUseCase.setProfileImgUseCase(people.profileImg) }
+            launch { userUseCase.setUserIdUseCase(people.peopleId) }
         }
     }
 
