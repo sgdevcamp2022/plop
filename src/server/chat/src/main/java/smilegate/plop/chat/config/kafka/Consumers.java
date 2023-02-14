@@ -23,7 +23,7 @@ public class Consumers {
     @KafkaListener(groupId = "${spring.kafka.chat-consumer.group-id}" ,topics="${kafka.topic.chat-name}")
     public void listenChat(ChatMessageDto chatMessageDto){
         if(chatMessageDto.getMessage_type()==MessageType.FIRST){
-            RespRoomDto respRoomDto = chatRoomService.getChatRoomInfo(chatMessageDto.getRoom_id());
+            RespRoomDto respRoomDto = chatRoomService.getChatRoomInfo(chatMessageDto.getRoom_id()); // 채팅방 무조건 있다고 신뢰
             /**
              * 상대방 userid 찾기
              *  if 인덱스 0 이 보낸사람id랑 다르면 0이 상대방 userid, 보낸사람이랑 같으면 1이 상대방 userid

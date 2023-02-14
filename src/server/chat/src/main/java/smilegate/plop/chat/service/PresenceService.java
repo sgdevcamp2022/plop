@@ -32,7 +32,7 @@ public class PresenceService {
         try{
             return presenceProxy.offlineUsers(new RequestUsers(members));
         }catch (Exception ex){ // ConnectException
-            log.error("ConnectException - 오프라인유저 요청실패: {}",ex.getMessage());
+            log.warn("ConnectException - 접속상태 서버 off: {}", ex.getMessage());
             return new ResponsePresenceUsers(new ArrayList<>());
         }
     }

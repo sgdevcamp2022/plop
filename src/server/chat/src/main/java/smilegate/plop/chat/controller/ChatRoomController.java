@@ -48,7 +48,7 @@ public class ChatRoomController {
     @PostMapping("/v1/dm-creation")
     public ResponseEntity<RespRoomDto> dmCreation(@RequestHeader("Authorization") String jwt, @RequestBody ReqDmDto reqDmDto){
         if(reqDmDto.getMessage_to() == null || reqDmDto.getMessage_to().equals("")) {
-            log.info("ErrorCode: {}","DM_MEMBER_ERROR");
+            log.error("dmCreation, Message={}, ErrorCode: {},","채팅방이 없거나 멤버가 없음",ErrorCode.DM_MEMBER_ERROR);
             throw new CustomAPIException(ErrorCode.DM_MEMBER_ERROR, "상대방id가 없음");
         }
 
@@ -72,14 +72,14 @@ public class ChatRoomController {
 
     @Operation(summary = "그룹 채팅방에 멤버 초대", responses = {
             @ApiResponse(responseCode = "200", description = "생성 성공", content = @Content(schema = @Schema(implementation = ReqInviteDto.class))),
-            @ApiResponse(responseCode = "200", description = "채팅방이 없거나 멤버가 없음", content = @Content(schema = @Schema(implementation = ReqInviteDto.class))) })
+            @ApiResponse(responseCode = "400", description = "채팅방이 없거나 멤버가 없음", content = @Content(schema = @Schema(implementation = ReqInviteDto.class))) })
     @PostMapping("/v1/invitation")
     public ResponseEntity<APIMessage> groupInvitation(@RequestBody ReqInviteDto reqInviteDto){
         if(chatRoomMongoService.inviteMembers(reqInviteDto)){
-            log.info("Error: {}","채팅방이 없거나 멤버가 없음");
+            log.error("groupInvitation, Message={}","채팅방이 없거나 멤버가 없음");
             return new ResponseEntity<>(new APIMessage(APIMessage.ResultEnum.success,reqInviteDto),HttpStatus.OK);
         }
-        return new ResponseEntity<>(new APIMessage(APIMessage.ResultEnum.failed,reqInviteDto),HttpStatus.OK);
+        return new ResponseEntity<>(new APIMessage(APIMessage.ResultEnum.failed,reqInviteDto),HttpStatus.BAD_REQUEST);
     }
 
     @Operation(summary = "채팅방 리스트 조회", description = "나의 채팅방 리스트 조회", responses = {
@@ -107,9 +107,9 @@ public class ChatRoomController {
             }}), HttpStatus.OK);
         }
         return new ResponseEntity<>(new APIMessage(APIMessage.ResultEnum.failed, new HashMap<String,String>() {{
-            log.info("채팅방 나가기 실패: roomid: {}, userid: {}", roomId, userId);
+            log.error("outOfTheRoom, 채팅방 나가기 실패 roomid: {}, userid: {}", roomId, userId);
             put("room_id",roomId);
-        }}), HttpStatus.OK);
+        }}), HttpStatus.BAD_REQUEST);
     }
 
     @Operation(summary = "채팅방 정보", description = "하나의 채팅방 정보를 조회", responses = {
