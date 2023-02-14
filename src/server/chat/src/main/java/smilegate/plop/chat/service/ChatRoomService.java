@@ -1,6 +1,5 @@
 package smilegate.plop.chat.service;
 
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import smilegate.plop.chat.domain.chat.ChatMessageRepository;
@@ -130,12 +129,12 @@ public class ChatRoomService {
 
     public RespRoomDto getChatRoomInfo(String roomId) {
         RoomCollection roomCollection = roomRepository.findByRoomId(roomId).orElseThrow(
-                ()-> {
-                    log.info("ErrorCode: {}, roomid: {}","ROOM_NOT_FOUND_ERROR", roomId);
-                    throw new CustomAPIException(ErrorCode.ROOM_NOT_FOUND_ERROR, "채팅방이 없음");
-                }
-        );
+                ()-> new CustomAPIException(ErrorCode.ROOM_NOT_FOUND_ERROR, "채팅방이 없음-"+roomId));
         return convertEntityToDto(roomCollection);
+    }
+
+    public boolean existsRoom(String roomId){
+        return roomRepository.existsByRoomId(roomId);
     }
 
     private RespRoomDto convertEntityToDto(RoomCollection roomCollection) {

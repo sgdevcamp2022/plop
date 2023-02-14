@@ -3,6 +3,8 @@ package smilegate.plop.chat.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
 
 @Schema(description = "채팅메시지")
@@ -11,11 +13,15 @@ import java.time.LocalDateTime;
 @ToString
 @NoArgsConstructor
 public class ChatMessageDto {
+    @Schema(description = "메시지 타입")
     private MessageType message_type;
+    @NotEmpty
     @Schema(description = "채팅방 id")
     private String room_id;
+    @NotEmpty
     @Schema(description = "보낸 유저 id")
     private String sender_id;
+    @NotBlank
     @Schema(description = "내용")
     private String content;
     private String message_id;

@@ -67,4 +67,8 @@ public class ChatMessageService {
                 .build();
     }
 
+    public void deleteChat(String id){
+        chatMessageRepository.deleteById(id);
+    }
+
 }
