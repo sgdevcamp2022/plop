@@ -3,7 +3,7 @@ spring:
     mongodb:
       uri: mongodb+srv://plop:smilegateplop@mycluster.xcoh78v.mongodb.net/plop?retryWrites=true&w=majority
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: host.docker.internal:9092
     chat-consumer:
       group-id: chat-group
     room-consumer:
@@ -15,7 +15,7 @@ kafka:
 
 token:
   # 1분
-  access_expired_time: 6000000
+  access_expired_time: 60000000
   secret_key: plip
   # 1시간
   refresh_expired_time: 3600000
