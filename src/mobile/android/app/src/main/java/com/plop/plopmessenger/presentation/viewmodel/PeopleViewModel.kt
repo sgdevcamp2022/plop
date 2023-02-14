@@ -26,6 +26,7 @@ class PeopleViewModel @Inject constructor(
 
     init {
         getFriendList()
+        getFriendLocalList()
         getFriendResponseList()
     }
 
@@ -103,6 +104,21 @@ class PeopleViewModel @Inject constructor(
     }
 
     private fun getFriendList() {
+        viewModelScope.launch {
+            friendUseCase.getRemoteFriendListUseCase().collect() { result ->
+                when(result) {
+                    is Resource.Success -> {
+
+                    }
+                    else -> {
+                        Log.d("GetRemoteFriendList", "error")
+                    }
+                }
+            }
+        }
+    }
+
+    private fun getFriendLocalList() {
         viewModelScope.launch {
             friendUseCase.getFriendListUseCase().collect() { result ->
                 when (result) {
