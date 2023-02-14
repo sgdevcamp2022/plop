@@ -5,7 +5,7 @@ import com.plop.plopmessenger.data.local.entity.Member as MemberEntity
 import java.time.LocalDateTime
 
 data class Member(
-    val enteredAt: LocalDateTime,
+    val enteredAt: String,
     val lastReadMsgId: String?,
     val userId: String
 )

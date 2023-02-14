@@ -31,6 +31,7 @@ import dagger.hilt.android.internal.Contexts.getApplication
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.update
@@ -58,15 +59,8 @@ class ChatViewModel @Inject constructor(
     init {
         if(!chatState.value.chatroomId.isNullOrBlank()){
             viewModelScope.launch {
-                launch { getChatRoomNewMessage() }.join()
+                getChatRoomNewMessage()
                 getMessageList()
-                getFirstMessage()
-                getChatroomInfo()
-            }
-        } else {
-            /** 내가 만든 새 채팅방에 들어갔을 경우 **/
-            viewModelScope.launch {
-                launch { getChatRoomNewId() }.join()
                 getFirstMessage()
                 getChatroomInfo()
             }
@@ -75,12 +69,24 @@ class ChatViewModel @Inject constructor(
         loadImage()
     }
 
-    fun getChatRoomNewId() {
-        /** 채팅방 번호 얻고, 그걸 room 에다가 넣고, 최초 메세지를 넣는다.**/
+    suspend fun getDmChatRoomNewId(people: People) {
+        chatRoomUseCase.createDmChatRoomUseCase(people).collect() { result ->
+            when(result) {
+                is Resource.Success -> {
+                    chatState.update { it.copy(chatroomId = result.data) }
+                    getMessageList()
+                    getFirstMessage()
+                    getChatroomInfo()
+                } else -> {
+                    Log.d("GetDmChatRoomNewId", result.message.toString())
+                }
+            }
+        }
     }
 
-    fun getChatRoomNewMessage() {
+    suspend fun getChatRoomNewMessage() {
         /** 서버와 DB 동기화 작업 **/
+
     }
 
     fun getMessageList() {
@@ -126,13 +132,12 @@ class ChatViewModel @Inject constructor(
     private fun getFirstMessage() {
         viewModelScope.launch {
             messageUseCase.getFirstMessageUseCase(chatState.value.chatroomId!!).collect() { result ->
-                Log.d("가희", "ㅁㄴㅇㄹ")
                 when (result) {
                     is Resource.Success -> {
                         if(result.data != null && !chatState.value.messages.contains(result.data) ) {
                             chatState.update {
                                 it.copy(
-                                    messages = listOf(result.data) + it.messages
+                                    messages = it.messages + result.data
                                 )
                             }
                         }else{
@@ -227,6 +232,8 @@ class ChatViewModel @Inject constructor(
                                 chatRoomType = ChatRoomType.DM
                                 )
                             }
+                            getDmChatRoomNewId(people.first())
+
                         }else {
                             chatState.update { it.copy(chatroomId = result.data) }
                             getMessageList()

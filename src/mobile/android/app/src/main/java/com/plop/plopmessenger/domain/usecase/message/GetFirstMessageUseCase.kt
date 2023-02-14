@@ -13,11 +13,12 @@ import javax.inject.Inject
 class GetFirstMessageUseCase @Inject constructor(
     private val messageRepository: MessageRepository
 ) {
-    operator fun invoke(chatroomId: String): Flow<Resource<Message>> = flow {
+    operator fun invoke(chatroomId: String): Flow<Resource<Message?>> = flow {
         try {
             emit(Resource.Loading())
             messageRepository.loadChatFirstMessage(chatroomId).collect() { result ->
-                emit(Resource.Success(result.toMessage()))
+                if(result == null) emit(Resource.Success(null))
+                else emit(Resource.Success(result.toMessage()))
             }
         } catch (e: IOException) {
             Log.d("GetFirstMessageListUseCase", "IOException")

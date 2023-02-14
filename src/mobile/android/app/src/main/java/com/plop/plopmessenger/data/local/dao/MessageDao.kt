@@ -14,7 +14,7 @@ interface MessageDao {
     @Query(
         "SELECT * FROM messages WHERE chatroom_id = :chatroomId ORDER BY created_at DESC LIMIT 1 "
     )
-    fun loadChatFirstMessage(chatroomId: String): Flow<Message>
+    fun loadChatFirstMessage(chatroomId: String): Flow<Message?>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertMessage(message: Message)

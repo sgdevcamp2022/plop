@@ -7,10 +7,10 @@ import java.time.LocalDateTime
 
 data class PostDmRoomResponse(
     @SerializedName("created_at")
-    val createdAt: LocalDateTime,
+    val createdAt: String,
     val members: List<Member>,
     @SerializedName("room_id")
     val roomId: String,
-    val title: Any,
+    val title: String,
     val type: String
 )

@@ -19,7 +19,7 @@ class GetRemoteFriendListUseCase @Inject constructor(
                 200 -> {
                    if(response.body() != null) {
                        friendRepository.insertAllFriend(
-                           response.body()!!.profiles.map { it.toFriend() }
+                           response.body()?.profiles?.map { it.toFriend() }?: emptyList()
                        )
                    }
                     Log.d("GetRemoteFriendListUseCase", "성공..성공이요..")
@@ -30,7 +30,7 @@ class GetRemoteFriendListUseCase @Inject constructor(
                 }
             }
         }catch (e: Exception) {
-            Log.d("GetRemoteFriendListUseCase", "error")
+            Log.d("GetRemoteFriendListUseCase", "error ${e.message}")
             emit(Resource.Error("error"))
         }
     }
