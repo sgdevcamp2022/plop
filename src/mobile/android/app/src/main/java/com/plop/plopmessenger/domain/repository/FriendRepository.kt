@@ -1,6 +1,8 @@
 package com.plop.plopmessenger.domain.repository
 
+import com.plop.plopmessenger.data.dto.request.user.DeleteFriendRejectRequest
 import com.plop.plopmessenger.data.dto.request.user.DeleteFriendRequestRequest
+import com.plop.plopmessenger.data.dto.request.user.PostFriendAcceptRequest
 import com.plop.plopmessenger.data.dto.request.user.PostFriendRequest
 import com.plop.plopmessenger.data.dto.response.user.*
 import com.plop.plopmessenger.data.local.entity.Friend
@@ -24,5 +26,6 @@ interface FriendRepository {
     suspend fun getFriendResponseList(): Response<GetFriendResponseListResponse>
     suspend fun deleteFriendRequest(deleteFriendRequestRequest: DeleteFriendRequestRequest): Response<DeleteFriendRequestResponse>
     suspend fun deleteFriend(friendid: String): Response<DeleteFriendResponse>
-    suspend fun putFriendRequest(friendid: String, status: Boolean): Response<PutFriendResponse>
+    suspend fun postFriendAcceptRequest(postFriendAcceptRequest: PostFriendAcceptRequest): Response<PostFriendAcceptResponse>
+    suspend fun deleteFriendRejectRequest(deleteFriendRejectRequest: DeleteFriendRejectRequest): Response<DeleteFriendRejectResponse>
 }

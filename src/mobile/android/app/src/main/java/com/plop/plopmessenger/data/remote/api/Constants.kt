@@ -29,7 +29,8 @@ object Constants {
     const val POST_FRIEND_REQUEST = "/user/v1/friend/request"
     const val DELETE_FRIEND_REQUEST = "/user/v1/friend/request"
     const val DELETE_FRIEND = "/user/v1/friend/{friendid}"
-    const val PUT_FRIEND_REQUEST = "/user/v1/friend/{friendid}"
+    const val POST_FRIEND_REQUEST_ACCEPT = "/user/v1/friend/response"
+    const val DELETE_FRIEND_REQUEST_REJECT = "/user/v1/friend/response"
 
     const val PAGE_SIZE = 10
 }

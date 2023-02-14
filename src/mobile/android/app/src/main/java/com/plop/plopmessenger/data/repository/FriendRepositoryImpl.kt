@@ -1,6 +1,8 @@
 package com.plop.plopmessenger.data.repository
 
+import com.plop.plopmessenger.data.dto.request.user.DeleteFriendRejectRequest
 import com.plop.plopmessenger.data.dto.request.user.DeleteFriendRequestRequest
+import com.plop.plopmessenger.data.dto.request.user.PostFriendAcceptRequest
 import com.plop.plopmessenger.data.dto.request.user.PostFriendRequest
 import com.plop.plopmessenger.data.dto.response.user.*
 import com.plop.plopmessenger.data.local.dao.FriendDao
@@ -71,10 +73,11 @@ class FriendRepositoryImpl @Inject constructor(
         return friendApi.deleteFriend(friendid)
     }
 
-    override suspend fun putFriendRequest(
-        friendid: String,
-        status: Boolean
-    ): Response<PutFriendResponse> {
-        return friendApi.putFriendRequest(friendid, status)
+    override suspend fun postFriendAcceptRequest(postFriendAcceptRequest: PostFriendAcceptRequest): Response<PostFriendAcceptResponse> {
+        return friendApi.postFriendRequestAccept(postFriendAcceptRequest)
+    }
+
+    override suspend fun deleteFriendRejectRequest(deleteFriendRejectRequest: DeleteFriendRejectRequest): Response<DeleteFriendRejectResponse> {
+        return friendApi.deleteFriendRequestReject(deleteFriendRejectRequest)
     }
 }
