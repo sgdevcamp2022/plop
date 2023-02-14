@@ -11,6 +11,7 @@ import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 import smilegate.plop.chat.dto.ChatMessageDto;
 import smilegate.plop.chat.dto.response.RespRoomDto;
+import smilegate.plop.chat.service.ChatMessageService;
 
 // 토픽에 메시지전송(이벤트 발행)
 @Slf4j
@@ -24,17 +25,19 @@ public class Producers {
     private final KafkaTemplate<String, RespRoomDto> roomKafkaTemplate;
     @Value("${kafka.topic.room-name}")
     private String topicRoomName;
+    private ChatMessageService chatMessageService;
 
     public void sendMessage(ChatMessageDto chatMessageDto){
         ListenableFuture<SendResult<String, ChatMessageDto>> listenable = kafkaTemplate.send(topicChatName,chatMessageDto); // 보낼 메시지 포맷 변경 해야됨
         listenable.addCallback(new ListenableFutureCallback<SendResult<String, ChatMessageDto>>() {
             @Override
             public void onSuccess(SendResult<String, ChatMessageDto> result) {
-                log.info("Sent message=[" + chatMessageDto.getContent() + "] with offset=[" + result.getRecordMetadata().offset() + "]");
             }
             @Override
             public void onFailure(Throwable ex) {
-                log.info("Unable to send message=[" + chatMessageDto.getContent() + "] due to : " + ex.getMessage());
+                log.error("Unable to send message=[" + chatMessageDto.getContent() + "] due to : " + ex.getMessage());
+                chatMessageService.deleteChat(chatMessageDto.getMessage_id());
+                log.info("메시지 삭제= {}",chatMessageDto.getMessage_id());
             }
         });
     }
