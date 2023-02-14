@@ -45,7 +45,7 @@ interface ChatApi {
         @Path("roomid") roomid: String
     ): Response<GetHistoryMessageResponse>
 
-    @GET(Constants.GET_CHATROOM_INFO)
+    @GET("${Constants.GET_CHATROOM_INFO}/{roomid}")
     suspend fun getChatRoomInfo(
         @Path("roomid") roomid: String
     ): Response<GetChatRoomInfoResponse>

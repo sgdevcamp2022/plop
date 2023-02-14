@@ -21,10 +21,10 @@ interface MemberDao {
     )
     fun loadChatMemberId(chatroomId: String): Flow<List<Member>>
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMember(member: Member)
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAllMember(vararg members: Member)
 
     @Update

@@ -10,5 +10,6 @@ data class GetChatRoomInfoResponse(
     @SerializedName("room_id")
     val roomId: String,
     val title: String,
-    val type: String
+    val type: String,
+    val createdAt: String
 )

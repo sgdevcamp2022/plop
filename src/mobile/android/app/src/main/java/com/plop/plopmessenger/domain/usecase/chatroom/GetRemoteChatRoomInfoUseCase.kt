@@ -17,15 +17,13 @@ class GetRemoteChatRoomInfoUseCase @Inject constructor(
     operator fun invoke(roomId: String): Flow<Resource<Boolean>> = flow {
         try {
             val response = chatRoomRepository.getChatRoomInfo(roomId)
-            when(response.code()) {
-                200 -> {
-                    val chatroom = response.body()
-                    memberRepository.insertAllMember(chatroom!!.members.map { it.toMember(roomId) })
-                    emit(Resource.Success(true))
-                }
-                else -> {
-                    Log.d("GetRemoteChatRoomInfoUseCase", "error")
-                }
+            if(response.isSuccessful) {
+                val chatroom = response.body()
+                memberRepository.insertAllMember(chatroom!!.members.map { it.toMember(roomId) })
+                emit(Resource.Success(true))
+            } else {
+                Log.d("GetRemoteChatRoomInfoUseCase", "error")
+                emit(Resource.Error("error"))
             }
         } catch (e: Exception){
             Log.d("GetRemoteChatRoomInfoUseCase", e.message.toString())

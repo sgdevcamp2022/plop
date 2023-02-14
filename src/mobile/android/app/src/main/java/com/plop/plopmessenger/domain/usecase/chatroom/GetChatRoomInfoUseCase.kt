@@ -11,11 +11,12 @@ import java.io.IOException
 import javax.inject.Inject
 
 class GetChatRoomInfoUseCase @Inject constructor(
-    private val chatRoomRepository: ChatRoomRepository
+    private val chatRoomRepository: ChatRoomRepository,
+    private val getRemoteChatRoomInfoUseCase: GetRemoteChatRoomInfoUseCase
 ) {
     operator fun invoke(chatRoomId: String): Flow<Resource<ChatRoom>> = flow {
         try {
-            emit(Resource.Loading())
+            getRemoteChatRoomInfoUseCase(chatRoomId).collect(){}
             chatRoomRepository.loadChatRoomAndMemberById(chatRoomId).collect(){ result ->
                 emit(Resource.Success(result.toChatRoom()))
             }
