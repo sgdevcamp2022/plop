@@ -19,7 +19,7 @@ object Constants {
     const val POST_EMAIL_VERIFY = "/auth/v1/email/verify"
     const val DELETE_WITHDRAWAL = "/auth/v1/withdrawal"
     const val POST_PASSWORD_NEW = "/auth/v1/password/new"
-    const val GET_USER_PROFILE = "/user/v1/profile/{email}"
+    const val GET_USER_PROFILE = "/user/v1/profile"
     const val PUT_USER_PROFILE = "/user/v1/profile"
     const val GET_SEARCH_USER = "/user/v1/search"
 

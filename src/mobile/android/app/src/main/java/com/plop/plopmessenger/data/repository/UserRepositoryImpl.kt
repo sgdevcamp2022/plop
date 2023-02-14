@@ -120,8 +120,8 @@ class UserRepositoryImpl @Inject constructor(
         return userApi.postPasswordNew(postPasswordNewRequest)
     }
 
-    override suspend fun getUserProfile(email: String): Response<GetUserProfileResponse> {
-        return userApi.getUserProfile(email = email)
+    override suspend fun getUserProfile(target: String): Response<GetUserProfileResponse> {
+        return userApi.getUserProfile(target)
     }
 
     override suspend fun putUserProfile(putUserProfileRequest: PutUserProfileRequest): Response<PutUserProfileResponse> {

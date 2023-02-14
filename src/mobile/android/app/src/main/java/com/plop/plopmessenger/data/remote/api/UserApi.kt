@@ -49,7 +49,7 @@ interface UserApi {
 
     @GET(GET_USER_PROFILE)
     suspend fun getUserProfile(
-        @Query("email") email: String
+        @Query("target") target: String
     ): Response<GetUserProfileResponse>
 
     @PUT(PUT_USER_PROFILE)
