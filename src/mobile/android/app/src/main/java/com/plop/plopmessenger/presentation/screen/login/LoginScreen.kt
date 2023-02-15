@@ -106,6 +106,7 @@ fun LoginScreen(
             placeholder = stringResource(id = R.string.initial_password_et),
             onDone = {
                 focusManager.clearFocus()
+                viewModel.login()
                 navigateToMain()
             }
         )

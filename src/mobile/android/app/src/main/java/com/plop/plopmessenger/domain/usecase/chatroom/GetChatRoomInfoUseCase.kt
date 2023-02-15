@@ -16,16 +16,14 @@ class GetChatRoomInfoUseCase @Inject constructor(
     private val getRemoteChatRoomInfoUseCase: GetRemoteChatRoomInfoUseCase
 ) {
     suspend operator fun invoke(chatRoomId: String): Resource<ChatRoom> {
-        try {
-            withContext(Dispatchers.IO){
-                getRemoteChatRoomInfoUseCase(chatRoomId).collect(){}
+        return withContext(Dispatchers.IO) {
+            try {
+                getRemoteChatRoomInfoUseCase(chatRoomId)
                 Resource.Success(chatRoomRepository.loadChatRoomAndMemberById(chatRoomId).toChatRoom())
+            } catch (e: Exception) {
+                Log.d("GetChatRoomInfoUseCase", e.message.toString())
+                Resource.Error(e.message.toString())
             }
-        } catch (e: IOException) {
-            Log.d("GetChatRoomInfoUseCase", "IOException")
-        } catch (e: Exception) {
-            Log.d("GetChatRoomInfoUseCase", e.message.toString())
         }
-        return Resource.Error("")
     }
 }
