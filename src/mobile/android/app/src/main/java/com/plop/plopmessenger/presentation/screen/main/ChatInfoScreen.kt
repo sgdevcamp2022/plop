@@ -73,7 +73,7 @@ fun ChatInfoScreen(
         )
 
         Text(
-            text = "title",
+            text = state.title,
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             maxLines = 1,
