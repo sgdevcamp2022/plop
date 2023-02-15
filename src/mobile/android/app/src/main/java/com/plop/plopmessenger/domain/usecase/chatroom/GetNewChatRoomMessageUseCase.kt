@@ -22,8 +22,7 @@ class GetNewChatRoomMessageUseCase @Inject constructor(
                 return if(response.isSuccessful) {
                     val newMessage = response.body()
                     messageRepository.insertAllMessage(
-                        newMessage!!.getHistoryMessageDto.map {
-                            it.toMessage() }
+                        newMessage!!.getHistoryMessageDto.map { it.toMessage() }
                     )
                     Resource.Success(true)
                 } else {

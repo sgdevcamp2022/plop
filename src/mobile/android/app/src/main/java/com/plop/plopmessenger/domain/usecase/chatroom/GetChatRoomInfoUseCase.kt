@@ -5,6 +5,7 @@ import com.plop.plopmessenger.domain.model.ChatRoom
 import com.plop.plopmessenger.domain.model.toChatRoom
 import com.plop.plopmessenger.domain.repository.ChatRoomRepository
 import com.plop.plopmessenger.domain.util.Resource
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import java.io.IOException
@@ -14,16 +15,17 @@ class GetChatRoomInfoUseCase @Inject constructor(
     private val chatRoomRepository: ChatRoomRepository,
     private val getRemoteChatRoomInfoUseCase: GetRemoteChatRoomInfoUseCase
 ) {
-    operator fun invoke(chatRoomId: String): Flow<Resource<ChatRoom>> = flow {
+    suspend operator fun invoke(chatRoomId: String): Resource<ChatRoom> {
         try {
-            getRemoteChatRoomInfoUseCase(chatRoomId).collect(){}
-            chatRoomRepository.loadChatRoomAndMemberById(chatRoomId).collect(){ result ->
-                emit(Resource.Success(result.toChatRoom()))
+            withContext(Dispatchers.IO){
+                getRemoteChatRoomInfoUseCase(chatRoomId).collect(){}
+                Resource.Success(chatRoomRepository.loadChatRoomAndMemberById(chatRoomId).toChatRoom())
             }
         } catch (e: IOException) {
             Log.d("GetChatRoomInfoUseCase", "IOException")
         } catch (e: Exception) {
             Log.d("GetChatRoomInfoUseCase", e.message.toString())
         }
+        return Resource.Error("")
     }
 }

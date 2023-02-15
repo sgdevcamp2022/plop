@@ -96,26 +96,25 @@ class AddChatMemberViewModel @Inject constructor(
 
     private fun getChatroomInfo() {
         viewModelScope.launch {
-            chatRoomUseCase.getChatRoomInfoUseCase(addChatMemberState.value.chatId!!).collect { result ->
-                when (result) {
-                    is Resource.Success -> {
-                        addChatMemberState.update {
-                            it.copy(
-                                chatRoomType = result.data?.type ?: ChatRoomType.DM,
-                                isLoading = false,
-                                members = result.data?.members ?: emptyList()
-                            )
-                        }
+            val result = chatRoomUseCase.getChatRoomInfoUseCase(addChatMemberState.value.chatId!!)
+            when (result) {
+                is Resource.Success -> {
+                    addChatMemberState.update {
+                        it.copy(
+                            chatRoomType = result.data?.type ?: ChatRoomType.DM,
+                            isLoading = false,
+                            members = result.data?.members ?: emptyList()
+                        )
                     }
-                    is Resource.Loading -> {
-                        addChatMemberState.update {
-                            it.copy(isLoading = true)
-                        }
+                }
+                is Resource.Loading -> {
+                    addChatMemberState.update {
+                        it.copy(isLoading = true)
                     }
-                    is Resource.Error -> {
-                        addChatMemberState.update {
-                            it.copy(isLoading = false)
-                        }
+                }
+                is Resource.Error -> {
+                    addChatMemberState.update {
+                        it.copy(isLoading = false)
                     }
                 }
             }

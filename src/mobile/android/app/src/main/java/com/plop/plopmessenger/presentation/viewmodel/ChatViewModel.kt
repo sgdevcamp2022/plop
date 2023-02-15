@@ -51,8 +51,8 @@ class ChatViewModel @Inject constructor(
         if(!chatState.value.chatroomId.isNullOrBlank()){
             viewModelScope.launch {
                 getFirstMessage()
-                getChatRoomNewMessage()
                 getChatroomInfo()
+                getChatRoomNewMessage()
                 getMessageList()
             }
         }
@@ -180,27 +180,26 @@ class ChatViewModel @Inject constructor(
     }
 
     private suspend fun getChatroomInfo() {
-        chatRoomUseCase.getChatRoomInfoUseCase(chatState.value.chatroomId!!).collect { result ->
-            when (result) {
-                is Resource.Success -> {
-                    chatState.update {
-                        it.copy(
-                            chatRoomType = result.data?.type ?: ChatRoomType.DM,
-                            isLoading = false,
-                            members = result.data?.members?.map { it.memberId to it }?.toMap() ?: mapOf(),
-                            title = result.data?.title ?: ""
-                        )
-                    }
+        val result = chatRoomUseCase.getChatRoomInfoUseCase(chatState.value.chatroomId!!)
+        when (result) {
+            is Resource.Success -> {
+                chatState.update {
+                    it.copy(
+                        chatRoomType = result.data?.type ?: ChatRoomType.DM,
+                        isLoading = false,
+                        members = result.data?.members?.map { it.memberId to it }?.toMap() ?: mapOf(),
+                        title = result.data?.title ?: ""
+                    )
                 }
-                is Resource.Loading -> {
-                    chatState.update {
-                        it.copy(isLoading = true)
-                    }
+            }
+            is Resource.Loading -> {
+                chatState.update {
+                    it.copy(isLoading = true)
                 }
-                is Resource.Error -> {
-                    chatState.update {
-                        it.copy(isLoading = false)
-                    }
+            }
+            is Resource.Error -> {
+                chatState.update {
+                    it.copy(isLoading = false)
                 }
             }
         }

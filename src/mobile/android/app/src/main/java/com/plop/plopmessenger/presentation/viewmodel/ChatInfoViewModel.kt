@@ -34,27 +34,26 @@ class ChatInfoViewModel @Inject constructor(
 
     private fun getLocalChatroomInfo() {
         viewModelScope.launch {
-            chatRoomUseCase.getChatRoomInfoUseCase(chatInfoState.value.chatroomId!!).collect { result ->
-                when (result) {
-                    is Resource.Success -> {
-                        chatInfoState.update {
-                            it.copy(
-                                title = result.data?.title?: "",
-                                members = result.data?.members?: emptyList(),
-                                roomType = result.data?.type?: ChatRoomType.DM,
-                                isLoading = false
-                            )
-                        }
+            val result = chatRoomUseCase.getChatRoomInfoUseCase(chatInfoState.value.chatroomId!!)
+            when (result) {
+                is Resource.Success -> {
+                    chatInfoState.update {
+                        it.copy(
+                            title = result.data?.title?: "",
+                            members = result.data?.members?: emptyList(),
+                            roomType = result.data?.type?: ChatRoomType.DM,
+                            isLoading = false
+                        )
                     }
-                    is Resource.Loading -> {
-                        chatInfoState.update {
-                            it.copy(isLoading = true)
-                        }
+                }
+                is Resource.Loading -> {
+                    chatInfoState.update {
+                        it.copy(isLoading = true)
                     }
-                    is Resource.Error -> {
-                        chatInfoState.update {
-                            it.copy(isLoading = false)
-                        }
+                }
+                is Resource.Error -> {
+                    chatInfoState.update {
+                        it.copy(isLoading = false)
                     }
                 }
             }
