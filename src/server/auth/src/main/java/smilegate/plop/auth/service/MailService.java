@@ -16,8 +16,7 @@ import smilegate.plop.auth.dto.request.RequestEmailVerification;
 import smilegate.plop.auth.dto.request.RequestVerificationCode;
 import smilegate.plop.auth.dto.response.ErrorResponseDto;
 import smilegate.plop.auth.dto.response.ResponseDto;
-import smilegate.plop.auth.exception.ErrorCode;
-import smilegate.plop.auth.exception.WithdrawalUserException;
+import smilegate.plop.auth.exception.*;
 import smilegate.plop.auth.security.JwtTokenProvider;
 
 import javax.mail.Message;
@@ -87,28 +86,24 @@ public class MailService {
     public boolean verifyCode(RequestVerificationCode verificationCode) {
         log.error(verificationCode.toString());
         if(!checkInfo(verificationCode))
-            throw new EntityNotFoundException("정보가 일치하지 않습니다.");
+            throw new UserNotFoundException("유저 ID와 유저 Email이 일치하지 않습니다.");
         UserEntity userEntity = userRepository.findByEmail(verificationCode.getEmail());
         if (userEntity == null)
-            throw new EntityNotFoundException(verificationCode.getEmail());
+            throw new UserNotFoundException(String.format("[%s] is Not Found", userEntity.getUserId()));
         if (userEntity.getState() == 9)
-            try {
-                throw new WithdrawalUserException("user state is 9");
-            } catch (WithdrawalUserException e) {
-                return false;
-            }
+            throw new WithdrawalUserException("user state is 9");
         //state :9 => 회원 탈퇴, 실제 삭제은 하지 않음, 탈퇴 후 ~ 기간 이후에 삭제하는 방식?
         userEntity.setState(1);
         userRepository.save(userEntity);
 
         String savedVerificationCode = redisService.getValues("verify-"+verificationCode.getEmail());
         if (savedVerificationCode == null) {
-            return false;
+            throw new RedisNullException(verificationCode.getEmail()+" there is no verification code request or verification code is expired");
         }
         else if (savedVerificationCode.equals(verificationCode.getVerificationCode()))
             return true;
         else
-            return false;
+            throw new IncorrectVerificationCodeException(verificationCode+" is not correct");
     }
 
     public MimeMessage mailHelper(RequestEmailVerification info, String subject,String authNum) {

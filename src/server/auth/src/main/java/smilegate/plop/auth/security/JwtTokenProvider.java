@@ -4,7 +4,7 @@ import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import smilegate.plop.auth.dto.UserDto;
-import smilegate.plop.auth.exception.JwtTokenIncorrectStructureException;
+import smilegate.plop.auth.exception.NotAccessTokenException;
 import smilegate.plop.auth.model.JwtUser;
 import smilegate.plop.auth.service.RedisService;
 
@@ -62,16 +62,16 @@ public class JwtTokenProvider {
     }
 
     public JwtUser getUserInfo(String token) {
+        Map<String, Object> payloads = Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
         try {
-            Map<String, Object> payloads = Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
             JwtUser user = JwtUser.builder()
                     .email(payloads.get("email").toString())
                     .userId(payloads.get("userId").toString())
                     .nickname(payloads.get("nickname").toString())
                     .build();
             return user;
-        } catch (JwtTokenIncorrectStructureException jwtTokenIncorrectStructureException) {
-            throw jwtTokenIncorrectStructureException;
+        } catch (NullPointerException e) {
+            throw new NotAccessTokenException(token + " is not access token");
         }
     }
 
