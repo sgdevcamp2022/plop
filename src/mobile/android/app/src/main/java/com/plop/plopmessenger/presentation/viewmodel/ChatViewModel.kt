@@ -143,7 +143,7 @@ class ChatViewModel @Inject constructor(
                         if(result.data != null && !chatState.value.messages.contains(result.data) ) {
                             chatState.update {
                                 it.copy(
-                                    messages = it.messages + result.data
+                                    messages = listOf(result.data) + it.messages
                                 )
                             }
                         }else{
@@ -361,6 +361,7 @@ class ChatViewModel @Inject constructor(
                     userId = chatState.value.userId
                 )
             }
+            chatState.update { it.copy(query = TextFieldValue("")) }
         }
     }
 
