@@ -13,8 +13,8 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://plop-rds.cyjccp4psnuz.ap-northeast-2.rds.amazonaws.com:3306/plop?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&serverTimezone=Asia/Seoul
-    username: plop_admin
-    password: password
+    username: ${PLOP_DB_USER} # plop-db-user
+    password: ${PLOP_DB_PWD} #plop-db-pwd
 eureka:
   instance:
     instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
