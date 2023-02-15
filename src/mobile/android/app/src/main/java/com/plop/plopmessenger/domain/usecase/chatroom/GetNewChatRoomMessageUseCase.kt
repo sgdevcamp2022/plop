@@ -13,36 +13,26 @@ class GetNewChatRoomMessageUseCase @Inject constructor(
     private val chatRoomRepository: ChatRoomRepository,
     private val messageRepository: MessageRepository
 ) {
-    operator fun invoke(roomid: String, readMsgId: String): Flow<Resource<Boolean>> = flow {
+    suspend operator fun invoke(roomid: String, readMsgId: String): Resource<Boolean> {
         try {
             val response = chatRoomRepository.getChatroomNewMessage(roomid, readMsgId)
-            when(response.code()){
-                200 -> {
-                    val newMessage = response.body()
+            if(response.isSuccessful) {
+                val newMessage = response.body()
 
-                    if (newMessage?.getChatRoomNewMessageDto?.isEmpty() == false) {
-                        emit(Resource.Success(true))
-                        messageRepository.insertAllMessage(newMessage.getChatRoomNewMessageDto.map {
-                            it.toMessage()
-                        })
-                    }
+                if (newMessage?.getChatRoomNewMessageDto?.isEmpty() == false) {
+                    messageRepository.insertAllMessage(newMessage.getChatRoomNewMessageDto.map {
+                        it.toMessage()
+                    })
+                    return Resource.Success(true)
                 }
-                else -> {
-                    Log.d("GetNewChatRoomMessageUseCase", response.code().toString())
-                }
+                return Resource.Success(true)
+            } else {
+                Log.d("GetNewChatRoomMessageUseCase", "실패..실패오..")
+                return Resource.Error("error")
             }
         }catch (e: Exception) {
             Log.d("GetNewChatRoomMessageUseCase", e.message.toString())
+            return Resource.Error(e.message.toString())
         }
-    }
-}
-
-private fun MessageTypeConverter(type: String): Int {
-    return when(type) {
-        "TEXT" -> 1
-        "IMG" -> 2
-        "VIDEO" -> 3
-        "ENTER" -> 4
-        else -> 1
     }
 }

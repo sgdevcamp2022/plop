@@ -50,10 +50,10 @@ class ChatViewModel @Inject constructor(
     init {
         if(!chatState.value.chatroomId.isNullOrBlank()){
             viewModelScope.launch {
-                getChatRoomNewMessage()
-                getMessageList()
                 getFirstMessage()
+                getChatRoomNewMessage()
                 getChatroomInfo()
+                getMessageList()
             }
         }
         getUserId()
@@ -90,9 +90,19 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    suspend fun getChatRoomNewMessage() {
-        /** 서버와 DB 동기화 작업 **/
-
+     private suspend fun getChatRoomNewMessage() {
+         viewModelScope.launch {
+             when(chatRoomUseCase.getNewChatRoomMessageUseCase(
+                 chatState.value.chatroomId!!,
+                 chatState.value.messages.first().messageId)) {
+                 is Resource.Success -> {
+                     Log.d("GetNewChatRoomNewId", "성공...성공이오..")
+                 }
+                 else -> {
+                     Log.d("GetNewChatRoomNewId", "실패..실패요..")
+                 }
+             }
+         }.join()
     }
 
     fun getMessageList() {
@@ -169,29 +179,27 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    private fun getChatroomInfo() {
-        viewModelScope.launch {
-            chatRoomUseCase.getChatRoomInfoUseCase(chatState.value.chatroomId!!).collect { result ->
-                when (result) {
-                    is Resource.Success -> {
-                        chatState.update {
-                            it.copy(
-                                chatRoomType = result.data?.type ?: ChatRoomType.DM,
-                                isLoading = false,
-                                members = result.data?.members?.map { it.memberId to it }?.toMap() ?: mapOf(),
-                                title = result.data?.title ?: ""
-                            )
-                        }
+    private suspend fun getChatroomInfo() {
+        chatRoomUseCase.getChatRoomInfoUseCase(chatState.value.chatroomId!!).collect { result ->
+            when (result) {
+                is Resource.Success -> {
+                    chatState.update {
+                        it.copy(
+                            chatRoomType = result.data?.type ?: ChatRoomType.DM,
+                            isLoading = false,
+                            members = result.data?.members?.map { it.memberId to it }?.toMap() ?: mapOf(),
+                            title = result.data?.title ?: ""
+                        )
                     }
-                    is Resource.Loading -> {
-                        chatState.update {
-                            it.copy(isLoading = true)
-                        }
+                }
+                is Resource.Loading -> {
+                    chatState.update {
+                        it.copy(isLoading = true)
                     }
-                    is Resource.Error -> {
-                        chatState.update {
-                            it.copy(isLoading = false)
-                        }
+                }
+                is Resource.Error -> {
+                    chatState.update {
+                        it.copy(isLoading = false)
                     }
                 }
             }
