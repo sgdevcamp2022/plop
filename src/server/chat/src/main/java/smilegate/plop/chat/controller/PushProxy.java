@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import smilegate.plop.chat.dto.request.RequestMessage;
 
-@FeignClient(name = "push-service")
+@FeignClient(name = "push-service", url = "localhost:8000")
 public interface PushProxy {
     @PostMapping("/push/v1/send")
     void sendNotification(@RequestBody RequestMessage message);
