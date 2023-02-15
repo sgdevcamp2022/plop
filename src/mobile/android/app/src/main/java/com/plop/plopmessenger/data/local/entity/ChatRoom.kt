@@ -3,6 +3,7 @@ package com.plop.plopmessenger.data.local.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.plop.plopmessenger.data.dto.response.ChatRoom as ChatRoomDto
 import java.time.LocalDateTime
 import java.util.*
 
@@ -22,4 +23,13 @@ data class ChatRoom(
     @ColumnInfo(name = "updated_at")
     var updatedAt: LocalDateTime,
     var type: Int
+)
+
+fun ChatRoomDto.toChatRoom() = ChatRoom(
+    chatroomId = this.roomId,
+    title = this.title?: "",
+    unread = 0,
+    content = this.lastMessage.content,
+    updatedAt = LocalDateTime.now(),
+    type = if(members.size == 1) 1 else 2
 )

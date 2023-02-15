@@ -94,7 +94,7 @@ class ChatViewModel @Inject constructor(
          viewModelScope.launch {
              when(chatRoomUseCase.getNewChatRoomMessageUseCase(
                  chatState.value.chatroomId!!,
-                 chatState.value.messages.first().messageId)) {
+                 chatState.value.messages.firstOrNull()?.messageId)) {
                  is Resource.Success -> {
                      Log.d("GetNewChatRoomNewId", "성공...성공이오..")
                  }

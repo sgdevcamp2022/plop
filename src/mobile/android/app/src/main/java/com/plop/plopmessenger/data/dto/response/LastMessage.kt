@@ -7,7 +7,7 @@ import java.time.LocalDateTime
 data class LastMessage(
     val content: String,
     @SerializedName("created_at")
-    val createdAt: LocalDateTime,
+    val createdAt: String,
     @SerializedName("message_id")
     val messageId: String,
     @SerializedName("sender_id")

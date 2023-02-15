@@ -112,7 +112,7 @@ fun ChatsScreen(
                 items(state.value.chats) {
                     ChatItem(
                         onClick = navigateToChat,
-                        chatRoom = it,
+                        chatRoom = it!!,
                         isActivate = null)
                     Spacer(modifier = Modifier.size(ChatsScreenValue.SpacerBetweenChatRooms))
                 }

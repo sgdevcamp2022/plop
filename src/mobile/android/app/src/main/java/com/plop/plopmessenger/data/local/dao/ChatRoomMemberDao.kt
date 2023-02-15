@@ -13,7 +13,7 @@ interface ChatRoomMemberImageDao {
         "SELECT * " +
                 "FROM chatroom ORDER BY chatroom.updated_at DESC "
     )
-    fun loadChatRoomAndMessage(): Flow<List<ChatRoomMemberImage>>
+    fun loadChatRoomAndMessage(): Flow<List<ChatRoomMemberImage?>>
 
     @Transaction
     @Query(

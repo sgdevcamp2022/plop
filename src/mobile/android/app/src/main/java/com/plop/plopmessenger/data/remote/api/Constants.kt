@@ -8,7 +8,7 @@ object Constants {
     const val GET_MY_ROOMS = "/chatting/room/v1/my-rooms"
     const val DELETE_CHATROOM = "/chatting/room/v1/out/{roomid}"
     const val GET_CHATROOM_NEW_MESSAGE = "/chatting/v1/new-message"
-    const val GET_CHATROOM_HISTORY = "/chatting/v1/history-message/{roomid}"
+    const val GET_CHATROOM_HISTORY = "/chatting/v1/history-message"
     const val GET_CHATROOM_INFO = "/chatting/room/v1/info"
     const val POST_MESSAGE = "/chatting/v1/message"
 

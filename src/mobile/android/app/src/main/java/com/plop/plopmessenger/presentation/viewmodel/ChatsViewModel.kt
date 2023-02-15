@@ -1,5 +1,6 @@
 package com.plop.plopmessenger.presentation.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.plop.plopmessenger.domain.model.ChatRoom
@@ -21,7 +22,22 @@ class ChatsViewModel @Inject constructor(
         private set
 
     init {
-        getLocalChatRooms()
+        viewModelScope.launch {
+            getRemoteChatRoom()
+            getLocalChatRooms()
+        }
+    }
+
+    private suspend fun getRemoteChatRoom() {
+        Log.d("getRemoteChatRoom", "실행")
+        when(chatRoomUseCase.getRemoteChatRoomUseCase()) {
+            is Resource.Success -> {
+                Log.d("getRemoteChatRoom", "성공스")
+            }
+            else -> {
+
+            }
+        }
     }
 
     private fun getLocalChatRooms() {
@@ -48,6 +64,6 @@ class ChatsViewModel @Inject constructor(
 }
 
 data class ChatsState(
-    val chats: List<ChatRoom> = emptyList(),
+    val chats: List<ChatRoom?> = emptyList(),
     val isLoading: Boolean = false
 )
