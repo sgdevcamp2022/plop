@@ -33,3 +33,16 @@ springdoc:
     doc-expansion: none
   paths-to-match:
     - /chatting/**
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - info
+          - health
+          - loggers
+          - mappings
+          - metrics
+          - shutdown
+          - prometheus
