@@ -1,9 +1,6 @@
 package com.plop.plopmessenger.domain.repository
 
-import com.plop.plopmessenger.data.dto.request.chat.DeleteChatRoomRequest
-import com.plop.plopmessenger.data.dto.request.chat.PostDmRoomRequest
-import com.plop.plopmessenger.data.dto.request.chat.PostGroupRoomRequest
-import com.plop.plopmessenger.data.dto.request.chat.PostInvitationRequest
+import com.plop.plopmessenger.data.dto.request.chat.*
 import com.plop.plopmessenger.data.dto.response.chat.*
 import com.plop.plopmessenger.data.local.dao.ChatRoomMemberImage
 import com.plop.plopmessenger.data.local.entity.ChatRoom
@@ -35,4 +32,5 @@ interface ChatRoomRepository {
     suspend fun getChatroomNewMessage(roomid: String, readMsgId: String): Response<GetChatRoomNewMessageResponse>
     suspend fun getChatroomHistory(roomid: String): Response<GetHistoryMessageResponse>
     suspend fun getChatRoomInfo(roomid: String): Response<GetChatRoomInfoResponse>
+    suspend fun postMessage(postMessageRequest: PostMessageRequest): Response<Void>
 }

@@ -1,20 +1,12 @@
 package com.plop.plopmessenger.presentation.viewmodel
 
 import android.annotation.SuppressLint
-import android.app.Application
-import android.content.ContentResolver
 import android.content.ContentUris
 import android.content.Context
-import android.content.Intent
-import android.graphics.Bitmap
 import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -22,18 +14,16 @@ import com.plop.plopmessenger.domain.model.*
 import com.plop.plopmessenger.domain.repository.UserRepository
 import com.plop.plopmessenger.domain.usecase.chatroom.ChatRoomUseCase
 import com.plop.plopmessenger.domain.usecase.message.MessageUseCase
+import com.plop.plopmessenger.domain.usecase.socket.sendMessageUseCase
 import com.plop.plopmessenger.domain.util.Resource
 import com.plop.plopmessenger.presentation.model.MediaStoreImage
 import com.plop.plopmessenger.presentation.navigation.DestinationID
 import com.plop.plopmessenger.presentation.screen.main.InputSelector
 import com.plop.plopmessenger.util.getChatRoomTitle
-import dagger.hilt.android.internal.Contexts.getApplication
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -48,6 +38,7 @@ class ChatViewModel @Inject constructor(
     private val messageUseCase: MessageUseCase,
     private val userRepository: UserRepository,
     private val chatRoomUseCase: ChatRoomUseCase,
+    private val sendMessageUseCase: sendMessageUseCase,
     @ApplicationContext private val context: Context,
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
@@ -360,6 +351,18 @@ class ChatViewModel @Inject constructor(
         SimpleDateFormat("dd.MM.yyyy").let { formatter ->
             TimeUnit.MICROSECONDS.toSeconds(formatter.parse("$day.$month.$year")?.time ?: 0)
         }
+
+    fun sendMessage() {
+        if(chatState.value.query != TextFieldValue("")) {
+            viewModelScope.launch {
+                sendMessageUseCase(
+                    roomId =  chatState.value.chatroomId!!,
+                    content = chatState.value.query.text,
+                    userId = chatState.value.userId
+                )
+            }
+        }
+    }
 
     fun sendImage() {
 

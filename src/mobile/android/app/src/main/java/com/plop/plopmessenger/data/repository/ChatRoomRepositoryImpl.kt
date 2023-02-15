@@ -1,9 +1,6 @@
 package com.plop.plopmessenger.data.repository
 
-import com.plop.plopmessenger.data.dto.request.chat.DeleteChatRoomRequest
-import com.plop.plopmessenger.data.dto.request.chat.PostDmRoomRequest
-import com.plop.plopmessenger.data.dto.request.chat.PostGroupRoomRequest
-import com.plop.plopmessenger.data.dto.request.chat.PostInvitationRequest
+import com.plop.plopmessenger.data.dto.request.chat.*
 import com.plop.plopmessenger.data.dto.response.chat.*
 import com.plop.plopmessenger.data.local.dao.ChatRoomDao
 import com.plop.plopmessenger.data.local.dao.ChatRoomMemberImage
@@ -113,5 +110,9 @@ class ChatRoomRepositoryImpl @Inject constructor(
 
     override suspend fun getChatRoomInfo(roomid: String): Response<GetChatRoomInfoResponse> {
         return return chatApi.getChatRoomInfo(roomid)
+    }
+
+    override suspend fun postMessage(postMessageRequest: PostMessageRequest): Response<Void> {
+        return chatApi.postMessage(postMessageRequest)
     }
 }

@@ -126,7 +126,7 @@ object AppModule {
     @Singleton
     @Provides
     fun provideWebSocketListener(
-        okHttpClient: OkHttpClient,
+        @AuthOkHttp okHttpClient: OkHttpClient,
         chatRoomRepository: ChatRoomRepository,
         messageRepository: MessageRepository,
         memberRepository: MemberRepository,

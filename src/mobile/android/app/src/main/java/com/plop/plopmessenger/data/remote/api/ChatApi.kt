@@ -1,9 +1,6 @@
 package com.plop.plopmessenger.data.remote.api
 
-import com.plop.plopmessenger.data.dto.request.chat.DeleteChatRoomRequest
-import com.plop.plopmessenger.data.dto.request.chat.PostDmRoomRequest
-import com.plop.plopmessenger.data.dto.request.chat.PostGroupRoomRequest
-import com.plop.plopmessenger.data.dto.request.chat.PostInvitationRequest
+import com.plop.plopmessenger.data.dto.request.chat.*
 import com.plop.plopmessenger.data.dto.response.chat.*
 import retrofit2.Response
 import retrofit2.http.*
@@ -49,4 +46,9 @@ interface ChatApi {
     suspend fun getChatRoomInfo(
         @Path("roomid") roomid: String
     ): Response<GetChatRoomInfoResponse>
+
+    @POST(Constants.POST_MESSAGE)
+    suspend fun postMessage(
+        @Body postMessageRequest: PostMessageRequest
+    ): Response<Void>
 }
