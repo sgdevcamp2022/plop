@@ -1,5 +1,6 @@
 package smilegate.plop.chat.service;
 
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
@@ -23,11 +24,16 @@ public class PushService {
         ResponsePresenceUsers offlineUsers = presenceService.getOfflineUsers(chatMessageDto.getRoom_id());
 
         if(offlineUsers.getMembers().size() >= 1){
-            pushProxy.sendNotification(RequestMessage.builder()
-                    .title(chatMessageDto.getSender_id())
-                    .body(chatMessageDto.getContent())
-                    .target(offlineUsers.getMembers())
-                    .build());
+            try
+            {
+                pushProxy.sendNotification(RequestMessage.builder()
+                        .title(chatMessageDto.getSender_id())
+                        .body(chatMessageDto.getContent())
+                        .target(offlineUsers.getMembers())
+                        .build());
+            }catch (FeignException e){
+                log.error("pushProxy.sendNotification, 푸시 서버 연결 안됨");
+            }
             log.info("오프라인 유저에게 푸시알림 요청");
         }
     }
