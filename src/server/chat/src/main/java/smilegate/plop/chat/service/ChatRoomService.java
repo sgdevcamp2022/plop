@@ -44,6 +44,7 @@ public class ChatRoomService {
 
             savedRoom = roomRepository.save(RoomCollection.builder()
                     .members(members)
+                    .title(reqDmDto.getCreator()+","+reqDmDto.getMessage_to())
                     .type(RoomType.DM)
                     .roomId(RoomIdCreator.createRoomId())
                     .build());
@@ -53,16 +54,11 @@ public class ChatRoomService {
     }
 
     private String createGroupTitle(String creator, List<String> list){
-        return creator + String.join(", ",list);
+        return creator + ","+String.join(",",list);
     }
-    private void validateSizeOfGroup(ReqGroupDto reqGroupDto){
-        if (reqGroupDto.getMembers().size() <= 1){
-            log.info("ErrorCode: {}","GROUP_MEMBER_SIZE_ERROR");
-            throw new CustomAPIException(ErrorCode.GROUP_MEMBER_SIZE_ERROR, "초대된 멤버가 1명이하입니다.");
-        }
-    }
+
+
     public RespRoomDto createGroup(ReqGroupDto reqGroupDto){
-        validateSizeOfGroup(reqGroupDto);
 
         List<Member> members = new ArrayList<>();
         String title = createGroupTitle(reqGroupDto.getCreator(), reqGroupDto.getMembers());

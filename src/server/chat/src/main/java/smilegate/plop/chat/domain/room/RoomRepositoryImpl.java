@@ -7,6 +7,8 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import smilegate.plop.chat.dto.request.ReqDmDto;
 import smilegate.plop.chat.dto.request.ReqInviteDto;
+import smilegate.plop.chat.exception.CustomAPIException;
+import smilegate.plop.chat.exception.ErrorCode;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -21,8 +23,13 @@ public class RoomRepositoryImpl implements RoomMongoTemplateRepository{
 
     @Override
     public UpdateResult inviteMembers(ReqInviteDto reqInviteDto) {
+        RoomCollection rc = mongoTemplate.findOne(Query.query(Criteria.where("roomId").is(reqInviteDto.getRoom_id())), RoomCollection.class);
+        if(rc == null){
+            throw new CustomAPIException(ErrorCode.ROOM_NOT_FOUND_ERROR, "존재하지않는 채팅방-"+reqInviteDto.getRoom_id());
+        }
         Query query = Query.query(Criteria.where("roomId").is(reqInviteDto.getRoom_id()));
         Update update = new Update().push("members").each(convertToMembersList(reqInviteDto.getMembers()));
+        update.set("title",rc.getTitle()+","+String.join(",",reqInviteDto.getMembers()));
         return mongoTemplate.updateFirst(query, update, RoomCollection.class);
     }
 
