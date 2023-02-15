@@ -3,6 +3,7 @@ package smilegate.plop.chat.dto.request;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Size;
 import java.util.List;
 
 @Schema(description = "그룹 채팅방 생성 요청")
@@ -10,6 +11,7 @@ import java.util.List;
 public class ReqGroupDto {
     @Schema(description = "요청하는 유저 id")
     private String creator;
+    @Size(min = 2)
     @Schema(description = "요청받는 유저 id 리스트")
     private List<String> members;
 
