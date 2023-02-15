@@ -1,5 +1,6 @@
 package com.plop.plopmessenger.presentation.viewmodel
 
+import android.util.Log
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -59,6 +60,24 @@ class AddChatMemberViewModel @Inject constructor(
                             it.copy(isLoading = false)
                         }
                     }
+                }
+            }
+        }
+    }
+
+    fun addChatMember() {
+        viewModelScope.launch {
+            val result = chatRoomUseCase.inviteMemberUseCase(
+                addChatMemberState.value.chatId!!,
+                addChatMemberState.value.checkedPeople
+            )
+
+            when(result) {
+                is Resource.Success -> {
+                    Log.d("AddChatMember", "성공...성공이오..")
+                }
+                else -> {
+                    Log.d("AddChatMember", "실패...실패이오..")
                 }
             }
         }

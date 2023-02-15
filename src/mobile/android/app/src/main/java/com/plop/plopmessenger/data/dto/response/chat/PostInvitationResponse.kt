@@ -5,7 +5,7 @@ import com.plop.plopmessenger.data.dto.response.ChatRoomAndMember
 
 
 data class PostInvitationResponse(
-    @SerializedName("data")
-    val postInvitationDto: ChatRoomAndMember,
-    val message: String
+    val members: List<String>,
+    @SerializedName("room_id")
+    val roomId: String
 )
