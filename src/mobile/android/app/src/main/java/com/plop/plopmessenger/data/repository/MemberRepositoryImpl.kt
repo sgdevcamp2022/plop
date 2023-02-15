@@ -33,6 +33,10 @@ class MemberRepositoryImpl @Inject constructor(
         return memberDao.updateMember(member)
     }
 
+    override suspend fun updateMemberLastRead(memberId: String, messageId: String) {
+        return memberDao.updateMemberLastRead(memberId, messageId)
+    }
+
     override suspend fun updateAllMember(members: List<Member>) {
         return memberDao.updateAllMember(*members.toTypedArray())
     }

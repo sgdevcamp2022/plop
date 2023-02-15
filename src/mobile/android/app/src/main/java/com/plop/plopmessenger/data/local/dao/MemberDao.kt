@@ -30,6 +30,11 @@ interface MemberDao {
     @Update
     suspend fun updateMember(member: Member)
 
+    @Query(
+        "UPDATE members SET read_message = :messageId WHERE member_id = :memberId"
+    )
+    suspend fun updateMemberLastRead(memberId: String, messageId: String)
+
     @Update
     suspend fun updateAllMember(vararg members: Member)
 
