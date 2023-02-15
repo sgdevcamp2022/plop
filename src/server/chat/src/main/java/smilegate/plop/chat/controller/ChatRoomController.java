@@ -24,6 +24,7 @@ import smilegate.plop.chat.exception.ErrorResponseDto;
 import smilegate.plop.chat.model.jwt.JwtTokenProvider;
 import smilegate.plop.chat.service.ChatRoomService;
 
+import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
 
@@ -46,12 +47,7 @@ public class ChatRoomController {
             @ApiResponse(responseCode = "201", description = "생성 성공", content = @Content(schema = @Schema(implementation = RespRoomDto.class))),
             @ApiResponse(responseCode = "404", description = "상대방id가 없음", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))) })
     @PostMapping("/v1/dm-creation")
-    public ResponseEntity<RespRoomDto> dmCreation(@RequestHeader("Authorization") String jwt, @RequestBody ReqDmDto reqDmDto){
-        if(reqDmDto.getMessage_to() == null || reqDmDto.getMessage_to().equals("")) {
-            log.error("dmCreation, Message={}, ErrorCode: {},","채팅방이 없거나 멤버가 없음",ErrorCode.DM_MEMBER_ERROR);
-            throw new CustomAPIException(ErrorCode.DM_MEMBER_ERROR, "상대방id가 없음");
-        }
-
+    public ResponseEntity<RespRoomDto> dmCreation(@RequestHeader("Authorization") String jwt, @Valid @RequestBody ReqDmDto reqDmDto){
         String userId = getTokenToUserId(jwt);
         reqDmDto.setCreator(userId);
         return new ResponseEntity<>(chatRoomMongoService.createDmRoom(reqDmDto),HttpStatus.CREATED);
@@ -61,7 +57,7 @@ public class ChatRoomController {
             @ApiResponse(responseCode = "201", description = "생성 성공", content = @Content(schema = @Schema(implementation = RespRoomDto.class))),
             @ApiResponse(responseCode = "400", description = "초대한 상대방id가 없음", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))) })
     @PostMapping("/v1/group-creation")
-    public ResponseEntity<RespRoomDto> groupCreation(@RequestHeader("Authorization") String jwt, @RequestBody ReqGroupDto reqGroupDto){
+    public ResponseEntity<RespRoomDto> groupCreation(@RequestHeader("Authorization") String jwt, @Valid @RequestBody ReqGroupDto reqGroupDto){
         String userId = getTokenToUserId(jwt);
         reqGroupDto.setCreator(userId);
 
@@ -76,7 +72,7 @@ public class ChatRoomController {
     @PostMapping("/v1/invitation")
     public ResponseEntity<APIMessage> groupInvitation(@RequestBody ReqInviteDto reqInviteDto){
         if(chatRoomMongoService.inviteMembers(reqInviteDto)){
-            log.error("groupInvitation, Message={}","채팅방이 없거나 멤버가 없음");
+            log.error("groupInvitation, Message={}","멤버가 없음");
             return new ResponseEntity<>(new APIMessage(APIMessage.ResultEnum.success,reqInviteDto),HttpStatus.OK);
         }
         return new ResponseEntity<>(new APIMessage(APIMessage.ResultEnum.failed,reqInviteDto),HttpStatus.BAD_REQUEST);
