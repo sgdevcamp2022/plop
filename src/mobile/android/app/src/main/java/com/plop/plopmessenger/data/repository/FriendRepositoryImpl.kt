@@ -25,6 +25,10 @@ class FriendRepositoryImpl @Inject constructor(
         return friendDao.loadFriendByNickname(nickname = "%$nickname%")
     }
 
+    override suspend fun loadFriendById(friendId: String): List<Friend> {
+        return friendDao.loadFriendById(friendId)
+    }
+
     override suspend fun insertFriend(friend: Friend) {
         return friendDao.insertFriend(friend)
     }

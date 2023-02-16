@@ -61,7 +61,6 @@ fun ChatsScreen(
     val viewModel = hiltViewModel<ChatsViewModel>()
 
     var state = viewModel.chatsState.collectAsState()
-    var activePeople by remember{ mutableStateOf(listOf<Member>()) }
 
     var textFieldFocusState by remember { mutableStateOf(false) }
     var focusManager = LocalFocusManager.current
@@ -95,10 +94,10 @@ fun ChatsScreen(
                 LazyRow(
                     modifier = Modifier.padding(vertical = 16.dp)
                 ) {
-                    items(activePeople) {
+                    items(state.value.presence) {
                         ProfileStateItem(
                             imageURL = "",
-                            nickname = ""
+                            nickname = it.nickname
                         )
                     }
                 }
