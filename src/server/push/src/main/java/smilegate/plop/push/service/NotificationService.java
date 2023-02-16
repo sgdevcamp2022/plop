@@ -1,6 +1,5 @@
 package smilegate.plop.push.service;
 
-import com.google.api.services.storage.Storage;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
@@ -14,7 +13,8 @@ import smilegate.plop.push.domain.UserEntity;
 import smilegate.plop.push.domain.UserRepository;
 import smilegate.plop.push.dto.request.RequestMessage;
 import smilegate.plop.push.dto.response.ResponseUser;
-import smilegate.plop.push.exception.MessagingException;
+import smilegate.plop.push.exception.PushException;
+import smilegate.plop.push.exception.PushFormatException;
 import smilegate.plop.push.exception.UserNotFoundException;
 import smilegate.plop.push.model.JwtUser;
 import smilegate.plop.push.security.JwtTokenProvider;
@@ -64,16 +64,29 @@ public class NotificationService {
 //비동기 처리?
     // data 에 객체 형식으로 다 넣어야 하는 지
     public void sendByTokenList(RequestMessage message) {
-        List<String> tokenList = message.getTarget();
-        List<Message> messages = tokenList.stream().map(token-> Message.builder()
-                .putData("time", LocalDateTime.now().toString())
-                .putData("title", message.getTitle())
-                .putData("body", message.getBody())
-                .setNotification(new Notification(message.getTitle(),message.getBody()))
-                .setToken(token)
-                .build()).collect(Collectors.toList());
-//        MulticastMessage.builder().addAllTokens(tokenList)
+        List<String> tokenList = new ArrayList<>();
+        message.getTarget().forEach(target -> {
+            UserEntity userEntity = userRepository.findByUserIdOrEmail(target,target);
+            String token = userEntity.getFcmToken();
+            log.error(userEntity.getUserId() + " : " +token);
+            tokenList.add(token);
+        });
+        List<Message> messages;
+        try {
+            messages = tokenList.stream().map(token-> Message.builder()
+                    .putData("time", LocalDateTime.now().toString())
+                    .putData("title", message.getTitle())
+                    .putData("body", message.getBody())
+                    .putData("roomId", message.getRoomId())
+                    .setNotification(new Notification(message.getTitle(),message.getBody()))
+                    .setToken(token)
+                    .build()).collect(Collectors.toList());
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            throw new PushFormatException("요청 데이터가 유효하지 않습니다.");
+        }
 
+//        MulticastMessage.builder().addAllTokens(tokenList).putData()
         BatchResponse response;
         try {
             //알림 발송
@@ -86,16 +99,18 @@ public class NotificationService {
                     if (!responses.get(i).isSuccessful()) {
                         failedTokens.add(tokenList.get(i));
                     }
+                    log.error(responses.get(i).getMessageId());
                 }
                 if (!failedTokens.isEmpty()) {
                     log.error("List of tokens are not valid FCM token : " + failedTokens);
-                    throw new MessagingException("List of tokens are not valid FCM token : " + failedTokens);
+                    throw new PushException("List of tokens are not valid FCM token : " + failedTokens);
                 }
             }
 
+
         } catch (FirebaseMessagingException e ) {
             log.error("can not send to memberList push message. error info : {}", e.getMessage());
-            throw new MessagingException("can not send to memberList push message. error info : " + e.getMessage());
+            throw new PushException("can not send to memberList push message. error info : " + e.getMessage());
         }
     }
 

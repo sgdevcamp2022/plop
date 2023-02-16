@@ -19,7 +19,9 @@ public enum ErrorCode {
     DUPLICATION_USER(409,"USER-002","해당 유저가 이미 존재하는 경우"),//409 confilct
     FAILED_FILE_STREAM(500,"USER-003","파일 전송 혹은 변환에 실패한 경우"),
     FRIENDSHIP_NOT_FOUND(404,"USER-004","서로 요청받은 친구 요청이 없는 경우"),
-    FAILED_TO_SEND_MESSAGE(400,"PUSH-001", "푸시 알림 전송에 실패한 경우");
+    FAILED_TO_SEND_MESSAGE(400,"PUSH-001", "푸시 알림 전송에 실패한 경우"),
+    INVALID_MESSAGE_FORMAT(406,"PUSH-002", "푸시 데이터 형식이 올바르지 않은 경우");
+
 
     private final int status;
     private final String code;
