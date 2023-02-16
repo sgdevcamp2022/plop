@@ -2,6 +2,7 @@ package smilegate.plop.chat.dto.response;
 
 import lombok.*;
 import smilegate.plop.chat.domain.room.Member;
+import smilegate.plop.chat.domain.room.RoomType;
 import smilegate.plop.chat.dto.LastMessage;
 
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.List;
 @ToString
 public class RespMyChatRoom {
     private String room_id;
+    private RoomType type;
     private String title;
     private List<Member> members;
     private LastMessage last_message;

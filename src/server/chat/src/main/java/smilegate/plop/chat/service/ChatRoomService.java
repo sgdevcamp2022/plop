@@ -108,6 +108,7 @@ public class ChatRoomService {
             respMyChatRooms.add(RespMyChatRoom.builder()
                     .room_id(roomId).title(roomCollection.getTitle())
                     .members(roomCollection.getMembers())
+                    .type(roomCollection.getType())
                     .last_message(lastMessage)
                     .build());
         }
