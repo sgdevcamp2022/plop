@@ -1,5 +1,6 @@
 package com.plop.plopmessenger.data.repository
 
+import android.util.Log
 import com.plop.plopmessenger.data.dto.request.chat.*
 import com.plop.plopmessenger.data.dto.response.chat.*
 import com.plop.plopmessenger.data.local.dao.ChatRoomDao
@@ -27,7 +28,7 @@ class ChatRoomRepositoryImpl @Inject constructor(
         return chatroomMemberImageDao.loadChatRoomAndMessage()
     }
 
-    override fun loadChatRoomIdList(): Flow<List<String>> {
+    override suspend fun loadChatRoomIdList(): List<String> {
         return chatRoomDao.loadChatRoomIdList()
     }
 

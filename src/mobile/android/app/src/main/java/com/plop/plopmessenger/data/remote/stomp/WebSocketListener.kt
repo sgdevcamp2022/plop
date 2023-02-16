@@ -17,6 +17,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.*
 import okhttp3.WebSocketListener
 import okio.ByteString
@@ -89,7 +90,6 @@ class WebSocketListener @Inject constructor(
                         createdAt = LocalDateTime.now(),
                         type = 1
                     ))
-                Log.d("STOMP 로그", "메세지 받음 : onMessage payload: ${message.payload}, heaaders:${message.headers}, command: ${message.command}")
             }
         }
     }
@@ -106,10 +106,8 @@ class WebSocketListener @Inject constructor(
 
     fun joinAll() {
         CoroutineScope(Dispatchers.IO).launch {
-            chatRoomRepository.loadChatRoomIdList().collect() { result ->
-                result.forEach {
-                    join("/chatting/topic/room/${it}")
-                }
+            chatRoomRepository.loadChatRoomIdList().forEach {
+                join("/chatting/topic/room/${it}")
             }
             userRepository.getUserId().collect() {
                 join("/chatting/topic/new-room/${it}")
@@ -124,7 +122,7 @@ class WebSocketListener @Inject constructor(
             if(!chatRoomRepository.hasChatRoomById(message.chatroomId)){
                 saveNewChatRoom(chatRoomId = message.chatroomId, message)
             } else {
-                updateChatRoom(message.chatroomId, content = message.content)
+                updateChatRoom(message.chatroomId, message.content)
             }
             saveMembers(memberId = message.messageFromID, message.chatroomId, message)
             messageRepository.insertMessage(message)
@@ -162,7 +160,7 @@ class WebSocketListener @Inject constructor(
     }
 
     suspend fun updateChatRoom(roomId: String, content: String) {
-        CoroutineScope(Dispatchers.IO).launch {
+        withContext(Dispatchers.IO) {
             chatRoomRepository.updateChatRoomContentById(roomId, content, LocalDateTime.now())
             chatRoomRepository.plusChatRoomUnreadById(roomId, 1)
         }

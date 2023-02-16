@@ -20,7 +20,7 @@ interface ChatRoomDao {
     @Query(
         "SELECT chatroom_id FROM chatroom"
     )
-    fun loadChatRoomIdList(): Flow<List<String>>
+    suspend fun loadChatRoomIdList(): List<String>
 
     @Query(
         "SELECT chatroom.chatroom_id FROM chatroom, members WHERE chatroom.chatroom_id =members.chatroom_id AND chatroom.type = 1 AND members.member_id = :friendId"
@@ -55,7 +55,7 @@ interface ChatRoomDao {
     suspend fun plusChatRoomUnreadById(chatroomId: String, unread: Int)
 
     @Query(
-        "UPDATE chatroom SET content = :content AND updated_at = :updatedAt WHERE chatroom_id = :chatroomId"
+        "UPDATE chatroom SET content = :content , updated_at = :updatedAt WHERE chatroom_id = :chatroomId"
     )
     suspend fun updateChatRoomContentById(chatroomId: String, content: String, updatedAt: LocalDateTime)
 

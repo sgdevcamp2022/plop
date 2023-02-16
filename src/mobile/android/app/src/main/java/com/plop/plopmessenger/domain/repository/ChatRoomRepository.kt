@@ -12,7 +12,7 @@ import java.util.*
 interface ChatRoomRepository {
     fun loadChatRoomTitle(chatroomId: String): Flow<String>
     fun loadChatRoomAndMessage(): Flow<List<ChatRoomMemberImage?>>
-    fun loadChatRoomIdList(): Flow<List<String>>
+    suspend fun loadChatRoomIdList(): List<String>
     fun loadChatRoomAndMemberById(chatroomId: String): ChatRoomMemberImage
     fun hasPersonalChatRoomByFriend(friendId: String): Flow<String?>
     suspend fun hasChatRoomById(chatroomId: String): Boolean
