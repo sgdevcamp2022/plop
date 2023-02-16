@@ -38,7 +38,7 @@ object ChatItemBubbleValue {
     val defaultBubbleShape = RoundedCornerShape(4.dp, 18.dp, 18.dp, 4.dp)
     val defaultMyBubbleShape = RoundedCornerShape(18.dp, 4.dp, 4.dp, 18.dp)
     val betweenBubbleShape = RoundedCornerShape(4.dp, 18.dp, 18.dp, 4.dp)
-    val betweenMyBubbleShape = RoundedCornerShape(4.dp, 18.dp, 18.dp, 4.dp)
+    val betweenMyBubbleShape = RoundedCornerShape(18.dp, 4.dp, 4.dp, 18.dp)
     val chatBubblePadding = 10.dp
     val betweenContentAndChat = 44.dp
     val betweenImageAndChat = 12.dp

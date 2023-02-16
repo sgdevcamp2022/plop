@@ -15,7 +15,7 @@ fun FriendDto.toFriend() = Friend(
     nickname = this.profile.nickname,
     profileImg = this.profile.img,
     email = this.email,
-    status = 4
+    status = 1
 )
 
 fun FriendDto.toPeople() = People(

@@ -92,6 +92,12 @@ class MainNavigationAction(val navController: NavController) {
         }
     }
 
+    val navigateLeaveChat: () -> Unit = {
+        navController.navigate(BottomBarDestinations.CHATS_ROUTE) {
+            popUpTo(BottomBarDestinations.CHATS_ROUTE)
+        }
+    }
+
     //새로 생성된 Chat
     val navigateToNewChat: (PeopleParcelableModel) -> Unit = {
         val peopleList = Uri.encode(Gson().toJson(it))

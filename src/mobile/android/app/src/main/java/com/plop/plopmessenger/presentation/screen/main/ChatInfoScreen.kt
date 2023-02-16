@@ -26,6 +26,7 @@ import androidx.compose.runtime.*
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.plop.plopmessenger.R
 import com.plop.plopmessenger.domain.model.ChatRoomType
+import com.plop.plopmessenger.presentation.component.PlopDialog
 import com.plop.plopmessenger.presentation.viewmodel.ChatInfoViewModel
 
 object ChatInfoValue {
@@ -39,11 +40,26 @@ object ChatInfoValue {
 @Composable
 fun ChatInfoScreen(
     navigateToAddMember: (String) -> Unit,
+    navigateToChats: () -> Unit,
     upPress: () -> Unit
 ){
     val viewModel = hiltViewModel<ChatInfoViewModel>()
     val state by viewModel.chatInfoState.collectAsState()
     val members = state.members
+
+    LaunchedEffect(key1 = state.shouldLeave) {
+        if(state.shouldLeave) navigateToChats()
+    }
+
+    if(state.showDialog) {
+        PlopDialog(
+            onDismiss = viewModel::closeDialog,
+            onClick = { viewModel.leaveChatRoom(); viewModel.closeDialog()},
+            title = stringResource(id = R.string.chat_info_dialog),
+            dismissContent = stringResource(id = R.string.chat_info_dialog_no),
+            content = stringResource(id = R.string.chat_info_dialog_ok),
+        )
+    }
 
     var membersName = if(state.roomType == ChatRoomType.DM) (members.firstOrNull()?.nickname?: "")+stringResource(id = R.string.chat_info_add_group_btn)
     else stringResource(id = R.string.chat_info_add_member_btn)
@@ -73,7 +89,7 @@ fun ChatInfoScreen(
         )
 
         Text(
-            text = "title",
+            text = state.title,
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             maxLines = 1,
@@ -95,7 +111,7 @@ fun ChatInfoScreen(
         )
 
         ChatInfoItem(
-            onClick = { /*TODO*/ },
+            onClick = viewModel::showDialog,
             content = stringResource(id = R.string.chat_info_exit_btn),
             icon = Icons.Filled.ArrowBack
         )

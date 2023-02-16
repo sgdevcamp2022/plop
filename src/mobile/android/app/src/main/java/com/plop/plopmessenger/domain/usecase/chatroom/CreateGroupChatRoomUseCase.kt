@@ -8,39 +8,37 @@ import com.plop.plopmessenger.domain.model.People
 import com.plop.plopmessenger.domain.repository.ChatRoomRepository
 import com.plop.plopmessenger.domain.repository.MemberRepository
 import com.plop.plopmessenger.domain.util.Resource
-import com.plop.plopmessenger.util.getChatRoomTitle
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import java.time.LocalDateTime
-import java.util.*
 import javax.inject.Inject
 
 class CreateGroupChatRoomUseCase @Inject constructor(
     private val repository: ChatRoomRepository,
     private val memberRepository: MemberRepository
 ) {
-    suspend operator fun invoke(friends: List<People>): Flow<Resource<Boolean>> = flow{
+    suspend operator fun invoke(friends: List<People>): Flow<Resource<String>> = flow{
         try {
             val response = repository.postGroupChatroom(PostGroupRoomRequest(friends.map{it.peopleId}))
-            when(response.code()){
-                200 -> {
-                    val chatroom = response.body()
+            val createdAt = LocalDateTime.parse(response?.body()?.createdAt)
 
-                    if (chatroom?.roomId != null) {
-                        emit(Resource.Success(true))
-                        repository.insertChatRoom(
-                            ChatRoom(chatroom.roomId, getChatRoomTitle(friends.map{it.nickname}), 0, "", LocalDateTime.now(), 2)
-                        )
-                        memberRepository.insertAllMember(
-                            friends.map {
-                                Member(chatroom.roomId, it.peopleId, it.nickname, it.profileImg, null)
-                            }
-                        )
-                    }
+            if(response.isSuccessful) {
+                val chatroom = response.body()
+                if (chatroom?.roomId != null) {
+                    repository.insertChatRoom(
+                        ChatRoom(chatroom.roomId, chatroom.title, 0, "", createdAt?: LocalDateTime.now(), 2)
+                    )
+                    memberRepository.insertAllMember(
+                        friends.map {
+                            Member(chatroom.roomId, it.peopleId, it.nickname, it.profileImg, null)
+                        }
+                    )
+                    emit(Resource.Success(chatroom?.roomId))
+                    Log.d("CreateGroupChatRoomUseCase","성공..성공이오..")
                 }
-                else -> {
-                    Log.d("CreateGroupChatRoomUseCase", response.code().toString())
-                }
+            }
+            else {
+                Log.d("CreateGroupChatRoomUseCase", response.code().toString())
             }
         } catch (e: Exception) {
             Log.d("CreateGroupChatRoomUseCase", e.message.toString())

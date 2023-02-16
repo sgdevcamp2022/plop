@@ -15,11 +15,11 @@ import javax.inject.Inject
 class GetLocalChatRoomListUseCase @Inject constructor(
     private val chatRoomRepository: ChatRoomRepository
 ) {
-    operator fun invoke(): Flow<Resource<List<ChatRoom>>> = flow {
+    operator fun invoke(): Flow<Resource<List<ChatRoom?>>> = flow {
         try {
             emit(Resource.Loading())
             chatRoomRepository.loadChatRoomAndMessage().collect(){ result ->
-                emit(Resource.Success(result.map { it.toChatRoom() }))
+                emit(Resource.Success(result.map { it?.toChatRoom() }))
             }
         } catch (e: IOException) {
             Log.d("getLocalChatRoomListUseCase", "IOException")

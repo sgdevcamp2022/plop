@@ -1,20 +1,12 @@
 package com.plop.plopmessenger.presentation.viewmodel
 
 import android.annotation.SuppressLint
-import android.app.Application
-import android.content.ContentResolver
 import android.content.ContentUris
 import android.content.Context
-import android.content.Intent
-import android.graphics.Bitmap
 import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -22,17 +14,16 @@ import com.plop.plopmessenger.domain.model.*
 import com.plop.plopmessenger.domain.repository.UserRepository
 import com.plop.plopmessenger.domain.usecase.chatroom.ChatRoomUseCase
 import com.plop.plopmessenger.domain.usecase.message.MessageUseCase
+import com.plop.plopmessenger.domain.usecase.socket.sendMessageUseCase
 import com.plop.plopmessenger.domain.util.Resource
 import com.plop.plopmessenger.presentation.model.MediaStoreImage
 import com.plop.plopmessenger.presentation.navigation.DestinationID
 import com.plop.plopmessenger.presentation.screen.main.InputSelector
 import com.plop.plopmessenger.util.getChatRoomTitle
-import dagger.hilt.android.internal.Contexts.getApplication
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -47,6 +38,7 @@ class ChatViewModel @Inject constructor(
     private val messageUseCase: MessageUseCase,
     private val userRepository: UserRepository,
     private val chatRoomUseCase: ChatRoomUseCase,
+    private val sendMessageUseCase: sendMessageUseCase,
     @ApplicationContext private val context: Context,
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
@@ -58,29 +50,57 @@ class ChatViewModel @Inject constructor(
     init {
         if(!chatState.value.chatroomId.isNullOrBlank()){
             viewModelScope.launch {
+                launch { getChatroomInfo() }.join()
                 launch { getChatRoomNewMessage() }.join()
+                getFirstMessage()
                 getMessageList()
-                getFirstMessage()
-                getChatroomInfo()
-            }
-        } else {
-            /** 내가 만든 새 채팅방에 들어갔을 경우 **/
-            viewModelScope.launch {
-                launch { getChatRoomNewId() }.join()
-                getFirstMessage()
-                getChatroomInfo()
             }
         }
         getUserId()
         loadImage()
     }
 
-    fun getChatRoomNewId() {
-        /** 채팅방 번호 얻고, 그걸 room 에다가 넣고, 최초 메세지를 넣는다.**/
+    suspend fun getDmChatRoomNewId(people: People) {
+        chatRoomUseCase.createDmChatRoomUseCase(people).collect() { result ->
+            when(result) {
+                is Resource.Success -> {
+                    chatState.update { it.copy(chatroomId = result.data) }
+                    getMessageList()
+                    getFirstMessage()
+                    getChatroomInfo()
+                } else -> {
+                    Log.d("GetDmChatRoomNewId", result.message.toString())
+                }
+            }
+        }
     }
 
-    fun getChatRoomNewMessage() {
-        /** 서버와 DB 동기화 작업 **/
+    suspend fun getGroupChatRoomNewId(people: List<People>) {
+        chatRoomUseCase.createGroupChatRoomUseCase(people).collect() { result ->
+            when(result) {
+                is Resource.Success -> {
+                    chatState.update { it.copy(chatroomId = result.data) }
+                    getMessageList()
+                    getFirstMessage()
+                    getChatroomInfo()
+                } else -> {
+                Log.d("GetGroupChatRoomNewId", result.message.toString())
+                }
+            }
+        }
+    }
+
+     private suspend fun getChatRoomNewMessage() {
+         when(chatRoomUseCase.getNewChatRoomMessageUseCase(
+             chatState.value.chatroomId!!,
+             chatState.value.members["1234"]?.readMessage?: "")) {
+             is Resource.Success -> {
+                 Log.d("GetNewChatRoomNewId", "성공...성공이오..")
+             }
+             else -> {
+                 Log.d("GetNewChatRoomNewId", "실패..실패요..")
+             }
+         }
     }
 
     fun getMessageList() {
@@ -126,7 +146,6 @@ class ChatViewModel @Inject constructor(
     private fun getFirstMessage() {
         viewModelScope.launch {
             messageUseCase.getFirstMessageUseCase(chatState.value.chatroomId!!).collect() { result ->
-                Log.d("가희", "ㅁㄴㅇㄹ")
                 when (result) {
                     is Resource.Success -> {
                         if(result.data != null && !chatState.value.messages.contains(result.data) ) {
@@ -158,30 +177,29 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    private fun getChatroomInfo() {
-        viewModelScope.launch {
-            chatRoomUseCase.getChatRoomInfoUseCase(chatState.value.chatroomId!!).collect { result ->
-                when (result) {
-                    is Resource.Success -> {
-                        chatState.update {
-                            it.copy(
-                                chatRoomType = result.data?.type ?: ChatRoomType.DM,
-                                isLoading = false,
-                                members = result.data?.members?.map { it.memberId to it }?.toMap() ?: mapOf(),
-                                title = result.data?.title ?: ""
-                            )
-                        }
-                    }
-                    is Resource.Loading -> {
-                        chatState.update {
-                            it.copy(isLoading = true)
-                        }
-                    }
-                    is Resource.Error -> {
-                        chatState.update {
-                            it.copy(isLoading = false)
-                        }
-                    }
+    private suspend fun getChatroomInfo() {
+
+        val result = chatRoomUseCase.getChatRoomInfoUseCase(chatState.value.chatroomId!!)
+        when (result) {
+            is Resource.Success -> {
+                Log.d("가희", "getChatRoomInfo 실행 ${result.data?.members.toString()}")
+                chatState.update {
+                    it.copy(
+                        chatRoomType = result.data?.type ?: ChatRoomType.DM,
+                        isLoading = false,
+                        members = result.data?.members?.map { it.memberId to it }?.toMap() ?: mapOf(),
+                        title = result.data?.title ?: "n"
+                    )
+                }
+            }
+            is Resource.Loading -> {
+                chatState.update {
+                    it.copy(isLoading = true)
+                }
+            }
+            is Resource.Error -> {
+                chatState.update {
+                    it.copy(isLoading = false)
                 }
             }
         }
@@ -227,6 +245,8 @@ class ChatViewModel @Inject constructor(
                                 chatRoomType = ChatRoomType.DM
                                 )
                             }
+                            getDmChatRoomNewId(people.first())
+
                         }else {
                             chatState.update { it.copy(chatroomId = result.data) }
                             getMessageList()
@@ -235,12 +255,15 @@ class ChatViewModel @Inject constructor(
                     }
                 }
             } else {
-                chatState.update {
-                    it.copy(
-                        title = getChatRoomTitle(people.map { it.nickname }),
-                        members = people.map { it.peopleId to it.toMember() }.toMap(),
-                        chatRoomType = ChatRoomType.GROUP
-                    )
+                viewModelScope.launch{
+                    getGroupChatRoomNewId(people)
+                    chatState.update {
+                        it.copy(
+                            title = getChatRoomTitle(people.map { it.nickname }),
+                            members = people.map { it.peopleId to it.toMember() }.toMap(),
+                            chatRoomType = ChatRoomType.GROUP
+                        )
+                    }
                 }
             }
         }else {
@@ -335,6 +358,19 @@ class ChatViewModel @Inject constructor(
         SimpleDateFormat("dd.MM.yyyy").let { formatter ->
             TimeUnit.MICROSECONDS.toSeconds(formatter.parse("$day.$month.$year")?.time ?: 0)
         }
+
+    fun sendMessage() {
+        if(chatState.value.query != TextFieldValue("")) {
+            viewModelScope.launch {
+                sendMessageUseCase(
+                    roomId =  chatState.value.chatroomId!!,
+                    content = chatState.value.query.text,
+                    userId = chatState.value.userId
+                )
+            }
+            chatState.update { it.copy(query = TextFieldValue("")) }
+        }
+    }
 
     fun sendImage() {
 

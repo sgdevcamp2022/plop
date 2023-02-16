@@ -14,7 +14,7 @@ class MessageRepositoryImpl @Inject constructor(
         return messageDao.loadChatMessage(chatroomId, page, Constants.PAGE_SIZE)
     }
 
-    override fun loadChatFirstMessage(chatroomId: String): Flow<Message> {
+    override fun loadChatFirstMessage(chatroomId: String): Flow<Message?> {
         return messageDao.loadChatFirstMessage(chatroomId)
     }
 

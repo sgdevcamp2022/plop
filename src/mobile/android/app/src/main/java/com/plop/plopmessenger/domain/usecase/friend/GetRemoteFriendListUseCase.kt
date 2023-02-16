@@ -12,26 +12,24 @@ import javax.inject.Inject
 class GetRemoteFriendListUseCase @Inject constructor(
     private val friendRepository: FriendRepository
 ) {
-    operator fun invoke(): Flow<Resource<Boolean>> = flow {
+    suspend operator fun invoke(): Resource<Boolean> {
         try {
             val response = friendRepository.getFriendList()
-            when(response.code()) {
-                200 -> {
-                   if(response.body() != null) {
-                       friendRepository.insertAllFriend(
-                           response.body()!!.profiles.map { it.toFriend() }
-                       )
-                   }
-                    Log.d("GetRemoteFriendListUseCase", "성공..성공이요..")
+            if(response.isSuccessful) {
+                if(response.body() != null) {
+                    friendRepository.insertAllFriend(
+                        response.body()?.profiles?.map { it.toFriend() }?: emptyList()
+                    )
                 }
-                else -> {
-                    Log.d("GetRemoteFriendListUseCase", "error")
-                    emit(Resource.Error("error"))
-                }
+                Log.d("GetRemoteFriendListUseCase", "성공..성공이요..")
+                return Resource.Success(true)
+            } else{
+                Log.d("GetRemoteFriendListUseCase", "error")
+                return Resource.Error("error")
             }
         }catch (e: Exception) {
-            Log.d("GetRemoteFriendListUseCase", "error")
-            emit(Resource.Error("error"))
+            Log.d("GetRemoteFriendListUseCase", "error ${e.message}")
+            return Resource.Error("error")
         }
     }
 }

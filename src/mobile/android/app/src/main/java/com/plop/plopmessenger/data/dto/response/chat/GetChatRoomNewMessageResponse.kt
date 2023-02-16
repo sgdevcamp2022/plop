@@ -6,5 +6,6 @@ import com.plop.plopmessenger.data.dto.response.Message
 
 data class GetChatRoomNewMessageResponse(
     @SerializedName("data")
-    val getChatRoomNewMessageDto: List<Message>
+    val getChatRoomNewMessageDto: List<Message>,
+    val message: String
 )

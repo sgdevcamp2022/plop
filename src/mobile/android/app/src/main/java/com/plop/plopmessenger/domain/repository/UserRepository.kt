@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.Flow
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.Query
+import java.io.File
 
 interface UserRepository {
     fun getAccessToken(): Flow<String>
@@ -38,6 +39,6 @@ interface UserRepository {
     suspend fun deleteWithdrawal(): Response<DeleteWithdrawalResponse>
     suspend fun postPasswordNew(postPasswordNewRequest: PostPasswordNewRequest): Response<PostPasswordNewResponse>
     suspend fun getUserProfile(target: String): Response<GetUserProfileResponse>
-    suspend fun putUserProfile(putUserProfileRequest: PutUserProfileRequest): Response<PutUserProfileResponse>
+    suspend fun putUserProfile(img: File, target: String, nickname: String): Response<PutUserProfileResponse>
     suspend fun getSearchUser(target: String): Response<GetSearchUserResponse>
 }

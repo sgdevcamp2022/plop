@@ -48,10 +48,14 @@ fun AddChatMemberScreen(
     //멤버수에 따른 함수
     val addMember: () -> Unit = if(state.chatRoomType == ChatRoomType.DM) {
         {
+            
             navigateToNewChat(PeopleParcelableModel(state.checkedPeople + state.members.map { it.toPeople() }))}
     }
     else {
-        { navigateToUpdateGroupChat(state.chatId?: "", PeopleParcelableModel(state.checkedPeople)) }
+        {
+            viewModel.addChatMember()
+            navigateToUpdateGroupChat(state.chatId?: "", PeopleParcelableModel(state.checkedPeople))
+        }
     }
 
     var searchDisplay : SearchDisplay = when {

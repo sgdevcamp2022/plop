@@ -62,6 +62,9 @@
     <string name="chat_info_add_member_btn">사용자 추가하기</string>
     <string name="chat_info_alarm_btn">알림 및 소리</string>
     <string name="chat_info_exit_btn">대화방 나가기</string>
+    <string name="chat_info_dialog">대화방을 나가시겠습니까?</string>
+    <string name="chat_info_dialog_ok">나가기</string>
+    <string name="chat_info_dialog_no">취소</string>
 
     <string name="add_chat_member_top_bar">Add Member</string>
     <string name="add_chat_member_cancel_btn">취소</string>

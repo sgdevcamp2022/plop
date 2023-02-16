@@ -1,6 +1,7 @@
 package com.plop.plopmessenger.data.repository
 
 import com.plop.plopmessenger.data.remote.stomp.WebSocketListener
+import com.plop.plopmessenger.domain.model.MessageType
 import com.plop.plopmessenger.domain.repository.SocketRepository
 import javax.inject.Inject
 
@@ -11,8 +12,8 @@ class SocketRepositoryImpl @Inject constructor(
         webSocketListener.connect()
     }
 
-    override fun join() {
-        webSocketListener.join("topic")
+    override fun joinAll() {
+        webSocketListener.joinAll()
     }
 
 }

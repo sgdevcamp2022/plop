@@ -1,9 +1,6 @@
 package com.plop.plopmessenger.domain.repository
 
-import com.plop.plopmessenger.data.dto.request.chat.DeleteChatRoomRequest
-import com.plop.plopmessenger.data.dto.request.chat.PostDmRoomRequest
-import com.plop.plopmessenger.data.dto.request.chat.PostGroupRoomRequest
-import com.plop.plopmessenger.data.dto.request.chat.PostInvitationRequest
+import com.plop.plopmessenger.data.dto.request.chat.*
 import com.plop.plopmessenger.data.dto.response.chat.*
 import com.plop.plopmessenger.data.local.dao.ChatRoomMemberImage
 import com.plop.plopmessenger.data.local.entity.ChatRoom
@@ -14,10 +11,11 @@ import java.util.*
 
 interface ChatRoomRepository {
     fun loadChatRoomTitle(chatroomId: String): Flow<String>
-    fun loadChatRoomAndMessage(): Flow<List<ChatRoomMemberImage>>
-    fun loadChatRoomIdList(): Flow<List<String>>
-    fun loadChatRoomAndMemberById(chatroomId: String): Flow<ChatRoomMemberImage>
+    fun loadChatRoomAndMessage(): Flow<List<ChatRoomMemberImage?>>
+    suspend fun loadChatRoomIdList(): List<String>
+    fun loadChatRoomAndMemberById(chatroomId: String): ChatRoomMemberImage
     fun hasPersonalChatRoomByFriend(friendId: String): Flow<String?>
+    suspend fun hasChatRoomById(chatroomId: String): Boolean
     suspend fun insertChatRoom(chatRoom: ChatRoom)
     suspend fun insertAllChatRoom(chatRooms: List<ChatRoom>)
     suspend fun updateChatRoom(chatroom: ChatRoom)
@@ -31,8 +29,9 @@ interface ChatRoomRepository {
     suspend fun postGroupChatroom(postGroupRoomRequest: PostGroupRoomRequest): Response<PostGroupRoomResponse>
     suspend fun postInvitation(postInvitationRequest: PostInvitationRequest): Response<PostInvitationResponse>
     suspend fun getMyRooms(): Response<GetMyRoomResponse>
-    suspend fun deleteChatroom(roomid: String, deleteChatRoomRequest: DeleteChatRoomRequest): Response<DeleteChatRoomResponse>
+    suspend fun deleteChatroom(roomid: String): Response<DeleteChatRoomResponse>
     suspend fun getChatroomNewMessage(roomid: String, readMsgId: String): Response<GetChatRoomNewMessageResponse>
     suspend fun getChatroomHistory(roomid: String): Response<GetHistoryMessageResponse>
     suspend fun getChatRoomInfo(roomid: String): Response<GetChatRoomInfoResponse>
+    suspend fun postMessage(postMessageRequest: PostMessageRequest): Response<Void>
 }

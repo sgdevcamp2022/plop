@@ -21,7 +21,7 @@ import java.util.*
             entity = Member::class,
             parentColumns = ["chatroom_id", "member_id"],
             childColumns = ["chatroom_id", "message_from_id"],
-            onDelete = ForeignKey.NO_ACTION
+            onDelete = ForeignKey.CASCADE
         ),
     ]
 )
