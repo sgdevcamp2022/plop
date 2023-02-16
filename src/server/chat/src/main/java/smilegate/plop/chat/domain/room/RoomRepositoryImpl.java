@@ -40,9 +40,7 @@ public class RoomRepositoryImpl implements RoomMongoTemplateRepository{
         ));
 
         query.fields().exclude("_id");
-        query.fields().include("roomId");
-        query.fields().include("title");
-        query.fields().include("members");
+        query.fields().exclude("managers");
 
         return mongoTemplate.find(query,RoomCollection.class);
     }
