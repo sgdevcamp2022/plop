@@ -19,7 +19,7 @@ class GetRemoteChatRoomUseCase @Inject constructor(
                     val chatrooms = response.body()
                     if(!chatrooms?.getMyRoomDto.isNullOrEmpty()) {
                         chatRoomRepository.insertAllChatRoom(
-                            chatrooms?.getMyRoomDto!!.map { it.toChatRoom() }
+                            chatrooms?.getMyRoomDto?.map { it.toChatRoom() } ?: emptyList()
                         )
                     } else {
 

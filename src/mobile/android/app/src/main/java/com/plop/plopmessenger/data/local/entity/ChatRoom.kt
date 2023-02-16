@@ -29,7 +29,7 @@ fun ChatRoomDto.toChatRoom() = ChatRoom(
     chatroomId = this.roomId,
     title = this.title?: "",
     unread = 0,
-    content = this.lastMessage.content,
+    content = this.lastMessage.content?: "",
     updatedAt = LocalDateTime.now(),
     type = if(members.size == 1) 1 else 2
 )
