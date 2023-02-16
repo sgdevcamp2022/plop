@@ -252,8 +252,10 @@ class ChatViewModel @Inject constructor(
 
                     }else {
                         chatState.update { it.copy(chatroomId = result.data) }
+                        launch { getChatRoomNewMessage() }.join()
                         getMessageList()
                         getChatroomInfo()
+                        getFirstMessage()
                     }
                 }
             } else {
