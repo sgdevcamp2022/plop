@@ -21,6 +21,7 @@ import kotlinx.coroutines.withContext
 import okhttp3.*
 import okhttp3.WebSocketListener
 import okio.ByteString
+import org.json.JSONArray
 import org.json.JSONObject
 import java.io.StringReader
 import java.time.LocalDateTime
@@ -81,18 +82,37 @@ class WebSocketListener @Inject constructor(
             }
             Commands.MESSAGE -> {
                 val jsonObject = JSONObject(message.payload)
-                saveMessage(
-                    Message(
-                        chatroomId = jsonObject.getString("room_id"),
-                        messageId = jsonObject.getString("message_id"),
-                        messageFromID = jsonObject.getString("sender_id"),
-                        content = jsonObject.getString("content"),
-                        createdAt = LocalDateTime.now(),
-                        type = 1
-                    ))
+                val chatRoomId = jsonObject.getString("room_id")
+                CoroutineScope(Dispatchers.IO).launch {
+                    if(chatRoomRepository.hasChatRoomById(chatRoomId)){
+                        Log.d("메세지받음", jsonObject.toString())
+                            saveMessage(
+                                Message(
+                                    chatroomId = jsonObject.getString("room_id"),
+                                    messageId = jsonObject.getString("message_id"),
+                                    messageFromID = jsonObject.getString("sender_id"),
+                                    content = jsonObject.getString("content"),
+                                    createdAt = LocalDateTime.now(),
+                                    type = 1
+                                )
+                            )
+                        }
+                    else{
+                        Log.d("받음", jsonObject.toString())
+                        saveNewChatRoom(
+                            chatRoomId = chatRoomId,
+                            title = jsonObject.getString("title"),
+                            type = jsonObject.getString("type"),
+                            updatedAt = jsonObject.getString("createdAt")
+                        )
+                        saveMembers(jsonObject.getJSONArray("members"), chatRoomId)
+                        join("/chatting/topic/room/${chatRoomId}")
+                    }
+                }
             }
         }
     }
+
 
     fun join(topic: String) {
         val topicId = UUID.randomUUID().toString()
@@ -101,6 +121,7 @@ class WebSocketListener @Inject constructor(
         headers[Headers.ID] = topicId
         headers[Headers.DESTINATION] = topic
         headers[Headers.ACK] = DEFAULT_ACK
+        Log.d("JOIN", compileMessage(SocketMessage(Commands.SUBSCRIBE, headers = headers)).toString())
         webSocket.send(compileMessage(SocketMessage(Commands.SUBSCRIBE, headers = headers)))
     }
 
@@ -110,8 +131,10 @@ class WebSocketListener @Inject constructor(
                 join("/chatting/topic/room/${it}")
             }
             userRepository.getUserId().collect() {
-                join("/chatting/topic/new-room/${it}")
-                userId = it
+                if(it.isNotEmpty()) {
+                    join("/chatting/topic/new-room/${it}")
+                    userId = it
+                }
             }
         }
     }
@@ -119,35 +142,36 @@ class WebSocketListener @Inject constructor(
 
     fun saveMessage(message: Message) {
         CoroutineScope(Dispatchers.IO).launch {
-            if(!chatRoomRepository.hasChatRoomById(message.chatroomId)){
-                saveNewChatRoom(chatRoomId = message.chatroomId, message)
-            } else {
-                updateChatRoom(message.chatroomId, message.content)
-            }
-            try {
-                messageRepository.insertMessage(message)
-            }catch (e: Exception) {
-                Log.d("SaveMessage", e.message.toString())
-            }
-            saveMembers(memberId = message.messageFromID, message.chatroomId, message)
+            updateChatRoom(message.chatroomId, message.content)
+            messageRepository.insertMessage(message)
         }
 
     }
 
-    suspend fun saveNewChatRoom(chatRoomId: String, message: Message) {
+    suspend fun saveNewChatRoom(chatRoomId: String, title: String, type: String, updatedAt: String) {
         chatRoomRepository.insertChatRoom(
             ChatRoom(
-                chatRoomId,
-                message.messageFromID,
-                1,
-                message.content,
-                message.createdAt,
-                message.type
+                chatroomId = chatRoomId,
+                title = title,
+                type = if(type == "DM") 1 else 2,
+                updatedAt = LocalDateTime.parse(updatedAt),
+                unread = 0
             )
         )
     }
 
-    suspend fun saveMembers(memberId: String, chatRoomId: String, message: Message) {
+    suspend fun saveMembers(members: JSONArray, chatRoomId: String) {
+        repeat(members.length()) { index ->
+            var member = members.getJSONObject(index)
+            saveMember(
+                memberId = member.getString("userId"),
+                chatRoomId = chatRoomId
+            )
+        }
+    }
+
+
+    suspend fun saveMember(memberId: String, chatRoomId: String) {
         try {
             memberRepository.insertMember(
                 Member(
@@ -226,6 +250,7 @@ class WebSocketListener @Inject constructor(
     }
 
     override fun onMessage(webSocket: WebSocket, text: String) {
+        Log.d("onMessage", text.toString())
         handleMessage(parseMessage(text))
     }
 

@@ -33,12 +33,28 @@ class AddChatMemberViewModel @Inject constructor(
 
     init {
         if(!addChatMemberState.value.chatId.isNullOrBlank()) {
-            getFriendList()
-            getChatroomInfo()
+            viewModelScope.launch {
+                getFriendList()
+                getLocalFriendList()
+                getChatroomInfo()
+            }
         }
     }
 
-    private fun getFriendList() {
+    private suspend fun getFriendList() {
+        viewModelScope.launch {
+            when(friendUseCase.getRemoteFriendListUseCase()) {
+                is Resource.Success -> {
+
+                }
+                else -> {
+                    Log.d("GetRemoteFriendList", "error")
+                }
+            }
+        }.join()
+    }
+
+    private fun getLocalFriendList() {
         viewModelScope.launch {
             friendUseCase.getFriendListUseCase().collect() { result ->
                 when (result) {

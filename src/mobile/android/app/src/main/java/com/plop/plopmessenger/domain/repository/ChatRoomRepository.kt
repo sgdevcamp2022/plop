@@ -14,7 +14,7 @@ interface ChatRoomRepository {
     fun loadChatRoomAndMessage(): Flow<List<ChatRoomMemberImage?>>
     suspend fun loadChatRoomIdList(): List<String>
     fun loadChatRoomAndMemberById(chatroomId: String): ChatRoomMemberImage
-    fun hasPersonalChatRoomByFriend(friendId: String): Flow<String?>
+    suspend fun hasPersonalChatRoomByFriend(friendId: String): String?
     suspend fun hasChatRoomById(chatroomId: String): Boolean
     suspend fun insertChatRoom(chatRoom: ChatRoom)
     suspend fun insertAllChatRoom(chatRooms: List<ChatRoom>)

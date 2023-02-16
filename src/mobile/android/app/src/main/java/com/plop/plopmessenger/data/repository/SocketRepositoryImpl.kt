@@ -16,4 +16,8 @@ class SocketRepositoryImpl @Inject constructor(
         webSocketListener.joinAll()
     }
 
+    override fun join(roomId: String) {
+        webSocketListener.join("/chatting/topic/room/${roomId}")
+    }
+
 }

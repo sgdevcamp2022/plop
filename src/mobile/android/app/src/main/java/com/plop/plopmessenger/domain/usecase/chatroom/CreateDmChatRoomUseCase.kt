@@ -19,31 +19,28 @@ class CreateDmChatRoomUseCase @Inject constructor(
     private val memberRepository: MemberRepository,
     private val messageRepository: MessageRepository,
 ) {
-    suspend operator fun invoke(friend: People): Flow<Resource<String>> = flow{
+    suspend operator fun invoke(friend: People): Resource<String> {
         try {
             val response = repository.postDmChatroom(PostDmRoomRequest(friend.peopleId))
             if(response.isSuccessful) {
                 val chatroom = response.body()
-                val createdAt = LocalDateTime.parse(chatroom?.createdAt)
+                val createdAt = LocalDateTime.now()
 
-
-                if (chatroom?.roomId != null) {
-                    repository.insertChatRoom(
-                        ChatRoom(chatroom.roomId, friend.nickname, 0, "", createdAt?: LocalDateTime.now(), 1)
-                    )
-                    memberRepository.insertMember(
-                        Member(chatroom.roomId, friend.peopleId, friend.nickname, friend.profileImg, null)
-                    )
-                    emit(Resource.Success(chatroom.roomId))
-                }
+                repository.insertChatRoom(
+                    ChatRoom(chatroom?.roomId?:"", friend.nickname, 0, "", createdAt?: LocalDateTime.now(), 1)
+                )
+                memberRepository.insertMember(
+                    Member(chatroom?.roomId?:"", friend.peopleId, friend.nickname, friend.profileImg, null)
+                )
+                return Resource.Success(chatroom?.roomId?:"")
             }
             else {
                 Log.d("CreateDmChatRoomUseCase", "error")
-                emit(Resource.Error(response.message().toString()))
+                return Resource.Error(response.message().toString())
             }
         } catch (e: Exception) {
             Log.d("CreateDmChatRoomUseCase", e.message.toString())
-            emit(Resource.Error(e.message.toString()))
+            return Resource.Error(e.message.toString())
         }
     }
 }
