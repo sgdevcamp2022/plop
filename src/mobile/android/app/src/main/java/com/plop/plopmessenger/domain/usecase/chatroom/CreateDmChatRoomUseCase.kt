@@ -4,7 +4,6 @@ import android.util.Log
 import com.plop.plopmessenger.data.dto.request.chat.PostDmRoomRequest
 import com.plop.plopmessenger.data.local.entity.ChatRoom
 import com.plop.plopmessenger.data.local.entity.Member
-import com.plop.plopmessenger.data.local.entity.Message
 import com.plop.plopmessenger.domain.model.People
 import com.plop.plopmessenger.domain.repository.ChatRoomRepository
 import com.plop.plopmessenger.domain.repository.MemberRepository
@@ -13,7 +12,6 @@ import com.plop.plopmessenger.domain.util.Resource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import java.time.LocalDateTime
-import java.util.*
 import javax.inject.Inject
 
 class CreateDmChatRoomUseCase @Inject constructor(
@@ -26,10 +24,12 @@ class CreateDmChatRoomUseCase @Inject constructor(
             val response = repository.postDmChatroom(PostDmRoomRequest(friend.peopleId))
             if(response.isSuccessful) {
                 val chatroom = response.body()
+                val createdAt = LocalDateTime.parse(chatroom?.createdAt)
+
 
                 if (chatroom?.roomId != null) {
                     repository.insertChatRoom(
-                        ChatRoom(chatroom.roomId, friend.nickname, 0, "", LocalDateTime.now(), 1)
+                        ChatRoom(chatroom.roomId, friend.nickname, 0, "", createdAt?: LocalDateTime.now(), 1)
                     )
                     memberRepository.insertMember(
                         Member(chatroom.roomId, friend.peopleId, friend.nickname, friend.profileImg, null)

@@ -3,9 +3,8 @@ package com.plop.plopmessenger.data.local.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.plop.plopmessenger.data.dto.response.ChatRoom as ChatRoomDto
 import java.time.LocalDateTime
-import java.util.*
+import com.plop.plopmessenger.data.dto.response.ChatRoom as ChatRoomDto
 
 /**
  * type
@@ -27,9 +26,10 @@ data class ChatRoom(
 
 fun ChatRoomDto.toChatRoom() = ChatRoom(
     chatroomId = this.roomId,
-    title = this.title?: "",
+    title = this.title?: this.members.firstOrNull()?.userId.toString(),
     unread = 0,
     content = this.lastMessage.content?: "",
-    updatedAt = LocalDateTime.now(),
-    type = if(members.size == 1) 1 else 2
+    updatedAt = if(this.lastMessage.createdAt != null) LocalDateTime.parse(this.lastMessage.createdAt)
+                else LocalDateTime.parse(this.members.firstOrNull()?.enteredAt),
+    type = if(members.size == 2) 1 else 2
 )

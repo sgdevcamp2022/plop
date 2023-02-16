@@ -2,7 +2,6 @@ package com.plop.plopmessenger.data.dto.response
 
 
 import com.google.gson.annotations.SerializedName
-import com.plop.plopmessenger.presentation.state.UserState
 import java.time.LocalDateTime
 import java.util.*
 import com.plop.plopmessenger.data.local.entity.Message as MessageEntity
@@ -26,7 +25,7 @@ fun Message.toMessage() = MessageEntity(
     messageFromID = if(this.senderId == "") "1234" else this.senderId,
     chatroomId = this.roomId,
     content = this.content,
-    createdAt = LocalDateTime.now(),
+    createdAt = LocalDateTime.parse(this.createdAt),
     type = MessageTypeConverter(this.messageType)
 )
 
