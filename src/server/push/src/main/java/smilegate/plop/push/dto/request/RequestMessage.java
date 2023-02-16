@@ -8,5 +8,6 @@ import java.util.List;
 public class RequestMessage {
     String title;
     String body;
+    String roomId;
     List<String> target;
 }
