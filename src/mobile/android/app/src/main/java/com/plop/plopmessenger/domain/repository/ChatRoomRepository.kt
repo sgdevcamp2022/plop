@@ -29,7 +29,7 @@ interface ChatRoomRepository {
     suspend fun postGroupChatroom(postGroupRoomRequest: PostGroupRoomRequest): Response<PostGroupRoomResponse>
     suspend fun postInvitation(postInvitationRequest: PostInvitationRequest): Response<PostInvitationResponse>
     suspend fun getMyRooms(): Response<GetMyRoomResponse>
-    suspend fun deleteChatroom(roomid: String, deleteChatRoomRequest: DeleteChatRoomRequest): Response<DeleteChatRoomResponse>
+    suspend fun deleteChatroom(roomid: String): Response<DeleteChatRoomResponse>
     suspend fun getChatroomNewMessage(roomid: String, readMsgId: String): Response<GetChatRoomNewMessageResponse>
     suspend fun getChatroomHistory(roomid: String): Response<GetHistoryMessageResponse>
     suspend fun getChatRoomInfo(roomid: String): Response<GetChatRoomInfoResponse>

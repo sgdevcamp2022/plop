@@ -25,10 +25,9 @@ interface ChatApi {
     @GET(Constants.GET_MY_ROOMS)
     suspend fun getMyRooms(): Response<GetMyRoomResponse>
 
-    @DELETE(Constants.DELETE_CHATROOM)
+    @DELETE("${Constants.DELETE_CHATROOM}/{roomid}")
     suspend fun deleteChatroom(
-        @Path("roomid") roomid: String,
-        @Body deleteChatRoomRequest: DeleteChatRoomRequest
+        @Path("roomid") roomid: String
     ): Response<DeleteChatRoomResponse>
 
     @GET("${Constants.GET_CHATROOM_NEW_MESSAGE}/{roomid}/{readMsgId}")

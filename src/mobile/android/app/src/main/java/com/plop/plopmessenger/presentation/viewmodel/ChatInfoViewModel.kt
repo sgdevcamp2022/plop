@@ -59,6 +59,29 @@ class ChatInfoViewModel @Inject constructor(
             }
         }
     }
+
+    fun leaveChatRoom() {
+        viewModelScope.launch {
+            if(chatInfoState.value.chatroomId != null) {
+                val response = chatRoomUseCase.leaveChatRoomUseCase(chatInfoState.value.chatroomId!!)
+                when(response){
+                    is Resource.Success -> {
+                        closeDialog()
+                        chatInfoState.update { it.copy( shouldLeave = true ) }
+                    }
+                    else -> {
+                        closeDialog()
+                    }
+                }
+            }
+        }
+    }
+
+    fun closeDialog() { chatInfoState.update { it.copy( showDialog = false ) } }
+
+    fun showDialog() { chatInfoState.update { it.copy(showDialog = true) } }
+
+
 }
 
 data class ChatInfoState(
@@ -66,5 +89,7 @@ data class ChatInfoState(
     var title: String = "",
     var members: List<Member> = emptyList(),
     var chatroomId: String? = null,
-    var roomType: ChatRoomType = ChatRoomType.DM
+    var roomType: ChatRoomType = ChatRoomType.DM,
+    var showDialog: Boolean = false,
+    val shouldLeave: Boolean = false
 )

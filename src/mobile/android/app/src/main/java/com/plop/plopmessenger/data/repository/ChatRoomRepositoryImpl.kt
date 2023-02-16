@@ -97,10 +97,9 @@ class ChatRoomRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteChatroom(
-        roomid: String,
-        deleteChatRoomRequest: DeleteChatRoomRequest
+        roomid: String
     ): Response<DeleteChatRoomResponse> {
-        return chatApi.deleteChatroom(roomid, deleteChatRoomRequest)
+        return chatApi.deleteChatroom(roomid)
     }
 
     override suspend fun getChatroomNewMessage(roomid: String, readMsgId: String): Response<GetChatRoomNewMessageResponse> {

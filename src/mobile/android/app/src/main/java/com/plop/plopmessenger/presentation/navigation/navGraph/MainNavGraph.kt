@@ -112,6 +112,7 @@ private fun NavGraphBuilder.chatGraph(
     ) { from ->
         ChatInfoScreen(
             navigateToAddMember = { chatId -> navigationAction.navigateToAddMember(chatId, from)},
+            navigateToChats = navigationAction.navigateLeaveChat,
             upPress = navigationAction.upPress
         )
     }

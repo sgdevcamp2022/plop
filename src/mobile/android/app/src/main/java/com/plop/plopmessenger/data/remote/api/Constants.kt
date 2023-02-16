@@ -6,7 +6,7 @@ object Constants {
     const val POST_GROUP_CHATROOM = "/chatting/room/v1/group-creation"
     const val POST_INVITATION = "/chatting/room/v1/invitation"
     const val GET_MY_ROOMS = "/chatting/room/v1/my-rooms"
-    const val DELETE_CHATROOM = "/chatting/room/v1/out/{roomid}"
+    const val DELETE_CHATROOM = "/chatting/room/v1/out"
     const val GET_CHATROOM_NEW_MESSAGE = "/chatting/v1/new-message"
     const val GET_CHATROOM_HISTORY = "/chatting/v1/history-message"
     const val GET_CHATROOM_INFO = "/chatting/room/v1/info"
