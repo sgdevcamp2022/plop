@@ -29,6 +29,7 @@ public class PushService {
                 pushProxy.sendNotification(RequestMessage.builder()
                         .title(chatMessageDto.getSender_id())
                         .body(chatMessageDto.getContent())
+                        .roomId(chatMessageDto.getRoom_id())
                         .target(offlineUsers.getMembers())
                         .build());
             }catch (FeignException e){
