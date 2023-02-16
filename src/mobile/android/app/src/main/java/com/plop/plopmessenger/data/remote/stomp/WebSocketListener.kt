@@ -121,6 +121,7 @@ class WebSocketListener @Inject constructor(
         headers[Headers.ID] = topicId
         headers[Headers.DESTINATION] = topic
         headers[Headers.ACK] = DEFAULT_ACK
+        Log.d("JOIN", compileMessage(SocketMessage(Commands.SUBSCRIBE, headers = headers)).toString())
         webSocket.send(compileMessage(SocketMessage(Commands.SUBSCRIBE, headers = headers)))
     }
 

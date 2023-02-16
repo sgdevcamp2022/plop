@@ -5,6 +5,7 @@ import com.plop.plopmessenger.data.dto.response.toMember
 import com.plop.plopmessenger.data.local.entity.toChatRoom
 import com.plop.plopmessenger.domain.repository.ChatRoomRepository
 import com.plop.plopmessenger.domain.repository.MemberRepository
+import com.plop.plopmessenger.domain.repository.SocketRepository
 import com.plop.plopmessenger.domain.util.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -12,7 +13,8 @@ import javax.inject.Inject
 
 class GetRemoteChatRoomUseCase @Inject constructor(
     private val chatRoomRepository: ChatRoomRepository,
-    private val memberRepository: MemberRepository
+    private val memberRepository: MemberRepository,
+    private val socketRepository: SocketRepository
 ) {
     suspend operator fun invoke(): Resource<Boolean> {
         try {
@@ -35,6 +37,7 @@ class GetRemoteChatRoomUseCase @Inject constructor(
                 } else {
                     Log.d("GetRemoteChatRoomUseCase", "error")
                 }
+                
             }
         } catch (e: Exception){
             Log.d("GetRemoteChatRoomUseCase", e.message.toString())

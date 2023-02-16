@@ -34,6 +34,5 @@ class MainActivity : ComponentActivity() {
             }
         }
         socketRepository.connect()
-        socketRepository.joinAll()
     }
 }

@@ -1,5 +1,6 @@
 package com.plop.plopmessenger.presentation.viewmodel
 
+import android.util.Log
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -23,10 +24,26 @@ class AddChatViewModel @Inject constructor(
         private set
 
     init {
-        getFriendList()
+        viewModelScope.launch {
+            getFriendList()
+            getLocalFriendList()
+        }
     }
 
-    private fun getFriendList() {
+    private suspend fun getFriendList() {
+        viewModelScope.launch {
+            when(friendUseCase.getRemoteFriendListUseCase()) {
+                is Resource.Success -> {
+
+                }
+                else -> {
+                    Log.d("GetRemoteFriendList", "error")
+                }
+            }
+        }.join()
+    }
+
+    private fun getLocalFriendList() {
         viewModelScope.launch {
             friendUseCase.getFriendListUseCase().collect() { result ->
                 when (result) {

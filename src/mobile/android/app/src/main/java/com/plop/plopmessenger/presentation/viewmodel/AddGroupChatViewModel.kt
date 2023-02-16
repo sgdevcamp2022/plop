@@ -25,10 +25,26 @@ class AddGroupChatViewModel @Inject constructor(
         private set
 
     init {
-        getFriendList()
+        viewModelScope.launch {
+            getFriendList()
+            getLocalFriendList()
+        }
     }
 
-    private fun getFriendList() {
+    private suspend fun getFriendList() {
+        viewModelScope.launch {
+            when(friendUseCase.getRemoteFriendListUseCase()) {
+                is Resource.Success -> {
+
+                }
+                else -> {
+                    Log.d("GetRemoteFriendList", "error")
+                }
+            }
+        }.join()
+    }
+
+    private fun getLocalFriendList() {
         viewModelScope.launch {
             friendUseCase.getFriendListUseCase().collect() { result ->
                 when (result) {
