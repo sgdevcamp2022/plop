@@ -3,7 +3,7 @@ spring:
     mongodb:
       uri: mongodb+srv://plop:smilegateplop@mycluster.xcoh78v.mongodb.net/plop?retryWrites=true&w=majority
   kafka:
-    bootstrap-servers: host.docker.internal:9092
+    bootstrap-servers: localhost:9092
     chat-consumer:
       group-id: chat-group
     room-consumer:
