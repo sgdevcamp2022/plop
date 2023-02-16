@@ -14,6 +14,8 @@ import smilegate.plop.push.domain.UserEntity;
 import smilegate.plop.push.domain.UserRepository;
 import smilegate.plop.push.dto.request.RequestMessage;
 import smilegate.plop.push.dto.response.ResponseUser;
+import smilegate.plop.push.exception.MessagingException;
+import smilegate.plop.push.exception.UserNotFoundException;
 import smilegate.plop.push.model.JwtUser;
 import smilegate.plop.push.security.JwtTokenProvider;
 
@@ -85,22 +87,28 @@ public class NotificationService {
                         failedTokens.add(tokenList.get(i));
                     }
                 }
-                log.error("List of tokens are not valid FCM token : " + failedTokens);
+                if (!failedTokens.isEmpty()) {
+                    log.error("List of tokens are not valid FCM token : " + failedTokens);
+                    throw new MessagingException("List of tokens are not valid FCM token : " + failedTokens);
+                }
             }
 
         } catch (FirebaseMessagingException e ) {
             log.error("can not send to memberList push message. error info : {}", e.getMessage());
+            throw new MessagingException("can not send to memberList push message. error info : " + e.getMessage());
         }
     }
 
     public ResponseUser registerFcmToken(String jwt, String tokenId) {
         JwtUser sender = jwtTokenProvider.getUserInfo(jwt);
-        UserEntity user = userRepository.findByUserId(sender.getUserId());
-        user.setFcmToken(tokenId);
-        userRepository.save(user);
+        UserEntity userEntity = userRepository.findByUserId(sender.getUserId());
+        if (userEntity == null)
+            throw new UserNotFoundException(String.format("[%s] is Not Found", userEntity.getUserId()));
+        userEntity.setFcmToken(tokenId);
+        userRepository.save(userEntity);
 
         return new ResponseUser(
-                user.getEmail(),user.getProfile().get("nickname").toString(),user.getUserId());
+                userEntity.getEmail(),userEntity.getProfile().get("nickname").toString(),userEntity.getUserId());
     }
 }
 

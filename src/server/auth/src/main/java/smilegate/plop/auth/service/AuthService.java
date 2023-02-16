@@ -13,16 +13,15 @@ import org.springframework.stereotype.Service;
 import smilegate.plop.auth.dto.request.RequestLogin;
 import smilegate.plop.auth.dto.request.RequestNewPassword;
 import smilegate.plop.auth.dto.response.ResponseUser;
-import smilegate.plop.auth.exception.ErrorCode;
-import smilegate.plop.auth.exception.WithdrawalUserException;
+import smilegate.plop.auth.exception.*;
 import smilegate.plop.auth.model.JwtUser;
 import smilegate.plop.auth.dto.response.ResponseJWT;
 import smilegate.plop.auth.security.JwtTokenProvider;
 
+import javax.naming.AuthenticationException;
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
 
@@ -48,8 +47,9 @@ public class AuthService {
     public UserDto signUp(UserDto userDto) {
         userDto.setEncryptedPwd(passwordEncoder.encode(userDto.getPassword()));
 
-        if (userRepository.findByEmail(userDto.getEmail()) != null) {
-            return null;
+        if (userRepository.findByUserIdOrEmail(userDto.getUserId(),userDto.getEmail()) != null) {
+            throw new DuplicateUserException(
+                    String.format("[%s] or [%s] already exists", userDto.getUserId(),userDto.getEmail()));
         }
         UserEntity userEntity = UserEntity.builder()
                 .userId(userDto.getUserId())
@@ -91,7 +91,7 @@ public class AuthService {
             userEntity = userRepository.findByUserId(requestLogin.getIdOrEmail());
         }
         if (userEntity == null)
-            throw new EntityNotFoundException();
+            throw new UserNotFoundException(String.format("[%s] is Not Found", requestLogin.getIdOrEmail()));
 
         if (passwordEncoder.matches(requestLogin.getPassword(),userEntity.getEncryptedPwd())) {
             UserDto userDto = userEntity.toUserDto();
@@ -103,41 +103,35 @@ public class AuthService {
 
             redisService.setValues(userDto.getEmail(),refreshToken);
             if (userEntity.getState() == 9)
-            try {
                 throw new WithdrawalUserException("user state is 9");
-            } catch (WithdrawalUserException e) {
-                e.printStackTrace();
-                return null;
-            }
+
             userEntity.setLoginAt(LocalDateTime.now());
             userRepository.save(userEntity);
 
             return responseJWT;
         }
-        return null;
+        else
+            throw new IncorrectPasswordException("Password is incorrect.");
     }
 
     @Transactional
     public UserDto logOut(String jwt) {
         //게이트웨이에서 이미 유효성을 확인함
-
         JwtUser user = jwtTokenProvider.getUserInfo(jwt);
 
         redisService.delValues(user.getEmail());
 
         UserEntity userEntity = userRepository.findByEmail(user.getEmail());
         if (userEntity == null)
-            throw new EntityNotFoundException();
+            throw new UserNotFoundException(String.format("[%s] is Not Found", userEntity.getUserId()));
 
         userEntity.setAccessAt(LocalDateTime.now());
-//        userRepository.save(userEntity);
         userRepository.saveAndFlush(userEntity);
 
         ModelMapper mapper = new ModelMapper();
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
         UserDto userDto = mapper.map(userEntity, UserDto.class);
-        log.error(userDto.toString());
         return userDto;
 
     }
@@ -149,8 +143,11 @@ public class AuthService {
         //2) refresh token X 수동 로그인
         String savedRefreshToken = redisService.getValues(email);
         log.error(savedRefreshToken);
-        if(savedRefreshToken.equals(jwt)) {
-            UserEntity userEntity= userRepository.findByEmail(email);
+        UserEntity userEntity= userRepository.findByEmail(email);
+        if (savedRefreshToken == null) {
+            throw new RedisNullException(jwt + " is not saved in cache");
+        }
+        else if(savedRefreshToken != null) {
             UserDto userDto = userEntity.toUserDto();
             String accessToken = jwtTokenProvider.createAccessToken(userDto);
             String refreshToken = jwtTokenProvider.createRefreshToken(userDto);
@@ -162,7 +159,7 @@ public class AuthService {
 
             return responseJWT;
         } else
-            return null;
+            throw new IncorrectPasswordException(String.format("[%s]'s password does not match ", userEntity.getUserId()));
     }
 
     public UserDto withdrawal(String jwt) {
@@ -170,7 +167,7 @@ public class AuthService {
 
         UserEntity userEntity = userRepository.findByEmail(user.getEmail());
         if (userEntity == null)
-            throw new EntityNotFoundException(user.getEmail());
+            throw new UserNotFoundException(String.format("[%s] is Not Found", userEntity.getUserId()));
 
         //state :9 => 회원 탈퇴, 실제 삭제은 하지 않음, 탈퇴 후 ~ 기간 이후에 삭제하는 방식?
         userEntity.setState(9);
@@ -182,7 +179,7 @@ public class AuthService {
     public ResponseUser changePassword(RequestNewPassword newPassword) {
         UserEntity userEntity = userRepository.findByEmail(newPassword.getEmail());
         if (userEntity == null)
-            throw new EntityNotFoundException(userEntity.getEmail());
+            throw new UserNotFoundException(String.format("[%s] is Not Found", userEntity.getUserId()));
 
         // 비밀번호가 일치하지 않을 때만
         if (!passwordEncoder.matches(newPassword.getNewPassword(),userEntity.getEncryptedPwd())) {
@@ -197,46 +194,8 @@ public class AuthService {
             return responseUser;
         }
 
-
-        return null;
+        throw new PasswordNotChangedException("It's the same password.");
 
     }
-
-    public UserDto getUserById(String userId) {
-        UserEntity userEntity = userRepository.findByUserId(userId);
-
-        if (userEntity == null)
-            throw new EntityNotFoundException("User not found");
-
-        UserDto userDto = new ModelMapper().map(userEntity, UserDto.class);
-
-
-        return userDto;
-    }
-
-    public Iterable<UserEntity> getUserByAll() {
-        return userRepository.findAll();
-    }
-
-    public UserDto getUserDetailsByEmail(String email) {
-        UserEntity userEntity = userRepository.findByEmail(email);
-
-        if (userEntity == null)
-            throw new EntityNotFoundException(email);
-
-        UserDto userDto = userEntity.toUserDto();
-        return userDto;
-    }
-
-//    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-//        UserEntity userEntity = userRepository.findByEmail(username);
-//
-//        if (userEntity == null) {
-//            throw new UsernameNotFoundException(username);
-//        }
-//        return new User(userEntity.getEmail(), userEntity.getEncryptedPwd(),
-//                true,true,true,true, new ArrayList<>());
-//    }
-
 
 }

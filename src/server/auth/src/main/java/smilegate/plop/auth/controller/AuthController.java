@@ -53,14 +53,8 @@ public class AuthController {
         String email = requestEmail.get("email").toString();
         log.error(email);
         ResponseJWT responseJwt = authService.reissue(email,jwt);
-        if (responseJwt == null) {
-            ResponseDto responseDto = new ResponseDto("FAIL", "reissue failed", responseJwt);
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(responseDto);
-        }
-        else {
-            ResponseDto responseDto = new ResponseDto("SUCCESS", "reissue successfully", responseJwt);
-            return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
-        }
+        ResponseDto responseDto = new ResponseDto("SUCCESS", "reissue successfully", responseJwt);
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
     @PostMapping("/email/code")
     public ResponseEntity<ResponseDto> sendVerificationCode(@RequestBody RequestEmailVerification info) {
@@ -84,11 +78,7 @@ public class AuthController {
     @PostMapping("/password/new")
     public ResponseEntity<BaseResponse> changePassword(@RequestBody RequestNewPassword requestNewPassword) {
         ResponseUser savedUser = authService.changePassword(requestNewPassword);
-        if (savedUser ==null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorCode.PASSWORD_NOT_CHANGED.toErrorResponseDto("현재 비밀번호와 동일합니다."));
-        } else {
-            ResponseDto responseDto = new ResponseDto<>("SUCCESS", "password is changed successfully", savedUser);
-            return ResponseEntity.status(HttpStatus.OK).body(responseDto);
-        }
+        ResponseDto responseDto = new ResponseDto<>("SUCCESS", "password is changed successfully", savedUser);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 }

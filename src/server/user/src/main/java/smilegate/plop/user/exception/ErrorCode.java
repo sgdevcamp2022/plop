@@ -4,23 +4,21 @@ import smilegate.plop.user.dto.response.ErrorResponseDto;
 
 
 public enum ErrorCode {
-    UNAUTHORIZED(401, "AUTH-002", "인증에 실패한 경우"),
-    WITHDRAWAL_USER(403, "AUTH-005", "탈퇴한 회원이 요청한 경우"),
-    PASSWORD_NOT_CHANGED(400, "AUTH-006", "새 비밀번호로 바꿀 수 없는 경우"),
-    INVALID_INPUT_VALUE(400, "COMMON-001", "유효성 검증에 실패한 경우"),
-    INTERNAL_SERVER_ERROR(500, "COMMON-002", "서버에서 처리할 수 없는 경우"),
-
-    DUPLICATE_LOGIN_ID(400, "ACCOUNT-001", "계정명이 중복된 경우"),
-
-    ACCOUNT_NOT_FOUND(404, "ACCOUNT-003", "계정을 찾을 수 없는 경우"),
-    ROLE_NOT_EXISTS(403, "ACCOUNT-004", "권한이 부족한 경우"),
-    TOKEN_NOT_EXISTS(404, "ACCOUNT-005", "해당 key의 인증 토큰이 존재하지 않는 경우"),
-
-    ARTIST_NOT_FOUND(404, "ARTIST-001", "가수를 찾을 수 없는 경우"),
-
-    SONG_NOT_FOUND(404, "SONG-001", "곡을 찾을 수 없는 경우"),
-
-    CONTEST_INVALID_DATE(400, "CONTEST-001", "선정 곡 날짜가 적절치 않은 경우");
+    INVALID_TOKEN(401, "AUTH-001", "토큰이 유효하지 않은 경우"),
+    EXPIRED_TOKEN(401, "AUTH-002", "토큰이 만료된 경우"),
+    MISSING_TOKEN(401, "AUTH-003", "토큰을 전달하지 않은 경우"),
+    INCORRECT_TOKEN(401, "AUTH-004", "허용된 토큰이 아닌 경우"),
+    NOT_ACCESS_TOKEN(400, "AUTH-005", "액세스 토큰이 아닌 경우"),
+    NOT_EXISTED_REFRESH_TOKEN(404, "AUTH-006", "저장된 리프레쉬 토큰이 없는 경우"),
+    UNAUTHORIZED(401, "AUTH-007", "인증에 실패한 경우"),
+    WITHDRAWAL_USER(403, "AUTH-008", "탈퇴한 회원이 요청한 경우"),
+    PASSWORD_NOT_CHANGED(400, "AUTH-009", "새 비밀번호로 바꿀 수 없는 경우"),
+    INCORRECT_PASSWORD(401, "AUTH-010", "비밀번호가 일치하지 않는 경우"),
+    INCORRECT_VERIFICATION_CODE(401, "AUTH-011", "이메일 인증 코드가 틀린 경우"),
+    USER_NOT_FOUND(404, "USER-001", "해당 유저가 존재하지 않는 경우"),
+    DUPLICATION_USER(409,"USER-002","해당 유저가 이미 존재하는 경우"),//409 confilct
+    FAILED_FILE_STREAM(500,"USER-003","파일 전송 혹은 변환에 실패한 경우"),
+    FRIENDSHIP_NOT_FOUND(404,"USER-004","서로 요청받은 친구 요청이 없는 경우");
 
     private final int status;
     private final String code;

@@ -3,12 +3,9 @@ package smilegate.plop.push.security;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import smilegate.plop.push.dto.UserDto;
-import smilegate.plop.push.exception.JwtTokenIncorrectStructureException;
+import smilegate.plop.push.exception.NotAccessTokenException;
 import smilegate.plop.push.model.JwtUser;
 
-import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 @Component
@@ -23,31 +20,20 @@ public class JwtTokenProvider {
     @Value("${token.secret_key}")
     private String SECRET_KEY;
 
-
     public JwtUser getUserInfo(String token) {
+        Map<String, Object> payloads = Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
         try {
-            Map<String, Object> payloads = Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
             JwtUser user = JwtUser.builder()
                     .email(payloads.get("email").toString())
                     .userId(payloads.get("userId").toString())
                     .nickname(payloads.get("nickname").toString())
                     .build();
             return user;
-        } catch (JwtTokenIncorrectStructureException jwtTokenIncorrectStructureException) {
-            throw jwtTokenIncorrectStructureException;
+        } catch (NullPointerException e) {
+            throw new NotAccessTokenException(token + " is not access token");
         }
     }
 
-    public Boolean isAccessToken(String token) {
-        try {
-            Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token);
-
-        } catch (SignatureException | MalformedJwtException |
-                 UnsupportedJwtException | IllegalArgumentException | ExpiredJwtException jwtException) {
-            throw jwtException;
-        }
-        return true;
-    }
     public String removeBearer(String bearerToken) {
         return  bearerToken.replace("Bearer ", "");
     }
