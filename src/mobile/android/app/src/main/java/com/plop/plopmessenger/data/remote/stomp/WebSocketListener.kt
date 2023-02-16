@@ -124,8 +124,12 @@ class WebSocketListener @Inject constructor(
             } else {
                 updateChatRoom(message.chatroomId, message.content)
             }
+            try {
+                messageRepository.insertMessage(message)
+            }catch (e: Exception) {
+                Log.d("SaveMessage", e.message.toString())
+            }
             saveMembers(memberId = message.messageFromID, message.chatroomId, message)
-            messageRepository.insertMessage(message)
         }
 
     }
@@ -151,7 +155,7 @@ class WebSocketListener @Inject constructor(
                     chatroomId = chatRoomId,
                     nickname = "",
                     profileImg = "",
-                    readMessage = message.messageId
+                    readMessage = null
                 )
             )
         } catch (e: Exception) {
