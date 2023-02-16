@@ -37,6 +37,10 @@ class MemberRepositoryImpl @Inject constructor(
         return memberDao.updateMemberLastRead(memberId, messageId)
     }
 
+    override suspend fun insertOrUpdate(member: Member, chatroomId: String) {
+        return memberDao.insertOrUpdate(member = member, chatroomId = chatroomId)
+    }
+
     override suspend fun updateAllMember(members: List<Member>) {
         return memberDao.updateAllMember(*members.toTypedArray())
     }

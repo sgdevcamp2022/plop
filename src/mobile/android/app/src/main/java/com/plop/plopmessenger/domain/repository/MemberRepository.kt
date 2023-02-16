@@ -11,6 +11,7 @@ interface MemberRepository {
     suspend fun insertAllMember(members: List<Member>)
     suspend fun updateMember(member: Member)
     suspend fun updateMemberLastRead(memberId: String, messageId: String)
+    suspend fun insertOrUpdate(member: Member, chatroomId: String)
     suspend fun updateAllMember(members: List<Member>)
     suspend fun deleteMember(member: Member)
 }

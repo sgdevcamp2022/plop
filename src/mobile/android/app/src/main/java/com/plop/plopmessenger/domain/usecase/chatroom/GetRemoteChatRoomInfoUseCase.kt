@@ -22,15 +22,14 @@ class GetRemoteChatRoomInfoUseCase @Inject constructor(
                 val response = chatRoomRepository.getChatRoomInfo(roomId)
                 if(response.isSuccessful) {
                     val chatroom = response.body()
-                    memberRepository.insertAllMember(chatroom!!.members.map { it.toMember(roomId) })
-                    Resource.Success(true)
+                    chatroom?.members?.forEach {
+                        memberRepository.insertOrUpdate(it.toMember(roomId), roomId)
+                    }
                 } else {
                     Log.d("GetRemoteChatRoomInfoUseCase", "error")
-                    Resource.Error("error")
                 }
             } catch (e: Exception){
                 Log.d("GetRemoteChatRoomInfoUseCase", e.message.toString())
-                Resource.Error("error")
             }
         }
     }

@@ -21,6 +21,11 @@ interface MemberDao {
     )
     fun loadChatMemberId(chatroomId: String): Flow<List<Member>>
 
+    @Query(
+        "SELECT * FROM members WHERE member_id = :memberId AND chatroom_id = :chatroomId"
+    )
+    suspend fun loadChatMemberById(chatroomId: String, memberId: String): List<Member>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMember(member: Member)
 
@@ -33,7 +38,13 @@ interface MemberDao {
     @Query(
         "UPDATE members SET read_message = :messageId WHERE member_id = :memberId"
     )
-    suspend fun updateMemberLastRead(memberId: String, messageId: String)
+    suspend fun updateMemberLastRead(memberId: String, messageId: String?)
+
+    suspend fun insertOrUpdate(member: Member, chatroomId: String) {
+        val item = loadChatMemberById(chatroomId = chatroomId, memberId = member.memberId)
+        if(item.isEmpty()) insertMember(member)
+        else updateMemberLastRead(memberId = member.memberId, messageId = member.readMessage?: null)
+    }
 
     @Update
     suspend fun updateAllMember(vararg members: Member)

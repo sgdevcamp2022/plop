@@ -50,9 +50,9 @@ class ChatViewModel @Inject constructor(
     init {
         if(!chatState.value.chatroomId.isNullOrBlank()){
             viewModelScope.launch {
-                getChatroomInfo()
+                launch { getChatroomInfo() }.join()
+                launch { getChatRoomNewMessage() }.join()
                 getFirstMessage()
-                getChatRoomNewMessage()
                 getMessageList()
             }
         }
@@ -91,18 +91,16 @@ class ChatViewModel @Inject constructor(
     }
 
      private suspend fun getChatRoomNewMessage() {
-         viewModelScope.launch {
-             when(chatRoomUseCase.getNewChatRoomMessageUseCase(
-                 chatState.value.chatroomId!!,
-                 chatState.value.messages.firstOrNull()?.messageId)) {
-                 is Resource.Success -> {
-                     Log.d("GetNewChatRoomNewId", "성공...성공이오..")
-                 }
-                 else -> {
-                     Log.d("GetNewChatRoomNewId", "실패..실패요..")
-                 }
+         when(chatRoomUseCase.getNewChatRoomMessageUseCase(
+             chatState.value.chatroomId!!,
+             chatState.value.members["1234"]?.readMessage?: "")) {
+             is Resource.Success -> {
+                 Log.d("GetNewChatRoomNewId", "성공...성공이오..")
              }
-         }.join()
+             else -> {
+                 Log.d("GetNewChatRoomNewId", "실패..실패요..")
+             }
+         }
     }
 
     fun getMessageList() {
@@ -179,30 +177,29 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    private fun getChatroomInfo() {
-        viewModelScope.launch {
-            val result = chatRoomUseCase.getChatRoomInfoUseCase(chatState.value.chatroomId!!)
-            Log.d("GetChatRoomInfo", result.data.toString())
-            when (result) {
-                is Resource.Success -> {
-                    chatState.update {
-                        it.copy(
-                            chatRoomType = result.data?.type ?: ChatRoomType.DM,
-                            isLoading = false,
-                            members = result.data?.members?.map { it.memberId to it }?.toMap() ?: mapOf(),
-                            title = result.data?.title ?: "n"
-                        )
-                    }
+    private suspend fun getChatroomInfo() {
+
+        val result = chatRoomUseCase.getChatRoomInfoUseCase(chatState.value.chatroomId!!)
+        when (result) {
+            is Resource.Success -> {
+                Log.d("가희", "getChatRoomInfo 실행 ${result.data?.members.toString()}")
+                chatState.update {
+                    it.copy(
+                        chatRoomType = result.data?.type ?: ChatRoomType.DM,
+                        isLoading = false,
+                        members = result.data?.members?.map { it.memberId to it }?.toMap() ?: mapOf(),
+                        title = result.data?.title ?: "n"
+                    )
                 }
-                is Resource.Loading -> {
-                    chatState.update {
-                        it.copy(isLoading = true)
-                    }
+            }
+            is Resource.Loading -> {
+                chatState.update {
+                    it.copy(isLoading = true)
                 }
-                is Resource.Error -> {
-                    chatState.update {
-                        it.copy(isLoading = false)
-                    }
+            }
+            is Resource.Error -> {
+                chatState.update {
+                    it.copy(isLoading = false)
                 }
             }
         }
