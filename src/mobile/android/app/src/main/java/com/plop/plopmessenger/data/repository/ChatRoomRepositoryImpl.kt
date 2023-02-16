@@ -31,6 +31,10 @@ class ChatRoomRepositoryImpl @Inject constructor(
         return chatRoomDao.loadChatRoomIdList()
     }
 
+    override suspend fun hasChatRoomById(chatroomId: String): Boolean {
+        return !chatRoomDao.hasChatRoomById(chatroomId).isNullOrBlank()
+    }
+
     override fun loadChatRoomAndMemberById(chatroomId: String): ChatRoomMemberImage {
         return chatroomMemberImageDao.loadChatRoomAndMemberById(chatroomId)
     }

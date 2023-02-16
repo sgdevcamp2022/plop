@@ -1,5 +1,6 @@
 package com.plop.plopmessenger.data.local.dao
 
+import android.util.Log
 import androidx.room.*
 import com.plop.plopmessenger.data.local.entity.Member
 import kotlinx.coroutines.flow.Flow
@@ -39,12 +40,6 @@ interface MemberDao {
         "UPDATE members SET read_message = :messageId WHERE member_id = :memberId"
     )
     suspend fun updateMemberLastRead(memberId: String, messageId: String?)
-
-    suspend fun insertOrUpdate(member: Member, chatroomId: String) {
-        val item = loadChatMemberById(chatroomId = chatroomId, memberId = member.memberId)
-        if(item.isEmpty()) insertMember(member)
-        else updateMemberLastRead(memberId = member.memberId, messageId = member.readMessage?: null)
-    }
 
     @Update
     suspend fun updateAllMember(vararg members: Member)

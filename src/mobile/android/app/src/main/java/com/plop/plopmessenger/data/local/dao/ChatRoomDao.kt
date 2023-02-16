@@ -13,6 +13,11 @@ interface ChatRoomDao {
     fun loadChatRoomTitle(chatroomId: String): Flow<String>
 
     @Query(
+        "SELECT chatroom_id FROM chatroom WHERE chatroom_id = :chatroomId"
+    )
+    suspend fun hasChatRoomById(chatroomId: String): String?
+
+    @Query(
         "SELECT chatroom_id FROM chatroom"
     )
     fun loadChatRoomIdList(): Flow<List<String>>

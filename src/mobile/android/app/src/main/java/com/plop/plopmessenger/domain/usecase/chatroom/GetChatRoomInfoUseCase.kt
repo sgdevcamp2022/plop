@@ -18,7 +18,7 @@ class GetChatRoomInfoUseCase @Inject constructor(
     suspend operator fun invoke(chatRoomId: String): Resource<ChatRoom> {
         return withContext(Dispatchers.IO) {
             try {
-                //getRemoteChatRoomInfoUseCase(chatRoomId)
+                getRemoteChatRoomInfoUseCase(chatRoomId)
                 Resource.Success(chatRoomRepository.loadChatRoomAndMemberById(chatRoomId).toChatRoom())
             } catch (e: Exception) {
                 Log.d("GetChatRoomInfoUseCase", e.message.toString())

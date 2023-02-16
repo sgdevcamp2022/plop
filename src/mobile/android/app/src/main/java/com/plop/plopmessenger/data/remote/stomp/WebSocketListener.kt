@@ -121,25 +121,50 @@ class WebSocketListener @Inject constructor(
 
     fun saveMessage(message: Message) {
         CoroutineScope(Dispatchers.IO).launch {
+            if(!chatRoomRepository.hasChatRoomById(message.chatroomId)){
+                saveNewChatRoom(chatRoomId = message.chatroomId, message)
+            } else {
+                updateChatRoom(message.chatroomId, content = message.content)
+            }
+            saveMembers(memberId = message.messageFromID, message.chatroomId, message)
             messageRepository.insertMessage(message)
         }
+
     }
 
-    fun saveNewChatRoom(chatRoom: ChatRoom) {
-        CoroutineScope(Dispatchers.IO).launch {
-            chatRoomRepository.insertChatRoom(chatRoom)
+    suspend fun saveNewChatRoom(chatRoomId: String, message: Message) {
+        chatRoomRepository.insertChatRoom(
+            ChatRoom(
+                chatRoomId,
+                message.messageFromID,
+                1,
+                message.content,
+                message.createdAt,
+                message.type
+            )
+        )
+    }
+
+    suspend fun saveMembers(memberId: String, chatRoomId: String, message: Message) {
+        try {
+            memberRepository.insertMember(
+                Member(
+                    memberId = memberId,
+                    chatroomId = chatRoomId,
+                    nickname = "",
+                    profileImg = "",
+                    readMessage = message.messageId
+                )
+            )
+        } catch (e: Exception) {
+            Log.d("SaveMember", e.message.toString())
         }
     }
 
-    fun saveMembers(member: Member) {
-        CoroutineScope(Dispatchers.IO).launch {
-            memberRepository.insertMember(member)
-        }
-    }
-
-    fun updateChatRoom(roomId: String, content: String) {
+    suspend fun updateChatRoom(roomId: String, content: String) {
         CoroutineScope(Dispatchers.IO).launch {
             chatRoomRepository.updateChatRoomContentById(roomId, content, LocalDateTime.now())
+            chatRoomRepository.plusChatRoomUnreadById(roomId, 1)
         }
     }
 

@@ -23,7 +23,7 @@ class GetRemoteChatRoomInfoUseCase @Inject constructor(
                 if(response.isSuccessful) {
                     val chatroom = response.body()
                     chatroom?.members?.forEach {
-                        memberRepository.insertOrUpdate(it.toMember(roomId), roomId)
+                        memberRepository.insertMember(it.toMember(roomId))
                     }
                 } else {
                     Log.d("GetRemoteChatRoomInfoUseCase", "error")
