@@ -40,7 +40,7 @@ class ChatRoomRepositoryImpl @Inject constructor(
         return chatroomMemberImageDao.loadChatRoomAndMemberById(chatroomId)
     }
 
-    override fun hasPersonalChatRoomByFriend(friendId: String): Flow<String?> {
+    override suspend fun hasPersonalChatRoomByFriend(friendId: String): String? {
         return chatRoomDao.hasPersonalChatRoomByFriend(friendId)
     }
 

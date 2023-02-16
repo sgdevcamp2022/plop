@@ -11,16 +11,14 @@ import javax.inject.Inject
 class GetChatRoomIdByPeopleIdUseCase @Inject constructor(
     private val chatRoomRepository: ChatRoomRepository
 ) {
-    operator fun invoke(peopleId: String): Flow<Resource<String?>> = flow {
+    suspend operator fun invoke(peopleId: String): Resource<String?> {
         try {
-            emit(Resource.Loading())
-            chatRoomRepository.hasPersonalChatRoomByFriend(peopleId).collect(){ result ->
-                emit(Resource.Success(result?: null))
-            }
+            return Resource.Success(chatRoomRepository.hasPersonalChatRoomByFriend(peopleId))
         } catch (e: IOException) {
             Log.d("GetChatRoomIdByPeopleId", "IOException")
+            return  Resource.Error("IOException")
         } catch (e: Exception) {
-            Log.d("GetChatRoomIdByPeopleId", e.message.toString())
+            return  Resource.Error(e.message.toString())
         }
     }
 }

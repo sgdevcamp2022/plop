@@ -25,7 +25,7 @@ interface ChatRoomDao {
     @Query(
         "SELECT chatroom.chatroom_id FROM chatroom, members WHERE chatroom.chatroom_id =members.chatroom_id AND chatroom.type = 1 AND members.member_id = :friendId"
     )
-    fun hasPersonalChatRoomByFriend(friendId: String): Flow<String?>
+    suspend fun hasPersonalChatRoomByFriend(friendId: String): String?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertChatRoom(chatRoom: ChatRoom)

@@ -11,10 +11,12 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.plop.plopmessenger.domain.model.*
+import com.plop.plopmessenger.domain.repository.SocketRepository
 import com.plop.plopmessenger.domain.repository.UserRepository
 import com.plop.plopmessenger.domain.usecase.chatroom.ChatRoomUseCase
 import com.plop.plopmessenger.domain.usecase.message.MessageUseCase
 import com.plop.plopmessenger.domain.usecase.socket.sendMessageUseCase
+import com.plop.plopmessenger.domain.usecase.socket.subscribeUseCase
 import com.plop.plopmessenger.domain.util.Resource
 import com.plop.plopmessenger.presentation.model.MediaStoreImage
 import com.plop.plopmessenger.presentation.navigation.DestinationID
@@ -39,6 +41,7 @@ class ChatViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val chatRoomUseCase: ChatRoomUseCase,
     private val sendMessageUseCase: sendMessageUseCase,
+    private val subscribeUseCase: subscribeUseCase,
     @ApplicationContext private val context: Context,
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
@@ -61,16 +64,16 @@ class ChatViewModel @Inject constructor(
     }
 
     suspend fun getDmChatRoomNewId(people: People) {
-        chatRoomUseCase.createDmChatRoomUseCase(people).collect() { result ->
-            when(result) {
-                is Resource.Success -> {
-                    chatState.update { it.copy(chatroomId = result.data) }
-                    getMessageList()
-                    getFirstMessage()
-                    getChatroomInfo()
-                } else -> {
-                    Log.d("GetDmChatRoomNewId", result.message.toString())
-                }
+        val result = chatRoomUseCase.createDmChatRoomUseCase(people)
+        when(result) {
+            is Resource.Success -> {
+                chatState.update { it.copy(chatroomId = result.data) }
+                subscribeUseCase(result.data!!)
+                getMessageList()
+                getFirstMessage()
+                getChatroomInfo()
+            } else -> {
+            Log.d("GetDmChatRoomNewId", result.message.toString())
             }
         }
     }
@@ -80,6 +83,7 @@ class ChatViewModel @Inject constructor(
             when(result) {
                 is Resource.Success -> {
                     chatState.update { it.copy(chatroomId = result.data) }
+                    subscribeUseCase(result.data!!)
                     getMessageList()
                     getFirstMessage()
                     getChatroomInfo()
@@ -178,7 +182,6 @@ class ChatViewModel @Inject constructor(
     }
 
     private suspend fun getChatroomInfo() {
-
         val result = chatRoomUseCase.getChatRoomInfoUseCase(chatState.value.chatroomId!!)
         when (result) {
             is Resource.Success -> {
@@ -237,21 +240,20 @@ class ChatViewModel @Inject constructor(
         if(chatState.value.chatroomId.isNullOrBlank()) {
             if(people.size == 1) {
                 viewModelScope.launch {
-                    chatRoomUseCase.getChatRoomIdByPeopleIdUseCase(people.first().peopleId).collect() { result ->
-                        if(result.data.isNullOrBlank()) {
-                            chatState.update { it.copy(
-                                title = people.first().nickname,
-                                members = mapOf(people.first().peopleId to people.first().toMember()),
-                                chatRoomType = ChatRoomType.DM
-                                )
-                            }
-                            getDmChatRoomNewId(people.first())
-
-                        }else {
-                            chatState.update { it.copy(chatroomId = result.data) }
-                            getMessageList()
-                            getChatroomInfo()
+                    val result = chatRoomUseCase.getChatRoomIdByPeopleIdUseCase(people.first().peopleId)
+                    if(result.data.isNullOrBlank()) {
+                        chatState.update { it.copy(
+                            title = people.first().nickname,
+                            members = mapOf(people.first().peopleId to people.first().toMember()),
+                            chatRoomType = ChatRoomType.DM
+                        )
                         }
+                        getDmChatRoomNewId(people.first())
+
+                    }else {
+                        chatState.update { it.copy(chatroomId = result.data) }
+                        getMessageList()
+                        getChatroomInfo()
                     }
                 }
             } else {

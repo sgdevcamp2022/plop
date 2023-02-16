@@ -5,4 +5,5 @@ import com.plop.plopmessenger.domain.model.MessageType
 interface SocketRepository {
     fun connect()
     fun joinAll()
+    fun join(roomId: String)
 }

@@ -106,6 +106,7 @@ class WebSocketListener @Inject constructor(
                             updatedAt = jsonObject.getString("createdAt")
                         )
                         saveMembers(jsonObject.getJSONArray("members"), chatRoomId)
+                        join("/chatting/topic/room/${chatRoomId}")
                     }
                 }
             }
