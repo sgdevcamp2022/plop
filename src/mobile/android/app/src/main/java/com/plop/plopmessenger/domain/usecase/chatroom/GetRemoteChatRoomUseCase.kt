@@ -8,6 +8,7 @@ import com.plop.plopmessenger.domain.repository.MemberRepository
 import com.plop.plopmessenger.domain.repository.SocketRepository
 import com.plop.plopmessenger.domain.util.Resource
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -22,6 +23,7 @@ class GetRemoteChatRoomUseCase @Inject constructor(
                 val response = chatRoomRepository.getMyRooms()
                 if(response.isSuccessful) {
                     val chatrooms = response.body()
+                    val chatRoomIsEmpty = chatRoomRepository.loadChatRoomIdList().isEmpty()
                     if(!chatrooms?.getMyRoomDto.isNullOrEmpty()) {
                         chatRoomRepository.insertAllChatRoom(
                             chatrooms?.getMyRoomDto?.map { it.toChatRoom() } ?: emptyList()
@@ -31,13 +33,14 @@ class GetRemoteChatRoomUseCase @Inject constructor(
                                 it.members.map { member -> member.toMember(it.roomId) }
                             )
                         }
+                        if(chatRoomIsEmpty) socketRepository.joinAll() else {}
                     } else {
 
                     }
                 } else {
                     Log.d("GetRemoteChatRoomUseCase", "error")
                 }
-                
+
             }
         } catch (e: Exception){
             Log.d("GetRemoteChatRoomUseCase", e.message.toString())

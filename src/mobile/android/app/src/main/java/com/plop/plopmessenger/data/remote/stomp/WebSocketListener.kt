@@ -131,9 +131,10 @@ class WebSocketListener @Inject constructor(
                 join("/chatting/topic/room/${it}")
             }
             userRepository.getUserId().collect() {
-                Log.d("ㅁㄴㅇㄹ", it)
-                join("/chatting/topic/new-room/${it}")
-                userId = it
+                if(it.isNotEmpty()) {
+                    join("/chatting/topic/new-room/${it}")
+                    userId = it
+                }
             }
         }
     }
