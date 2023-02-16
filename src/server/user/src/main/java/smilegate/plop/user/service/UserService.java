@@ -15,6 +15,8 @@ import smilegate.plop.user.dto.UserDto;
 import smilegate.plop.user.dto.request.RequestProfile;
 import smilegate.plop.user.dto.response.ResponseProfile;
 import smilegate.plop.user.dto.response.ResponseUser;
+import smilegate.plop.user.exception.FileStreamException;
+import smilegate.plop.user.exception.UserNotFoundException;
 import smilegate.plop.user.model.JwtUser;
 import smilegate.plop.user.security.JwtTokenProvider;
 
@@ -47,45 +49,46 @@ public class UserService {
     }
 
     public ResponseProfile getProfile(String target) {
-        UserEntity user = userRepository.findByUserIdOrEmail(target,target);
+        UserEntity userEntity = userRepository.findByUserIdOrEmail(target,target);
 
-        if (user == null) {
-            return null;
+        if (userEntity == null) {
+            throw new UserNotFoundException(String.format("[%s] is Not Found", userEntity.getUserId()));
         } else {
             ResponseProfile responseProfile = new ResponseProfile(
-                    user.getUserId(), user.getEmail(),user.getProfile());
+                    userEntity.getUserId(), userEntity.getEmail(),userEntity.getProfile());
             return responseProfile;
         }
     }
 
     public ResponseProfile putProfile(RequestProfile profile) {
-        UserEntity user = userRepository.findByUserIdOrEmail(profile.getTarget(),profile.getTarget());
+        UserEntity userEntity = userRepository.findByUserIdOrEmail(profile.getTarget(),profile.getTarget());
 
-        if (user != null) {
-            MultipartFile multipartFile = profile.getImg();
-            String s3FileName = UUID.randomUUID() + "-" + multipartFile.getOriginalFilename();
-
-            ObjectMetadata objMeta = new ObjectMetadata();
-            try {
-                objMeta.setContentLength(multipartFile.getInputStream().available());
-
-                amazonS3Client.putObject(S3Bucket, s3FileName, multipartFile.getInputStream(), objMeta);
-                String uri = amazonS3Client.getUrl(S3Bucket, s3FileName).toString();
-
-                user.setProfile(Map.of(
-                        "nickname", profile.getNickname(),
-                        "img", uri
-                ));
-                UserEntity savedUser = userRepository.save(user);
-                ResponseProfile responseProfile = new ResponseProfile(
-                        savedUser.getUserId(), savedUser.getEmail(), savedUser.getProfile()
-                );
-                return responseProfile;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        if (userEntity == null) {
+            throw new UserNotFoundException(String.format("[%s] is Not Found", userEntity.getUserId()));
         }
-        return null;
+        MultipartFile multipartFile = profile.getImg();
+        String s3FileName = UUID.randomUUID() + "-" + multipartFile.getOriginalFilename();
+
+        ObjectMetadata objMeta = new ObjectMetadata();
+        try {
+            objMeta.setContentLength(multipartFile.getInputStream().available());
+
+            amazonS3Client.putObject(S3Bucket, s3FileName, multipartFile.getInputStream(), objMeta);
+            String uri = amazonS3Client.getUrl(S3Bucket, s3FileName).toString();
+
+            userEntity.setProfile(Map.of(
+                    "nickname", profile.getNickname(),
+                    "img", uri
+            ));
+            UserEntity savedUser = userRepository.save(userEntity);
+            ResponseProfile responseProfile = new ResponseProfile(
+                    savedUser.getUserId(), savedUser.getEmail(), savedUser.getProfile()
+            );
+            return responseProfile;
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new FileStreamException("file streaming is failed");
+        }
     }
 
     public List<ResponseProfile> searchUser(String target) {
@@ -94,24 +97,14 @@ public class UserService {
 
         List<ResponseProfile> responseUserList = new ArrayList<>();
         if (users == null)
-            return null;
+            throw new UserNotFoundException("there is no related user");
         else {
             for(UserEntity userEntity : users) {
-
                 ResponseProfile user = new ResponseProfile(
                         userEntity.getUserId(), userEntity.getEmail(), userEntity.getProfile());
                 responseUserList.add(user);
             }
             return responseUserList;
         }
-    }
-    public ResponseUser registerFcmToken(String jwt, String tokenId) {
-        JwtUser sender = jwtTokenProvider.getUserInfo(jwt);
-        UserEntity user = userRepository.findByUserId(sender.getUserId());
-        user.setFcmToken(tokenId);
-        userRepository.save(user);
-
-        return new ResponseUser(
-                user.getEmail(),user.getProfile().get("nickname").toString(),user.getUserId());
     }
 }

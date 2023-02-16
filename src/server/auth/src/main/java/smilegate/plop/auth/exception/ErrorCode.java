@@ -16,21 +16,7 @@ public enum ErrorCode {
     INCORRECT_PASSWORD(401, "AUTH-010", "비밀번호가 일치하지 않는 경우"),
     INCORRECT_VERIFICATION_CODE(401, "AUTH-011", "이메일 인증 코드가 틀린 경우"),
     USER_NOT_FOUND(404, "USER-001", "해당 유저가 존재하지 않는 경우"),
-    DUPLICATION_USER(409,"USER-002","해당 유저가 이미 존재하는 경우"), //409 confilct
-    INVALID_INPUT_VALUE(400, "COMMON-001", "유효성 검증에 실패한 경우"),
-    INTERNAL_SERVER_ERROR(500, "COMMON-002", "서버에서 처리할 수 없는 경우"),
-
-    DUPLICATE_LOGIN_ID(400, "ACCOUNT-001", "계정명이 중복된 경우"),
-
-    ACCOUNT_NOT_FOUND(404, "ACCOUNT-003", "계정을 찾을 수 없는 경우"),
-    ROLE_NOT_EXISTS(403, "ACCOUNT-004", "권한이 부족한 경우"),
-    TOKEN_NOT_EXISTS(404, "ACCOUNT-005", "해당 key의 인증 토큰이 존재하지 않는 경우"),
-
-    ARTIST_NOT_FOUND(404, "ARTIST-001", "가수를 찾을 수 없는 경우"),
-
-    SONG_NOT_FOUND(404, "SONG-001", "곡을 찾을 수 없는 경우"),
-
-    CONTEST_INVALID_DATE(400, "CONTEST-001", "선정 곡 날짜가 적절치 않은 경우");
+    DUPLICATION_USER(409,"USER-002","해당 유저가 이미 존재하는 경우"); //409 confilct
 
     private final int status;
     private final String code;

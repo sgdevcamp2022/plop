@@ -46,13 +46,9 @@ public class UserController {
     @GetMapping("/profile")
     public ResponseEntity<ResponseDto> getProfile(
             @RequestParam(name = "target") String target) {
-//        String jwt = jwtTokenProvider.removeBearer(bearerToken);
         ResponseProfile user = userService.getProfile(target);
-        ResponseDto responseDto;
-        if (user != null)
-            responseDto = new ResponseDto<>("SUCCESS", "get profile successfully", user);
-        else
-            responseDto = new ResponseDto<>("FAIL", "get profile request failed", user);
+        ResponseDto responseDto = new ResponseDto<>("SUCCESS", "get profile successfully", user);
+
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
     @PutMapping("/profile")
@@ -61,52 +57,15 @@ public class UserController {
         // jwt를 통해 본인이 맞는지 확인해야 할듯 로직 추가 필요
 //        String jwt = jwtTokenProvider.removeBearer(bearerToken);
         ResponseProfile user = userService.putProfile(profile);
-        ResponseDto responseDto;
-        if (user != null)
-            responseDto = new ResponseDto<>("SUCCESS", "change profile successfully", user);
-        else
-            responseDto = new ResponseDto<>("FAIL", "change profile request failed", user);
+        ResponseDto responseDto = new ResponseDto<>("SUCCESS", "change profile successfully", user);
+
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
-//    @PutMapping("/upload")
-//    public ResponseEntity<ResponseDto> upload(RequestProfile requestProfile) throws IOException {
-//        MultipartFile multipartFile = requestProfile.getImg();
-//        String s3FileName = UUID.randomUUID() + "-" + multipartFile.getOriginalFilename();
-//
-//        ObjectMetadata objMeta = new ObjectMetadata();
-//        objMeta.setContentLength(multipartFile.getInputStream().available());
-//
-//        amazonS3Client.putObject(S3Bucket, s3FileName, multipartFile.getInputStream(), objMeta);
-//        String uri = amazonS3Client.getUrl(S3Bucket, s3FileName).toString();
-//        ResponseProfile responseProfile = new ResponseProfile(requestProfile.getTarget(),requestProfile.getTarget(),
-//                Map.of("nickname",requestProfile.getNickname(),
-//                        "img",uri));
-//        ResponseDto responseDto =  new ResponseDto<>("SUCCESS", "change profile successfully", responseProfile);
-//
-//        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
-//
-//    }
     @GetMapping("/search")
     public ResponseEntity<ResponseDto> searchUser(
             @RequestParam String target) {
-//        String jwt = jwtTokenProvider.removeBearer(bearerToken);
         List<ResponseProfile> users = userService.searchUser(target);
-        ResponseDto responseDto;
-        if (users != null)
-            responseDto = new ResponseDto<>("SUCCESS", "search users successfully", users);
-        else
-            responseDto = new ResponseDto<>("FAIL", "search users request failed", users);
-        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
-    }
-    @PostMapping("register")
-    public ResponseEntity<ResponseDto> registerFcmToken(
-            @RequestHeader("AUTHORIZATION") String bearerToken,
-            @RequestBody Map<String,Object> tokenId
-    ) {
-        String jwt = jwtTokenProvider.removeBearer(bearerToken);
-        String token = tokenId.get("tokenId").toString();
-        ResponseUser responseUser = userService.registerFcmToken(jwt, token);
-        ResponseDto responseDto = new ResponseDto<>("SUCCESS", "register token successfully", responseUser);
+        ResponseDto responseDto = new ResponseDto<>("SUCCESS", "search users successfully", users);
 
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
