@@ -29,4 +29,5 @@ interface FriendRepository {
     suspend fun deleteFriend(friendid: String): Response<DeleteFriendResponse>
     suspend fun postFriendAcceptRequest(postFriendAcceptRequest: PostFriendAcceptRequest): Response<PostFriendAcceptResponse>
     suspend fun deleteFriendRejectRequest(deleteFriendRejectRequest: DeleteFriendRejectRequest): Response<DeleteFriendRejectResponse>
+    suspend fun deleteFriends()
 }

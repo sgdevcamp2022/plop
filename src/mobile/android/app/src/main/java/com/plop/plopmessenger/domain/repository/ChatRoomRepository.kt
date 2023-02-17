@@ -34,4 +34,5 @@ interface ChatRoomRepository {
     suspend fun getChatroomHistory(roomid: String): Response<GetHistoryMessageResponse>
     suspend fun getChatRoomInfo(roomid: String): Response<GetChatRoomInfoResponse>
     suspend fun postMessage(postMessageRequest: PostMessageRequest): Response<Void>
+    suspend fun deleteChatRoomData()
 }

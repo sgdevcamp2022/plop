@@ -119,4 +119,10 @@ class ChatRoomRepositoryImpl @Inject constructor(
     override suspend fun postMessage(postMessageRequest: PostMessageRequest): Response<Void> {
         return chatApi.postMessage(postMessageRequest)
     }
+
+    override suspend fun deleteChatRoomData() {
+        return chatRoomDao.deleteChatRoomData()
+    }
+
+
 }
