@@ -11,7 +11,7 @@ import retrofit2.http.Query
 import java.io.File
 
 interface PresenceRepository {
-    suspend fun setOn(): Response<String>
-    suspend fun setOff(): Response<String>
+    suspend fun setOn(): Response<Void>
+    suspend fun setOff(): Response<Void>
     suspend fun getPresenceUser(): Response<GetPresenceUserResponse>
 }

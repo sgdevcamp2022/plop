@@ -22,11 +22,11 @@ import javax.inject.Inject
 class PresenceRepositoryImpl @Inject constructor(
     private val presenceApi: PresenceApi
 ): PresenceRepository {
-    override suspend fun setOn(): Response<String> {
+    override suspend fun setOn(): Response<Void> {
         return presenceApi.putOn()
     }
 
-    override suspend fun setOff(): Response<String> {
+    override suspend fun setOff(): Response<Void> {
         return presenceApi.putOff()
     }
 

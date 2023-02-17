@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.plop.plopmessenger.domain.repository.SocketRepository
+import com.plop.plopmessenger.domain.usecase.presence.PresenceUseCase
 import com.plop.plopmessenger.domain.usecase.socket.subscribeAllUseCase
 import com.plop.plopmessenger.presentation.screen.login.InitialActivity
 import com.plop.plopmessenger.presentation.screen.login.LoginRoot
@@ -25,6 +26,9 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var socketRepository: SocketRepository
 
+    @Inject
+    lateinit var presenceUseCase: PresenceUseCase
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -35,5 +39,16 @@ class MainActivity : ComponentActivity() {
         }
         socketRepository.connect()
         socketRepository.joinAll()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        presenceUseCase.putOnUseCase()
+    }
+
+
+    override fun onStop() {
+        super.onStop()
+        presenceUseCase.putOffUseCase()
     }
 }

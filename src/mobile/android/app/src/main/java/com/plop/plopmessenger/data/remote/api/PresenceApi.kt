@@ -10,8 +10,8 @@ interface PresenceApi {
     suspend fun getPresenceUser(): Response<GetPresenceUserResponse>
 
     @PUT(Constants.PUT_OFF)
-    suspend fun putOff(): Response<String>
+    suspend fun putOff(): Response<Void>
 
     @PUT(Constants.PUT_ON)
-    suspend fun putOn(): Response<String>
+    suspend fun putOn(): Response<Void>
 }
