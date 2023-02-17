@@ -22,6 +22,12 @@ interface FriendDao {
     )
     fun loadFriendByNickname(nickname: String): Flow<List<Friend>>
 
+    @Query(
+        "SELECT * FROM friends " +
+                "WHERE status = 1 AND friend_id = :friendId "
+    )
+    suspend fun loadFriendById(friendId: String): List<Friend>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertFriend(friend: Friend)
 

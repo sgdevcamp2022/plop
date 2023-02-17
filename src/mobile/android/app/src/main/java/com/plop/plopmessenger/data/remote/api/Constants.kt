@@ -33,5 +33,9 @@ object Constants {
     const val POST_FRIEND_REQUEST_ACCEPT = "/user/v1/friend/response"
     const val DELETE_FRIEND_REQUEST_REJECT = "/user/v1/friend/response"
 
+    const val PUT_OFF = "/presence/v1/off"
+    const val PUT_ON = "/presence/v1/on"
+    const val GET_PRESENCE_USER = "/presence/v1/users"
+
     const val PAGE_SIZE = 10
 }

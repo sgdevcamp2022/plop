@@ -6,11 +6,8 @@ import android.util.Log
 import androidx.room.Room
 import com.plop.plopmessenger.data.local.AppDatabase
 import com.plop.plopmessenger.data.pref.PrefDataSource
-import com.plop.plopmessenger.data.remote.api.ChatApi
+import com.plop.plopmessenger.data.remote.api.*
 import com.plop.plopmessenger.data.remote.api.Constants.BASE_URL
-import com.plop.plopmessenger.data.remote.api.FriendApi
-import com.plop.plopmessenger.data.remote.api.RefreshApi
-import com.plop.plopmessenger.data.remote.api.UserApi
 import com.plop.plopmessenger.data.remote.stomp.WebSocketListener
 import com.plop.plopmessenger.data.repository.*
 import com.plop.plopmessenger.domain.repository.*
@@ -91,6 +88,14 @@ object AppModule {
         @AuthRetrofit retrofit: Retrofit
     ): UserApi {
         return retrofit.create(UserApi::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun providePresenceApi(
+        @AuthRetrofit retrofit: Retrofit
+    ): PresenceApi {
+        return retrofit.create(PresenceApi::class.java)
     }
 
     @AuthOkHttp
@@ -302,6 +307,14 @@ object AppModule {
     fun provideSocketRepository(webSocketListener: WebSocketListener): SocketRepository {
         return SocketRepositoryImpl(
             webSocketListener = webSocketListener
+        )
+    }
+
+    @Singleton
+    @Provides
+    fun providePresenceRepository(presenceApi: PresenceApi): PresenceRepository {
+        return PresenceRepositoryImpl(
+            presenceApi = presenceApi
         )
     }
 }
