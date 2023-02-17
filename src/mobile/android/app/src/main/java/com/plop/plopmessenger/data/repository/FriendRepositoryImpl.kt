@@ -84,4 +84,8 @@ class FriendRepositoryImpl @Inject constructor(
     override suspend fun deleteFriendRejectRequest(deleteFriendRejectRequest: DeleteFriendRejectRequest): Response<DeleteFriendRejectResponse> {
         return friendApi.deleteFriendRequestReject(deleteFriendRejectRequest)
     }
+
+    override suspend fun deleteFriends() {
+        return friendDao.deleteFriends()
+    }
 }

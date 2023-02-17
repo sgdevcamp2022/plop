@@ -49,4 +49,7 @@ interface FriendDao {
 
     @Update
     suspend fun updateAllFriend(vararg friends: Friend)
+
+    @Query("DELETE FROM friends")
+    suspend fun deleteFriends()
 }

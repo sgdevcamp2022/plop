@@ -63,4 +63,7 @@ interface ChatRoomDao {
         "DELETE FROM chatroom WHERE chatroom_id = :chatroomId"
     )
     fun deleteChatRoom(chatroomId: String)
+
+    @Query("DELETE FROM chatroom")
+    suspend fun deleteChatRoomData()
 }
