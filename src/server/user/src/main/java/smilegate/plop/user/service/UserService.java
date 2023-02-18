@@ -52,7 +52,7 @@ public class UserService {
         UserEntity userEntity = userRepository.findByUserIdOrEmail(target,target);
 
         if (userEntity == null) {
-            throw new UserNotFoundException(String.format("[%s] is Not Found", userEntity.getUserId()));
+            throw new UserNotFoundException(String.format("[%s] is Not Found", target));
         } else {
             ResponseProfile responseProfile = new ResponseProfile(
                     userEntity.getUserId(), userEntity.getEmail(),userEntity.getProfile());
@@ -64,7 +64,7 @@ public class UserService {
         UserEntity userEntity = userRepository.findByUserIdOrEmail(profile.getTarget(),profile.getTarget());
 
         if (userEntity == null) {
-            throw new UserNotFoundException(String.format("[%s] is Not Found", userEntity.getUserId()));
+            throw new UserNotFoundException(String.format("[%s] is Not Found",profile.getTarget()));
         }
         MultipartFile multipartFile = profile.getImg();
         String s3FileName = UUID.randomUUID() + "-" + multipartFile.getOriginalFilename();
