@@ -107,7 +107,6 @@ fun LoginScreen(
             onDone = {
                 focusManager.clearFocus()
                 viewModel.login()
-                navigateToMain()
             }
         )
 

@@ -3,6 +3,8 @@ package com.plop.plopmessenger.presentation.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.plop.plopmessenger.domain.usecase.presence.PresenceUseCase
+import com.plop.plopmessenger.domain.usecase.socket.CloseUseCase
 import com.plop.plopmessenger.domain.usecase.user.UserUseCase
 import com.plop.plopmessenger.domain.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,7 +15,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SettingViewModel @Inject constructor(
-    private val userUseCase: UserUseCase
+    private val userUseCase: UserUseCase,
+    private val presenceUseCase: PresenceUseCase,
+    private val closeUseCase: CloseUseCase
 ): ViewModel() {
 
     var settingState = MutableStateFlow(SettingState())
@@ -84,6 +88,7 @@ class SettingViewModel @Inject constructor(
 
     fun logout() {
         viewModelScope.launch {
+            setOff()
             userUseCase.logoutUseCase().collect() { result ->
                 when(result) {
                     is Resource.Success -> {
@@ -92,6 +97,7 @@ class SettingViewModel @Inject constructor(
                                 shouldLoginState = false
                             )
                         }
+                        closeUseCase()
                         Log.d("로그아웃", "성공..성공입니다..!")
                     }
                     is Resource.Error -> {
@@ -109,8 +115,13 @@ class SettingViewModel @Inject constructor(
         }
     }
 
+    fun setOff() {
+        presenceUseCase.putOffUseCase()
+    }
+
     fun withdrawal() {
         viewModelScope.launch {
+            setOff()
             userUseCase.withdrawalUseCase().collect() { result ->
                 when(result) {
                     is Resource.Success -> {
@@ -119,6 +130,7 @@ class SettingViewModel @Inject constructor(
                                 shouldLoginState = false
                             )
                         }
+                        closeUseCase()
                         Log.d("탈퇴", "성공..성공입니다..!")
                     }
                     is Resource.Error -> {
