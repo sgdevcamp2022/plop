@@ -86,17 +86,18 @@ class WebSocketListener @Inject constructor(
                 CoroutineScope(Dispatchers.IO).launch {
                     if(chatRoomRepository.hasChatRoomById(chatRoomId)){
                         Log.d("메세지받음", jsonObject.toString())
-                            saveMessage(
-                                Message(
-                                    chatroomId = jsonObject.getString("room_id"),
-                                    messageId = jsonObject.getString("message_id"),
-                                    messageFromID = jsonObject.getString("sender_id"),
-                                    content = jsonObject.getString("content"),
-                                    createdAt = LocalDateTime.now(),
-                                    type = 1
-                                )
+                        saveMember(jsonObject.getString("sender_id"), jsonObject.getString("room_id"))
+                        saveMessage(
+                            Message(
+                                chatroomId = jsonObject.getString("room_id"),
+                                messageId = jsonObject.getString("message_id"),
+                                messageFromID = jsonObject.getString("sender_id"),
+                                content = jsonObject.getString("content"),
+                                createdAt = LocalDateTime.now(),
+                                type = 1
                             )
-                        }
+                        )
+                    }
                     else{
                         Log.d("받음", jsonObject.toString())
                         saveNewChatRoom(
@@ -173,12 +174,13 @@ class WebSocketListener @Inject constructor(
 
     suspend fun saveMember(memberId: String, chatRoomId: String) {
         try {
+            val memberProfile = userRepository.getUserProfile(memberId).body()
             memberRepository.insertMember(
                 Member(
                     memberId = memberId,
                     chatroomId = chatRoomId,
-                    nickname = "",
-                    profileImg = "",
+                    nickname = memberProfile?.user?.profile?.nickname?:"",
+                    profileImg = memberProfile?.user?.profile?.img?:"",
                     readMessage = null
                 )
             )

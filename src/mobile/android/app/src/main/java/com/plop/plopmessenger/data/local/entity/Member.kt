@@ -3,6 +3,7 @@ package com.plop.plopmessenger.data.local.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import com.plop.plopmessenger.data.dto.response.People
 
 @Entity(
     tableName = "members",
@@ -34,4 +35,11 @@ data class Member(
     var readMessage: String? = null,
 )
 
+fun People.toMember(roomId: String): Member = Member(
+    memberId = this.userId,
+    profileImg = this.profile.img,
+    nickname = this.profile.nickname,
+    readMessage = null,
+    chatroomId = roomId
+)
 

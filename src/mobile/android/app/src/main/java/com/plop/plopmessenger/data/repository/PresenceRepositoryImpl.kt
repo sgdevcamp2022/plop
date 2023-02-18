@@ -38,7 +38,7 @@ class PresenceRepositoryImpl @Inject constructor(
     override fun getPresenceUser() = flow {
        while(true) {
            emit(presenceApi.getPresenceUser())
-           delay(5_000)
+           delay(5_00000)
        }
     }.flowOn(Dispatchers.IO)
 }

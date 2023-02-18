@@ -105,7 +105,7 @@ fun ChatsScreen(
 
             if(state.value.chats.isEmpty()) {
                 item {
-                    Text("빈화면임")
+                    EmptyScreen()
                 }
             } else {
                 items(state.value.chats) {
