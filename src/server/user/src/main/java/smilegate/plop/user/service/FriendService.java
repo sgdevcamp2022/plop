@@ -39,7 +39,7 @@ public class FriendService {
         JwtUser sender = jwtTokenProvider.getUserInfo(jwt);
         UserEntity senderEntity = userRepository.findByEmail(sender.getEmail());
         if (senderEntity == null)
-            throw new UserNotFoundException(String.format("sender - [%s] is Not Found", senderEntity.getUserId()));
+            throw new UserNotFoundException(String.format("sender - [%s] is Not Found", sender.getEmail()));
         // 친구 요청을 받는 엔티티 - 이메일 혹은 아이디로 검색
         UserEntity receiverEntity = null;
         // 이메일인 경우
@@ -49,7 +49,7 @@ public class FriendService {
         else
             receiverEntity = userRepository.findByUserId(target);
         if (receiverEntity == null)
-            throw new UserNotFoundException(String.format("receiver - [%s] is Not Found", receiverEntity.getUserId()));
+            throw new UserNotFoundException(String.format("receiver - [%s] is Not Found", target));
 
         FriendEntity friendEntity;
         if (status == FriendshipCode.NONE.value()) { // 취소하고 싶은경우 삭제
@@ -80,7 +80,7 @@ public class FriendService {
         JwtUser receiver = jwtTokenProvider.getUserInfo(jwt);
         UserEntity receiverEntity = userRepository.findByEmail(receiver.getEmail());
         if (receiverEntity == null)
-            throw new UserNotFoundException(String.format("[%s] is Not Found", receiverEntity.getUserId()));
+            throw new UserNotFoundException(String.format("[%s] is Not Found", receiver.getEmail()));
 
         // 친구 요청을 받는 엔티티 - 이메일 혹은 아이디로 검색
         UserEntity senderEntity = null;
@@ -89,7 +89,7 @@ public class FriendService {
         else // 아이디인 경우
             senderEntity = userRepository.findByUserId(target);
         if (senderEntity == null)
-            throw new UserNotFoundException(String.format("[%s] is Not Found", senderEntity.getUserId()));
+            throw new UserNotFoundException(String.format("[%s] is Not Found", target));
 
         log.error(senderEntity.toString());
         log.error(receiverEntity.toString());
@@ -112,7 +112,7 @@ public class FriendService {
         JwtUser user = jwtTokenProvider.getUserInfo(jwt);
         UserEntity userEntity = userRepository.findByEmail(user.getEmail());
         if (userEntity == null)
-            throw new UserNotFoundException(String.format("[%s] is Not Found", userEntity.getUserId()));
+            throw new UserNotFoundException(String.format("[%s] is Not Found", user.getEmail()));
 
         // 친구 요청을 받는 엔티티 - 이메일 혹은 아이디로 검색
         UserEntity targetEntity = null;
@@ -121,7 +121,7 @@ public class FriendService {
         else // 아이디인 경우
             targetEntity = userRepository.findByUserId(target);
         if (targetEntity == null)
-            throw new UserNotFoundException(String.format("[%s] is Not Found", targetEntity.getUserId()));
+            throw new UserNotFoundException(String.format("[%s] is Not Found", target));
 
         // sender(삭제 요청한 사람) receiver(대상)인 경우
         FriendEntity friendEntity = friendRepository.findBySenderIdAndReceiverIdAndStatus(
@@ -144,7 +144,7 @@ public class FriendService {
         JwtUser sender = jwtTokenProvider.getUserInfo(jwt);
         UserEntity senderEntity = userRepository.findByEmail(sender.getEmail());
         if (senderEntity == null)
-            throw new UserNotFoundException(String.format("[%s] is Not Found", senderEntity.getUserId()));
+            throw new UserNotFoundException(String.format("[%s] is Not Found", sender.getEmail()));
 
         List<FriendEntity> friendEntityList = friendRepository.findBySenderIdOrReceiverIdAndStatus(
                 senderEntity.getId(),
@@ -160,7 +160,7 @@ public class FriendService {
                     user = userRepository.findById(friend.getSenderId()).orElse(null);
                 }
                 if (user == null)
-                    throw new UserNotFoundException(String.format("[%s] is Not Found in friendship", user.getUserId()));
+                    throw new UserNotFoundException("user is Not Found in friendship");
 
                 ResponseProfile userProfile = new ResponseProfile(user.getUserId(), user.getEmail(), user.getProfile());
                 responseFriendList.add(userProfile);
@@ -174,7 +174,7 @@ public class FriendService {
         JwtUser sender = jwtTokenProvider.getUserInfo(jwt);
         UserEntity senderEntity = userRepository.findByEmail(sender.getEmail());
         if (senderEntity == null)
-            throw new UserNotFoundException(String.format("[%s] is Not Found", senderEntity.getUserId()));
+            throw new UserNotFoundException(String.format("[%s] is Not Found", sender.getEmail()));
 
         List<FriendEntity> friendEntityList = friendRepository.findBySenderIdAndStatus(
                 senderEntity.getId(),
@@ -185,7 +185,7 @@ public class FriendService {
             for (FriendEntity friend : friendEntityList) {
                 UserEntity receiver = userRepository.findById(friend.getReceiverId()).orElse(null);
                 if (receiver == null)
-                    throw new UserNotFoundException(String.format("[%s] is Not Found", receiver.getUserId()));
+                    throw new UserNotFoundException("user is Not Found in friendship");
 
                 ResponseProfile user = new ResponseProfile(receiver.getUserId(), receiver.getEmail(), receiver.getProfile());
                 responseFriendList.add(user);
@@ -197,7 +197,7 @@ public class FriendService {
         JwtUser receiver = jwtTokenProvider.getUserInfo(jwt);
         UserEntity receiverEntity = userRepository.findByEmail(receiver.getEmail());
         if (receiverEntity == null)
-            throw new UserNotFoundException(String.format("[%s] is Not Found", receiverEntity.getUserId()));
+            throw new UserNotFoundException(String.format("[%s] is Not Found", receiver.getEmail()));
 
         List<FriendEntity> friendEntityList = friendRepository.findByReceiverIdAndStatus(
                 receiverEntity.getId(),
@@ -208,7 +208,7 @@ public class FriendService {
             for(FriendEntity friend : friendEntityList) {
                 UserEntity sender = userRepository.findById(friend.getSenderId()).orElse(null);
                 if (sender == null)
-                    throw new UserNotFoundException(String.format("[%s] is Not Found", sender.getUserId()));
+                    throw new UserNotFoundException("user is Not Found in friendship");
 
                 ResponseProfile user = new ResponseProfile(sender.getUserId(), sender.getEmail(), sender.getProfile());
                 responseFriendList.add(user);
