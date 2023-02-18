@@ -13,5 +13,5 @@ import java.io.File
 interface PresenceRepository {
     suspend fun setOn(): Response<Void>
     suspend fun setOff(): Response<Void>
-    suspend fun getPresenceUser(): Response<GetPresenceUserResponse>
+    fun getPresenceUser(): Flow<Response<GetPresenceUserResponse>>
 }
