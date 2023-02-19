@@ -13,13 +13,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import smilegate.plop.chat.config.kafka.Producers;
 import smilegate.plop.chat.dto.APIMessage;
+import smilegate.plop.chat.dto.RoomMessageDto;
 import smilegate.plop.chat.dto.request.ReqDmDto;
 import smilegate.plop.chat.dto.request.ReqGroupDto;
 import smilegate.plop.chat.dto.request.ReqInviteDto;
+import smilegate.plop.chat.dto.request.ReqReadMessage;
 import smilegate.plop.chat.dto.response.RespMyChatRoom;
 import smilegate.plop.chat.dto.response.RespRoomDto;
-import smilegate.plop.chat.exception.CustomAPIException;
-import smilegate.plop.chat.exception.ErrorCode;
 import smilegate.plop.chat.exception.ErrorResponseDto;
 import smilegate.plop.chat.model.jwt.JwtTokenProvider;
 import smilegate.plop.chat.service.ChatRoomService;
@@ -62,7 +62,11 @@ public class ChatRoomController {
         reqGroupDto.setCreator(userId);
 
         RespRoomDto respRoomDto = chatRoomMongoService.createGroup(reqGroupDto);
-        producers.sendRoomMessage(respRoomDto);
+
+        producers.sendRoomMessage(RoomMessageDto.builder()
+                .receivers(reqGroupDto.getMembers())
+                .respRoomDto(respRoomDto)
+                .build());
         return new ResponseEntity<>(respRoomDto,HttpStatus.CREATED);
     }
 
@@ -72,9 +76,13 @@ public class ChatRoomController {
     @PostMapping("/v1/invitation")
     public ResponseEntity<APIMessage> groupInvitation(@RequestBody ReqInviteDto reqInviteDto){
         if(chatRoomMongoService.inviteMembers(reqInviteDto)){
-            log.error("groupInvitation, Message={}","멤버가 없음");
+            producers.sendRoomMessage(RoomMessageDto.builder()
+                    .receivers(reqInviteDto.getMembers())
+                    .respRoomDto(chatRoomMongoService.getChatRoomInfo(reqInviteDto.getRoom_id()))
+                    .build());
             return new ResponseEntity<>(new APIMessage(APIMessage.ResultEnum.success,reqInviteDto),HttpStatus.OK);
         }
+        log.error("groupInvitation, Message={}","멤버가 없음");
         return new ResponseEntity<>(new APIMessage(APIMessage.ResultEnum.failed,reqInviteDto),HttpStatus.BAD_REQUEST);
     }
 
@@ -114,5 +122,11 @@ public class ChatRoomController {
     @GetMapping("/v1/info/{roomid}")
     public ResponseEntity<RespRoomDto> chatRoomInfo(@PathVariable(value = "roomid") String roomId){
         return new ResponseEntity<>(chatRoomMongoService.getChatRoomInfo(roomId), HttpStatus.OK);
+    }
+
+    @Operation(summary = "마지막 읽은 메시지 id 저장")
+    @PutMapping("/v1/last-message")
+    public ResponseEntity<APIMessage> updateLastReadMsgId(@RequestBody ReqReadMessage reqReadMessage){
+        return new ResponseEntity<>(chatRoomMongoService.updateLastReadMsgId(reqReadMessage), HttpStatus.OK);
     }
 }

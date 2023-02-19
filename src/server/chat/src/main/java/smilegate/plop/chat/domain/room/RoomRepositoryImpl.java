@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import smilegate.plop.chat.dto.request.ReqDmDto;
 import smilegate.plop.chat.dto.request.ReqInviteDto;
+import smilegate.plop.chat.dto.request.ReqReadMessage;
 import smilegate.plop.chat.exception.CustomAPIException;
 import smilegate.plop.chat.exception.ErrorCode;
 
@@ -63,6 +64,16 @@ public class RoomRepositoryImpl implements RoomMongoTemplateRepository{
                 Criteria.where("members").elemMatch(Criteria.where("userId").is(reqDmDto.getMessage_to())));
 
         return mongoTemplate.findOne(new Query(criteria),RoomCollection.class);
+    }
+
+    @Override
+    public UpdateResult updateLastReadMsgId(ReqReadMessage reqReadMessage) {
+        Query query = Query.query(Criteria.where("roomId").is(reqReadMessage.getRoom_id())
+                .andOperator(Criteria.where("members").elemMatch(Criteria.where("userId").is(reqReadMessage.getUser_id())))
+        );
+        Update update = new Update().set("members.$.lastReadMsgId",reqReadMessage.getMessage_id());
+
+        return mongoTemplate.updateFirst(query,update,"rooms");
     }
 
 
