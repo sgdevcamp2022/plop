@@ -7,11 +7,9 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 import smilegate.plop.chat.dto.ChatMessageDto;
 import smilegate.plop.chat.dto.MessageType;
+import smilegate.plop.chat.dto.RoomMessageDto;
 import smilegate.plop.chat.dto.response.RespRoomDto;
 import smilegate.plop.chat.service.ChatRoomService;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -38,13 +36,12 @@ public class Consumers {
 
     /**
      * 자신을 제외한 룸 멤버들에게 방생성 정보 전달
-     * @param respRoomDto
+     * @param roomMessageDto
      */
     @KafkaListener(groupId = "${spring.kafka.room-consumer.group-id}",topics = "${kafka.topic.room-name}", containerFactory = "kafkaListenerContainerFactory")
-    public void listenGroupCreation(RespRoomDto respRoomDto){
-        List<String> userIdList = respRoomDto.getMembers().stream().map(m -> m.getUserId()).collect(Collectors.toList());
-        userIdList.remove(respRoomDto.getManagers().get(0));
-        for(String userId : userIdList){
+    public void listenGroupCreation(RoomMessageDto roomMessageDto){
+        RespRoomDto respRoomDto = roomMessageDto.getRespRoomDto();
+        for(String userId : roomMessageDto.getReceivers()){
             template.convertAndSend("/chatting/topic/new-room/"+userId,respRoomDto);
         }
     }
