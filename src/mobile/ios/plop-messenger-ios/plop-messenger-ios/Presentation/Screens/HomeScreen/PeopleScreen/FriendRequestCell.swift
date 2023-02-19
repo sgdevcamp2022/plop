@@ -1,20 +1,22 @@
 import UIKit
 
 protocol FriendRequestCellDelegate: AnyObject {
-  func didTappedAccept(_ indexPath: IndexPath)
-  func didTappedCancel(_ indexPath: IndexPath)
+  func requestAccepted(_ user: User)
+  func requestRejected(_ user: User)
 }
 
 final class FriendRequestCell: UITableViewCell {
   static let reuseIdentifier = String(describing: FriendRequestCell.self)
   
-  private let profileImageView = PlopProfileImageView(borderShape: .circle)
+  private let profileImageView = PlopProfileImageView(
+    borderShape: .circle
+  )
   private let nameLabel = UILabel()
   private let acceptButton = PlopOrangeButton(title: "  수락  ")
-  private let cancelButton = PlopGrayButton(title: "  거절  ")
+  private let rejectButton = PlopGrayButton(title: "  거절  ")
   private let stackView = UIStackView()
   
-  private var indexPath: IndexPath? = nil
+  private var user: User? = nil
   weak var delegate: FriendRequestCellDelegate?
   
   override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -27,19 +29,19 @@ final class FriendRequestCell: UITableViewCell {
     fatalError("init(coder:) has not been implemented")
   }
   
-  func configureData(_ friend: User, indexPath: IndexPath) {
-    self.nameLabel.text = friend.profile.nickname
-    self.indexPath = indexPath
+  func configureData(_ user: User) {
+    self.user = user
+    self.nameLabel.text = user.profile.nickname
   }
   
   @objc private func didTappedAccept() {
-    guard let indexPath = indexPath else { return }
-    delegate?.didTappedAccept(indexPath)
+    guard let user = user else { return }
+    delegate?.requestAccepted(user)
   }
   
-  @objc private func didTappedCancel() {
-    guard let indexPath = indexPath else { return }
-    delegate?.didTappedCancel(indexPath)
+  @objc private func didTappedReject() {
+    guard let user = user else { return }
+    delegate?.requestRejected(user)
   }
 }
 
@@ -57,7 +59,7 @@ extension FriendRequestCell {
     nameLabel.numberOfLines = 1
     
     acceptButton.titleLabel?.font = .preferredFont(forTextStyle: .body)
-    cancelButton.titleLabel?.font = .preferredFont(forTextStyle: .body)
+    rejectButton.titleLabel?.font = .preferredFont(forTextStyle: .body)
     
     acceptButton.isEnabled = true
     
@@ -65,9 +67,9 @@ extension FriendRequestCell {
       self,
       action: #selector(didTappedAccept),
       for: .touchUpInside)
-    cancelButton.addTarget(
+    rejectButton.addTarget(
       self,
-      action: #selector(didTappedCancel),
+      action: #selector(didTappedReject),
       for: .touchUpInside)
   }
   
@@ -75,7 +77,7 @@ extension FriendRequestCell {
     profileImageView.translatesAutoresizingMaskIntoConstraints = false
     nameLabel.translatesAutoresizingMaskIntoConstraints = false
     acceptButton.translatesAutoresizingMaskIntoConstraints = false
-    cancelButton.translatesAutoresizingMaskIntoConstraints = false
+    rejectButton.translatesAutoresizingMaskIntoConstraints = false
     
     stackView.translatesAutoresizingMaskIntoConstraints = false
     
@@ -91,7 +93,7 @@ extension FriendRequestCell {
     stackView.addArrangedSubview(profileImageView)
     stackView.addArrangedSubview(nameLabel)
     stackView.addArrangedSubview(acceptButton)
-    stackView.addArrangedSubview(cancelButton)
+    stackView.addArrangedSubview(rejectButton)
     
     contentView.addSubview(stackView)
     

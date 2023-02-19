@@ -13,6 +13,7 @@ final class LaunchViewModel: ViewModelType {
   
   private let coordinator: SceneCoordinator
   private let usecase = AuthUseCase()
+  private let userUsecase = UserUseCase()
   
   init(coordinator: SceneCoordinator) {
     self.coordinator = coordinator
@@ -22,15 +23,16 @@ final class LaunchViewModel: ViewModelType {
     let email = UserDefaults.standard.string(forKey: "currentEmail")
     
     let autoLoginResult = input.autoLoginTrigger
-      .flatMap({ [unowned self] _ in
-        return self.usecase.autoLogin(email: email ?? "")
-          .map({ result in
+      .flatMap({
+        return self.usecase.reissue(email: email ?? "")
+          .observe(on: MainScheduler.instance)
+          .map({ [unowned self] result in
             switch result {
             case .success(_):
               self.coordinator.toHome()
+              return
             case .failure(_):
-              self.coordinator.toHome()
-//              self.coordinator.toLogin()
+              self.coordinator.toLogin()
             }
           })
           .asDriverOnErrorJustComplete()

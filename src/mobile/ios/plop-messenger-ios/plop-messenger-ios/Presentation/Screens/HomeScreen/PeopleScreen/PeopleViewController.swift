@@ -2,8 +2,9 @@ import UIKit
 import RxCocoa
 import RxSwift
 
+import RxDataSources
+
 final class PeopleViewController: UIViewController {
-  
   enum Section: String, CaseIterable {
     case requestFriend = "친구 요청"
     case friends = "친구"
@@ -12,29 +13,14 @@ final class PeopleViewController: UIViewController {
   private let tableView = UITableView()
   private var addFriendsButton = UIBarButtonItem()
   
-  private var requestFriend: [User] = [] {
-    didSet {
-      tableView.beginUpdates()
-      tableView.reloadSections(
-        IndexSet(0 ... 0),
-        with: .automatic)
-      tableView.endUpdates()
-    }
-  }
-  
-  private var friends: [User] = [] {
-    didSet {
-      tableView.beginUpdates()
-      tableView.reloadSections(
-        IndexSet(1 ... 1),
-        with: .automatic)
-      tableView.endUpdates()
-    }
-  }
+  private var dataSource: RxTableViewSectionedAnimatedDataSource<FriendListSection>?
   
   private let viewModel: PeopleViewModel
+  
+  private let acceptRequestTrigger = PublishSubject<User>()
+  private let rejectRequestTrigger = PublishSubject<User>()
+  private let updateListTrigger = PublishSubject<Void>()
   private let disposeBag = DisposeBag()
-  private let acceptFriendPublisher = PublishSubject<String>()
   
   init(viewModel: PeopleViewModel) {
     self.viewModel = viewModel
@@ -54,46 +40,76 @@ final class PeopleViewController: UIViewController {
     configureNavigationBarAppearance()
     configureNavigationItems()
     
-    requestFriend.append(User(userID: "holuck", email: "holuck@naver.com", profile: Profile(nickname: "holuck", imageURL: "")))
+    configureDataSource()
     
     bind()
   }
   
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    updateListTrigger.onNext(())
+  }
+  
+  private func configureDataSource() {
+    dataSource = RxTableViewSectionedAnimatedDataSource(
+      configureCell: { [unowned self] dataSource, tableView, indexPath, item in
+        if indexPath.section == 0 {
+          guard let cell = tableView.dequeueReusableCell(
+            withIdentifier: FriendRequestCell.reuseIdentifier,
+            for: indexPath) as? FriendRequestCell else {
+            return UITableViewCell()
+          }
+          cell.configureData(item)
+          cell.delegate = self
+          return cell
+        } else {
+          guard let cell = tableView.dequeueReusableCell(
+            withIdentifier: FriendCell.reuseIdentifier,
+            for: indexPath) as? FriendCell else {
+            return UITableViewCell()
+          }
+          cell.configureData(item)
+          return cell
+        }
+      }, titleForHeaderInSection: { dataSource, index in
+        return dataSource.sectionModels[index].headerTitle
+      })
+  }
+  
   private func bind() {
-    let viewWillAppear = rx.sentMessage(#selector(UIViewController.viewWillAppear(_:)))
-      .mapToVoid()
-      .asDriverOnErrorJustComplete()
-    
     let input = PeopleViewModel.Input(
-      requestFriendListTrigger: viewWillAppear,
-      friendsListTrigger: viewWillAppear,
-      addFriendsTrigger: addFriendsButton.rx.tap.asDriver(),
-      requestFriendRespondTrigger: acceptFriendPublisher.asDriver(onErrorJustReturn: "")
+      updateListTrigger: updateListTrigger.asDriverOnErrorJustComplete(),
+      acceptRequestTrigger: acceptRequestTrigger.asDriverOnErrorJustComplete(),
+      rejectRequestTrigger: rejectRequestTrigger.asDriverOnErrorJustComplete(),
+      presentAddFriendTrigger: addFriendsButton.rx.tap.asDriverOnErrorJustComplete()
     )
     
     let output = viewModel.transform(input)
     
-    output.requestFriendList
-      .drive(onNext: { [weak self] friends in
-        self?.requestFriend = friends
-      })
-      .disposed(by: disposeBag)
+    if let dataSource = dataSource {
+      output.fetchedList
+        .asObservable()
+        .bind(to: tableView.rx.items(dataSource: dataSource))
+        .disposed(by: disposeBag)
+    }
     
-    output.friends
-      .drive(onNext: { [weak self] friends in
-        self?.friends = friends
-      })
-      .disposed(by: disposeBag)
-    
-    output.presentAddFriends
+    output.updatedList
       .drive()
       .disposed(by: disposeBag)
     
-    output.requestResponse
-      .drive(onNext: {
-        print("dismiss")
-      }, onCompleted: { print("completed")},
-      onDisposed: { print("Disposed")})
+    output.acceptRequest
+      .drive()
+      .disposed(by: disposeBag)
+    
+    output.rejectRequest
+      .drive()
+      .disposed(by: disposeBag)
+    
+    output.presentAddFriend
+      .drive()
+      .disposed(by: disposeBag)
+    
+    tableView.rx.setDelegate(self)
       .disposed(by: disposeBag)
   }
 }
@@ -102,8 +118,6 @@ final class PeopleViewController: UIViewController {
 extension PeopleViewController {
   private func configureViews() {
     view.backgroundColor = .systemBackground
-    tableView.dataSource = self
-    tableView.delegate = self
     tableView.separatorStyle = .none
     
     tableView.register(
@@ -169,65 +183,17 @@ extension PeopleViewController {
 }
 
 extension PeopleViewController: UITableViewDelegate {
-  func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-    switch section {
-    case 0:
-      return Section.allCases[0].rawValue
-    case 1:
-      return Section.allCases[1].rawValue
-    default:
-      return ""
-    }
-  }
-  
   func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
     return 64
   }
 }
 
-extension PeopleViewController: UITableViewDataSource {
-  func numberOfSections(in tableView: UITableView) -> Int {
-    return Section.allCases.count
-  }
-  
-  func tableView(_ tableView: UITableView,
-                 numberOfRowsInSection section: Int) -> Int {
-    return (section == 0) ? requestFriend.count : friends.count
-  }
-  
-  func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    
-    if indexPath.section == 0 {
-      guard let cell = tableView.dequeueReusableCell(
-        withIdentifier: FriendRequestCell.reuseIdentifier,
-        for: indexPath) as? FriendRequestCell else {
-        return UITableViewCell()
-      }
-      let friend = requestFriend[indexPath.row]
-      cell.configureData(friend, indexPath: indexPath)
-      cell.delegate = self
-      return cell
-    } else {
-      guard let cell = tableView.dequeueReusableCell(
-        withIdentifier: FriendCell.reuseIdentifier,
-        for: indexPath) as? FriendCell else {
-        return UITableViewCell()
-      }
-      let friend = friends[indexPath.row]
-      
-      cell.configureData(friend)
-      return cell
-    }
-  }
-}
-
 extension PeopleViewController: FriendRequestCellDelegate {
-  func didTappedAccept(_ indexPath: IndexPath) {
-    let requestedFriend = requestFriend[indexPath.row]
-    acceptFriendPublisher.onNext(requestedFriend.userID)
+  func requestAccepted(_ user: User) {
+    acceptRequestTrigger.onNext(user)
   }
   
-  func didTappedCancel(_ indexPath: IndexPath) {
-    acceptFriendPublisher.onNext("")
+  func requestRejected(_ user: User) {
+    rejectRequestTrigger.onNext(user)
   }
 }

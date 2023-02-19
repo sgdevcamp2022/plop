@@ -1,6 +1,7 @@
 import Foundation
 
 struct MessageResponse: Decodable {
+  let message: String
   let data: [MessageData]
 }
 
@@ -13,11 +14,11 @@ struct MessageData: Decodable {
   let createdAt: String
   
   enum CodingKeys: String, CodingKey {
-    case messageID = "message_id"
-    case roomID = "room_id"
     case messageType = "message_type"
+    case roomID = "room_id"
     case senderID = "sender_id"
     case content
+    case messageID = "message_id"
     case createdAt = "created_at"
   }
 }
@@ -25,8 +26,8 @@ struct MessageData: Decodable {
 extension MessageData {
   func toDomain() -> Message {
     return Message(
-      uid: messageID,
-      type: messageType,
+      messageID: messageID,
+      contentType: messageType,
       content: content,
       senderID: senderID,
       createdAt: createdAt,

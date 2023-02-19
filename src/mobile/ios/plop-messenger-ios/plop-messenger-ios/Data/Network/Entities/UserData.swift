@@ -22,10 +22,11 @@ struct ProfileData: Codable {
 }
 
 extension UserData {
-  func toDomain() -> User {
+  func toDomain(state: UserState) -> User {
     return User(
       userID: userID,
       email: email,
+      state: state,
       profile: profile.toDomain())
   }
 }
@@ -42,7 +43,7 @@ extension ProfileData {
 extension Profile {
   func toEncodable() -> ProfileData {
     return ProfileData(
-      imageURL: imageURL,
+      imageURL: imageURL ?? "",
       nickname: nickname)
   }
 }

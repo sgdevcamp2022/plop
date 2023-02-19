@@ -1,8 +1,19 @@
 import Foundation
+import MessageKit
 
 struct Member {
-  let uid: String
-  let email: String
-  let nickname: String
-  let imageURL: String?
+  let userID: String
+  let lastReadMessageID: String?
+  let enteredAt: String
 }
+
+extension Member: SenderType {
+  var senderId: String {
+    return userID
+  }
+  
+  var displayName: String {
+    return userID
+  }
+}
+

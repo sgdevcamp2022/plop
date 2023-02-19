@@ -14,14 +14,14 @@ final class SignupViewModel: ViewModelType {
   
   struct Output {
     let signupButtonEnabled: Driver<Bool>
-    let signupResult: Driver<Void>
+    let signupResult: Driver<String>
     let dismiss: Driver<Void>
   }
   
   private let usecase = AuthUseCase()
-  private let coordinator: LoginCoordinator
+  private let coordinator: SceneCoordinator
   
-  init(coordinator: LoginCoordinator) {
+  init(coordinator: SceneCoordinator) {
     self.coordinator = coordinator
   }
   
@@ -44,23 +44,26 @@ final class SignupViewModel: ViewModelType {
     
     let signupResult = input.signupTrigger
       .withLatestFrom(signupForm)
-      .flatMapLatest({ [unowned self] userID, email, nickname, password in
+      .flatMap({ [unowned self] userID, email, nickname, password in
         let user = User(
           userID: userID,
           email: email,
-          profile: Profile(nickname: nickname, imageURL: "")
-        )
-        return self.usecase.signup(user: user, password: password)
-          .map({ result in
-            switch result {
-            case .success(let message):
-              print(message)
-              self.coordinator.dismissSignupScreen()
-            case .failure(_):
-              break
-            }
-          })
-          .asDriverOnErrorJustComplete()
+          state: .none,
+          profile: Profile(nickname: nickname, imageURL: ""))
+        
+        return self.usecase.signup(
+          user: user,
+          password: password)
+        .subscribe(on: MainScheduler.instance)
+        .map({ result in
+          switch result {
+          case .success(let userID):
+            return userID
+          case .failure(_):
+            return ""
+          }
+        })
+        .asDriverOnErrorJustComplete()
       })
     
     let dismiss = input.cancelTrigger

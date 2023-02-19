@@ -17,8 +17,8 @@ final class FriendCell: UITableViewCell {
     fatalError("init(coder:) has not been implemented")
   }
   
-  func configureData(_ friend: User) {
-    nameLabel.text = friend.profile.nickname
+  func configureData(_ user: User) {
+    nameLabel.text = user.profile.nickname
   }
 }
 

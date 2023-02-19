@@ -15,14 +15,17 @@ final class WebSocketService: NSObject {
   var task: URLSessionWebSocketTask!
   let delegateQueue = OperationQueue()
   
-  init(_ url: URL) {
+  init(_ url: String) {
     super.init()
     self.session = URLSession(
       configuration: .default,
       delegate: nil,
       delegateQueue: delegateQueue
     )
-    self.task = session.webSocketTask(with: url)
+    
+    let baseURL = "ws://3.39.130.186:8011/ws-chat"
+    guard let absoluteURL = URL(string: baseURL + url) else { return }
+    self.task = session.webSocketTask(with: absoluteURL)
   }
   
   func send(text: String) -> Observable<Void> {

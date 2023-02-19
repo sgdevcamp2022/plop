@@ -1,9 +1,21 @@
 import Foundation
 import RxSwift
 import RxCocoa
+import Moya
+import RxMoya
 
 final class AuthNetwork {
   private let scheduler: ConcurrentDispatchQueueScheduler
+  private let keychainService = KeychainService.shared
+  
+  private lazy var provider: MoyaProvider<AuthTarget> = {
+    guard let accessToken = keychainService.fetchAccessToken() else {
+      return MoyaProvider<AuthTarget>()
+    }
+    let authPlugin = AccessTokenPlugin { _ in accessToken}
+    let provider = MoyaProvider<AuthTarget>(plugins: [authPlugin])
+    return provider
+  }()
   
   init() {
     self.scheduler = ConcurrentDispatchQueueScheduler(
@@ -14,209 +26,88 @@ final class AuthNetwork {
     email: String,
     password: String
   ) -> Observable<Result<Token, Error>> {
-    let body: [String: Any] = [
-      "email": email,
-      "password": password
-    ]
-    
-    guard let data = try? JSONSerialization.data(withJSONObject: body) else {
-      return Observable.just(.failure(NetworkError.failedToLogin))
-    }
-    
-    guard let request = NetworkHelper.createRequest(
-      path: "/auth/v1/login",
-      httpMethod: "POST",
-      httpBody: data,
-      queries: []
-    ) else {
-      return Observable.just(.failure(NetworkError.failedToLogin))
-    }
-    
-    return URLSession.shared.rx
-      .data(request: request)
+    let request = LoginRequest(idOrEmail: email, password: password)
+    return provider.rx.request(.login(request))
       .observe(on: scheduler)
-      .map({ data in
-        do {
-          let response = try JSONDecoder().decode(
-            LoginResponse.self, from: data)
-          
-          if response.message == "SUCCESS" {
-            return .success(response.data.toDomain())
-          }
+      .map(LoginResponse.self)
+      .asObservable()
+      .map({ response in
+        if response.result == "SUCCESS" {
+          return response.data.toDomain()
+        } else {
           throw NetworkError.failedToLogin
-        } catch {
-          return .failure(error)
         }
       })
+      .asResult()
   }
   
-  func autoLogin(
-    refreshToken: String,
-    email: String
-  ) -> Observable<Result<Token, Error>> {
-    let body: [String: Any] = ["email": email]
-    guard let data = try? JSONSerialization.data(withJSONObject: body) else {
-      return Observable.just(.failure(NetworkError.failedToAutoLogin))
-    }
-    
-    guard var request = NetworkHelper.createRequest(
-      path: "/auth/v1/reissue",
-      httpMethod: "POST",
-      httpBody: data,
-      queries: []
-    ) else {
-      return Observable.just(.failure(NetworkError.failedToAutoLogin))
-    }
-    
-    request.setValue(
-      refreshToken,
-      forHTTPHeaderField: "Authorization"
-    )
-    
-    return URLSession.shared.rx
-      .data(request: request)
+  func reissue(email: String) -> Observable<Result<Token, Error>> {
+    return provider.rx.request(.reissue(email))
       .observe(on: scheduler)
-      .map({ data in
-        do {
-          let response = try JSONDecoder().decode(
-            LoginResponse.self,
-            from: data)
-          
-          if response.message == "SUCCESS" {
-            return .success(response.data.toDomain())
-          }
+      .map(LoginResponse.self)
+      .asObservable()
+      .map({ response in
+        if response.result == "SUCCESS" {
+          return response.data.toDomain()
+        } else {
           throw NetworkError.failedToAutoLogin
-        } catch {
-          return .failure(error)
         }
       })
+      .asResult()
   }
   
-  func logout(accessToken: String) -> Observable<Void> {
-    guard var request = NetworkHelper.createRequest(
-      path: "/auth/v1/logout",
-      httpMethod: "DELETE",
-      httpBody: nil,
-      queries: []
-    ) else {
-      return Observable.error(NetworkError.failedToCreateRequest)
-    }
-    
-    request.addValue(
-      accessToken,
-      forHTTPHeaderField: "Authorization")
-    
-    return URLSession.shared.rx
-      .data(request: request)
+  func logout() -> Observable<Result<String, Error>> {
+    return provider.rx.request(.logout)
       .observe(on: scheduler)
-      .mapToVoid()
-  }
-  
-  func signup(
-    with signupRequest: SignupRequest
-  ) -> Observable<Result<User, Error>> {
-    guard let body = try? JSONEncoder().encode(signupRequest) else {
-      return Observable.just(.failure(NetworkError.failedToSignup))
-    }
-    
-    guard let request = NetworkHelper.createRequest(
-      path: "/auth/v1/signup",
-      httpMethod: "POST",
-      httpBody: body,
-      queries: []
-    ) else {
-      return Observable.just(.failure(NetworkError.failedToSignup))
-    }
-    
-    return URLSession.shared.rx
-      .data(request: request)
-      .observe(on: scheduler)
-      .map({ data in
-        do {
-          let response = try JSONDecoder().decode(
-            SignupResponse.self,
-            from: data)
-          
-          if response.message == "SUCCESS" {
-            return .success(response.data.toDomain())
-          }
-          throw NetworkError.failedToSignup
-        } catch {
-          return .failure(error)
-        }
+      .map(LogoutResponse.self)
+      .asObservable()
+      .map({ response in
+        if response.result == "SUCCESS" { return response.data.userID }
+        else { throw NetworkError.failedToLogout}
       })
+      .asResult()
+  }
+  
+  func signup(form request: SignupRequest) -> Observable<Result<User, Error>> {
+    return provider.rx.request(.signup(request))
+      .observe(on: scheduler)
+      .map(SignupResponse.self)
+      .asObservable()
+      .map({ response in
+        if response.result == "SUCCESS" { return response.data.toDomain() }
+        else { throw NetworkError.failedToSignup }
+      })
+      .asResult()
   }
   
   func requestVerifyCode(
     email: String,
-    userID: String,
-    accessToken: String
-  ) -> Observable<Result<Void, Error>> {
-    let body: [String: Any] = [
-      "email": email,
-      "userId": userID
-    ]
-    let data = try? JSONSerialization.data(withJSONObject: body)
-    
-    guard var request = NetworkHelper.createRequest(
-      path: "/auth/v1/email/code",
-      httpMethod: "POST",
-      httpBody: data,
-      queries: []
-    ) else {
-      return Observable.just(.failure(NetworkError.failedToCreateRequest))
-    }
-    
-    request.setValue(accessToken, forHTTPHeaderField: "Authorization")
-    
-    return URLSession.shared.rx.data(request: request)
-      .observe(on: scheduler)
-      .mapToVoid()
-      .asResult()
+    userID: String
+  ) -> Single<Void> {
+    return provider.rx.request(.requestVerifyCode(email, userID))
+      .map({ _ in () })
   }
   
   func verifyCode(
     email: String,
     userID: String,
     code: String
-  ) -> Observable<Result<Void, Error>> {
-    let body: [String: Any] = [
-      "email": email,
-      "userId": userID,
-      "verificationCode": code
-    ]
-    
-    let data = try? JSONSerialization.data(withJSONObject: body)
-    
-    guard let request = NetworkHelper.createRequest(
-      path: "/auth/v1/email/verify",
-      httpMethod: "POST",
-      httpBody: data,
-      queries: []
-    ) else {
-      return Observable.just(.failure(NetworkError.invalidVerifyCode))
-    }
-    
-    return URLSession.shared.rx.data(request: request)
+  ) -> Single<Void> {
+    return provider.rx.request(.verifyCode(email, userID, code))
       .observe(on: scheduler)
-      .mapToVoid()
-      .asResult()
+      .map({ _ in () })
   }
   
-  func withdrawal(accessToken: String) -> Observable<Void> {
-    guard var request = NetworkHelper.createRequest(
-      path: "/auth/v1/withdrawal",
-      httpMethod: "DELETE",
-      httpBody: nil,
-      queries: []
-    ) else {
-      return Observable.error(NetworkError.failedWithdrawal)
-    }
-    
-    request.setValue(accessToken, forHTTPHeaderField: "Authorization")
-    
-    return URLSession.shared.rx.data(request: request)
-      .mapToVoid()
+  func withdrawal() -> Observable<Result<String, Error>> {
+    return provider.rx.request(.withdrawal)
+      .observe(on: scheduler)
+      .map(WithdrawalResponse.self)
+      .asObservable()
+      .map({ response in
+        if response.result == "SUCCESS" { return response.data.userID }
+        else { throw NetworkError.failedWithdrawal }
+      })
+      .asResult()
   }
   
   //TODO: - 아이디 찾기

@@ -1,24 +1,27 @@
 import UIKit
 
 protocol AddFriendCellDelegate: AnyObject {
-  func requestFriend(_ cell: AddFriendCell, _ email: String)
+  func sendRequest(to user: User)
+  func cancelRequest(to user: User)
 }
 
 final class AddFriendCell: UITableViewCell {
   static let reuseIdentifier = String(describing: AddFriendCell.self)
   
+  //MARK: - Views
   private let profileImageView = PlopProfileImageView(borderShape: .circle)
   private let nameLabel = UILabel()
-  private let addFriendButton = PlopOrangeButton(title: " 친구 추가 ")
+  private let addFriendButton = PlopGrayButton(title: " 친구 추가 ")
   private let stackView = UIStackView()
   
-  var canRequest: Bool = true {
-    didSet { setButtonState() }
-  }
-  
-  private var userEmail = ""
+  //MARK: - Properties
+  private var user: User?
   
   weak var delegate: AddFriendCellDelegate?
+  
+  override func prepareForReuse() {
+    super.prepareForReuse()
+  }
   
   override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -31,22 +34,26 @@ final class AddFriendCell: UITableViewCell {
   }
   
   func configureData(_ user: User) {
+    self.user = user
+    changeButtonUI(with: user.state)
     nameLabel.text = user.profile.nickname
-    self.userEmail = user.email
+  }
+  
+  private func changeButtonUI(with state: UserState) {
+    addFriendButton.setTitle(state.title, for: .normal)
+    addFriendButton.setTitleColor(state.textColor, for: .normal)
+    addFriendButton.backgroundColor = state.buttonColor
+    addFriendButton.isEnabled = state.buttonEnabled
   }
   
   @objc private func didTappedRequestButton(_ sender: UIButton) {
-    delegate?.requestFriend(self, userEmail)
-  }
-  
-  private func setButtonState() {
-    if canRequest {
-      self.addFriendButton.backgroundColor = UIConstants.plopColor
-      self.addFriendButton.setTitle(" 친구 요청 ", for: .normal)
-    } else {
-      self.addFriendButton.backgroundColor = .systemGray
-      self.addFriendButton.setTitle(" 요청됨 ", for: .normal)
-      self.addFriendButton.tintColor = .label
+    guard let user = user else { return }
+    if user.state == .notFriend {
+      delegate?.sendRequest(to: user)
+      changeButtonUI(with: .requestSended)
+    } else if user.state == .requestSended {
+      delegate?.cancelRequest(to: user)
+      changeButtonUI(with: .notFriend)
     }
   }
 }
@@ -104,5 +111,45 @@ extension AddFriendCell {
         equalToSystemSpacingBelow: stackView.bottomAnchor,
         multiplier: 1),
     ])
+  }
+}
+
+extension UserState {
+  var title: String {
+    switch self {
+    case .notFriend:
+      return " 친구 요청 "
+    case .requestSended:
+      return " 요청 취소 "
+    case .requestReceived:
+      return " 요청 받음 "
+    default:
+      return " - "
+    }
+  }
+  
+  var buttonColor: UIColor {
+    switch self {
+    case .notFriend:
+      return UIConstants.plopColor
+    default:
+      return .systemGray
+    }
+  }
+  
+  var textColor: UIColor {
+    switch self {
+    case .notFriend:
+      return .white
+    default:
+      return .label
+    }
+  }
+  
+  var buttonEnabled: Bool {
+    switch self {
+    case .notFriend, .requestSended: return true
+    default: return false
+    }
   }
 }

@@ -1,268 +1,195 @@
 import Foundation
 import RxSwift
 import RxCocoa
+import Moya
+import RxMoya
 
 final class UserNetwork {
   private let scheduler: ConcurrentDispatchQueueScheduler
+  private let keychainService = KeychainService.shared
+  private lazy var provider: MoyaProvider<UserTarget> = {
+    guard let accessToken = keychainService.fetchAccessToken() else {
+      return MoyaProvider<UserTarget>()
+    }
+    let authPlugin = AccessTokenPlugin { _ in accessToken}
+    let provider = MoyaProvider<UserTarget>(plugins: [authPlugin])
+    return provider
+  }()
   
   init() {
     self.scheduler = ConcurrentDispatchQueueScheduler(
       qos: .background)
   }
   
-  //MARK: - Profile related
   func fetchUserInfo(
-    accessToken: String,
-    target: String
+    _ user: User
   ) -> Observable<Result<User, Error>> {
-    guard var request = NetworkHelper.createRequest(
-      path: "/user/v1/profile",
-      httpMethod: "GET",
-      httpBody: nil,
-      queries: [
-        URLQueryItem(name: "target", value: target)
-      ]) else {
-      return Observable.just(.failure(NetworkError.failedFetchUserInfo))
-    }
-    
-    request.setValue(accessToken, forHTTPHeaderField: "Authorization")
-    
-    return URLSession.shared.rx.data(request: request)
+    return provider.rx.request(.fetchUserInfo(user.email))
       .observe(on: scheduler)
-      .map({ data in
-        do {
-          let response = try JSONDecoder().decode(
-            UserResponse.self, from: data)
-          if response.message == "SUCCESS" {
-            return .success(response.data.toDomain())
-          } else {
-            return .failure(NetworkError.failedFetchUserInfo)
-          }
-        } catch {
-          return .failure(error)
+      .map(UserResponse.self)
+      .map({ response in
+        if response.result == "SUCCESS" {
+          return response.data.toDomain(state: user.state)
+        } else {
+          throw NetworkError.failedFetchUserInfo
         }
       })
+      .asObservable()
+      .asResult()
+  }
+  
+  func fetchCurrentUser(target: String) -> Observable<Result<User, Error>> {
+    return provider.rx.request(.fetchUserInfo(target))
+      .observe(on: scheduler)
+      .map(UserResponse.self)
+      .map({ response in
+        if response.result == "SUCCESS" {
+          UserDefaults.standard.set(
+            response.data.email,
+            forKey: "currentEmail"
+          )
+          UserDefaults.standard.set(
+            response.data.userID,
+            forKey: "currentUserID"
+          )
+          return response.data.toDomain(state: .current)
+        } else {
+          throw NetworkError.failedFetchUserInfo
+        }
+      })
+      .asObservable()
+      .asResult()
   }
   
   func updateUserInfo(
-    accessToken: String,
     target: String,
     updatedProfile: Profile
   ) -> Observable<Result<User, Error>> {
-    do {
-      let encodedData = try JSONEncoder().encode(updatedProfile.toEncodable())
-      guard var request = NetworkHelper.createRequest(
-        path: "/user/v1/profile",
-        httpMethod: "PUT",
-        httpBody: encodedData,
-        queries: [
-          URLQueryItem(name: "target", value: target)
-        ]) else {
+    return provider.rx.request(.updateUserInfo(target, updatedProfile))
+      .observe(on: scheduler)
+      .map(UserResponse.self)
+      .map({ response in
+        if response.message == "SUCCESS" {
+          return response.data.toDomain(state: .current)
+        }
         throw NetworkError.failedToUpdateUserInfo
-      }
-      
-      request.setValue(accessToken, forHTTPHeaderField: "Authorization")
-      
-      return URLSession.shared.rx.data(request: request)
-        .observe(on: scheduler)
-        .map({ data in
-          let response = try JSONDecoder().decode(
-            UserResponse.self, from: data)
-          if response.message == "SUCCESS" {
-            return .success(response.data.toDomain())
-          }
-          throw NetworkError.failedToUpdateUserInfo
-        })
-    } catch {
-      return Observable.just(.failure(error))
-    }
+      })
+      .asObservable()
+      .asResult()
   }
   
-  func searchUser(
-    accessToken: String,
-    target: String
-  ) -> Observable<Result<[User], Error>> {
-    guard var request = NetworkHelper.createRequest(
-      path: "/user/v1/search",
-      httpMethod: "GET",
-      httpBody: nil,
-      queries: [
-        URLQueryItem(name: "target", value: target)
-      ]) else {
-      return Observable.just(.failure(NetworkError.failedToSearchUser))
-    }
-    
-    request.setValue(accessToken, forHTTPHeaderField: "Authorization")
-    
-    return URLSession.shared.rx.data(request: request)
+  func searchUser(target: String) -> Observable<Result<[User], Error>> {
+    return provider.rx.request(.search(target))
       .observe(on: scheduler)
-      .map({ data in
-        do {
-          let response = try JSONDecoder().decode(
-            UserListResponse.self, from: data)
-          
-          if response.message == "SUCCESS" {
-            return .success(response.toDomain())
-          }
-          throw NetworkError.failedToSearchUser
-        } catch {
-          return .failure(error)
+      .map(UserListResponse.self)
+      .map({ response in
+        if response.result == "SUCCESS" {
+          return response.toDomain(state: .notFriend)
         }
+        throw NetworkError.failedToSearchUser
       })
+      .asObservable()
+      .asResult()
   }
   
   //MARK: - Friends related
-  func fetchFriendList(
-    accessToken: String
-  ) -> Observable<Result<[User], Error>> {
-    guard var request = NetworkHelper.createRequest(
-      path: "/user/v1/friend",
-      httpMethod: "GET",
-      httpBody: nil,
-      queries: []
-    ) else {
-      return Observable.just(.failure(NetworkError.failedToFetchFriendList))
-    }
-    
-    request.setValue(accessToken, forHTTPHeaderField: "Authorization")
-    
-    return URLSession.shared.rx.data(request: request)
+  func fetchFriendList() -> Observable<Result<[User], Error>> {
+    return provider.rx.request(.fetchFriendList)
       .observe(on: scheduler)
-      .map({ data in
+      .map({ response in
         do {
-          let response = try JSONDecoder().decode(
-            UserListResponse.self, from: data)
-          if response.message == "SUCCESS" {
-            return .success(response.toDomain())
-          }
-          throw NetworkError.failedToFetchFriendList
+          let users = try JSONDecoder().decode(UserListResponse.self, from: response.data)
+          return users.toDomain(state: .friend)
         } catch {
-          return .failure(error)
+          throw error
         }
       })
+      .asObservable()
+      .asResult()
   }
   
   func requestFriend(
-    accessToken: String,
     target: String
   ) -> Observable<Void> {
-    let body: [String: Any] = ["target": target]
-    guard let data = try? JSONSerialization.data(withJSONObject: body) else {
-      return Observable.error(NetworkError.failedToRequestFriend)
-    }
-    
-    guard var request = NetworkHelper.createRequest(
-      path: "/user/v1/friend/request",
-      httpMethod: "POST",
-      httpBody: data,
-      queries: []) else {
-      return Observable.error(NetworkError.failedToRequestFriend)
-    }
-    
-    request.setValue(accessToken, forHTTPHeaderField: "Authorization")
-    
-    return URLSession.shared.rx.data(request: request)
+    return provider.rx.request(.requestFriend(target))
       .observe(on: scheduler)
+      .asObservable()
+      .map(FriendRequestResponse.self)
       .mapToVoid()
   }
   
   func cancelRequestFriend(
-    accessToken: String,
     target: String
   ) -> Observable<Void> {
-    let body: [String: Any] = ["target": target]
-    guard let data = try? JSONSerialization.data(withJSONObject: body) else {
-      return Observable.error(NetworkError.failedToRequestFriend)
-    }
-    
-    guard var request = NetworkHelper.createRequest(
-      path: "/user/v1/friend/request",
-      httpMethod: "DELETE",
-      httpBody: data,
-      queries: []) else {
-      return Observable.error(NetworkError.failedToRequestFriend)
-    }
-    
-    request.setValue(accessToken, forHTTPHeaderField: "Authorization")
-    
-    return URLSession.shared.rx.data(request: request)
+    return provider.rx.request(.cancelRequest(target))
       .observe(on: scheduler)
+      .asObservable()
       .mapToVoid()
   }
   
-  func friendRequestList(
-    accessToken: String
-  ) -> Observable<Result<[User], Error>> {
-    guard var request = NetworkHelper.createRequest(
-      path: "/user/v1/friend/request",
-      httpMethod: "GET",
-      httpBody: nil,
-      queries: []) else {
-      return Observable.just(.failure(NetworkError.failedToFetchFriendRequestList))
-    }
-    
-    request.setValue(accessToken, forHTTPHeaderField: "Authorization")
-    
-    return URLSession.shared.rx.data(request: request)
-      .map({ data in
-        do {
-          let response = try JSONDecoder().decode(
-            UserListResponse.self,
-            from: data)
-          
-          if response.message == "SUCCESS" {
-            return .success(response.toDomain())
-          }
-          throw NetworkError.failedToFetchFriendRequestList
-        } catch {
-          return .failure(error)
+  func friendRequestList() -> Observable<Result<[User], Error>> {
+    return provider.rx.request(.friendRequestList)
+      .observe(on: scheduler)
+      .map(UserListResponse.self)
+      .map({ response in
+        if response.result == "SUCCESS" {
+          return response.toDomain(state: .requestReceived)
         }
+        throw NetworkError.failedToFetchFriendRequestList
       })
+      .asObservable()
+      .asResult()
   }
   
-  func friendDelete(
-    accessToken: String,
-    friendID: String
-  ) -> Observable<Void> {
-    guard var request = NetworkHelper.createRequest(
-      path: "/user/v1/friend",
-      httpMethod: "DELETE",
-      httpBody: nil,
-      queries: [
-        URLQueryItem(name: "friendid", value: friendID)
-      ]) else {
-      return Observable.error(NetworkError.failedToDeleteFriend)
-    }
-    
-    request.setValue(accessToken, forHTTPHeaderField: "Authorization")
-    
-    return URLSession.shared.rx.data(request: request)
+  func fetchRequestSendedList() -> Observable<Result<[User], Error>> {
+    return provider.rx.request(.requestSendedList)
       .observe(on: scheduler)
+      .map(UserListResponse.self)
+      .map({ response in
+        if response.result == "SUCCESS" { return response.toDomain(state: .requestSended)
+        }
+        throw NetworkError.failedToFetchRequestSendedList
+      })
+      .asObservable()
+      .asResult()
+  }
+  
+  func deleteFriend(friendID: String) -> Observable<Void> {
+    return provider.rx.request(.deleteFriend(friendID))
+      .observe(on: scheduler)
+      .asObservable()
       .mapToVoid()
   }
   
-  func respondToFriendRequest(
-    accessToken: String,
-    target: String,
-    method: String
-  ) -> Observable<Void> {
-    let body: [String: Any] = ["target": target]
-    guard let data = try? JSONSerialization.data(withJSONObject: body) else {
-      return Observable.error(NetworkError.failedToRespondToRequest)
-    }
-    
-    guard var request = NetworkHelper.createRequest(
-      path: "/user/v1/friend/response",
-      httpMethod: method,
-      httpBody: data,
-      queries: []) else {
-      return Observable.error(NetworkError.failedToRespondToRequest)
-    }
-    
-    request.setValue(accessToken, forHTTPHeaderField: "Authorization")
-    
-    return URLSession.shared.rx.data(request: request)
+  func acceptRequest(
+    target: String
+  ) -> Observable<Result<String, Error>> {
+    return provider.rx.request(.respondToFriendRequest(target, .post))
       .observe(on: scheduler)
-      .mapToVoid()
+      .map(FriendRequestResponse.self)
+      .map({ response in
+        if response.result == "SUCCESS" {
+          return response.data.receiver
+        }
+        throw NetworkError.failedToRespondToRequest
+      })
+      .asObservable()
+      .asResult()
+  }
+  
+  func rejectRequest(
+    target: String
+  ) -> Observable<Result<String, Error>> {
+    return provider.rx.request(.respondToFriendRequest(target, .delete))
+      .observe(on: scheduler)
+      .map(FriendRequestResponse.self)
+      .map({ response in
+        if response.result == "SUCCESS" {
+          return response.data.receiver
+        }
+        throw NetworkError.failedToRespondToRequest
+      })
+      .asObservable()
+      .asResult()
   }
 }

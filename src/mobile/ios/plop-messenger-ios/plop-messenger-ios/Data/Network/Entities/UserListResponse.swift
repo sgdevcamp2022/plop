@@ -7,7 +7,7 @@ struct UserListResponse: Decodable {
 }
 
 extension UserListResponse {
-  func toDomain() -> [User] {
-    return data.map { $0.toDomain() }
+  func toDomain(state: UserState) -> [User] {
+    return data.map { $0.toDomain(state: state) }
   }
 }

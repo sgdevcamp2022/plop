@@ -5,16 +5,17 @@ import RxSwift
 final class HomeCoordinator: Coordinator {
   var childCoordinators: [Coordinator] = []
   
-  private var tabBarController = UITabBarController()
-  private lazy var window: UIWindow? = {
-    let window = UIApplication
-      .shared
-      .connectedScenes
-      .compactMap { $0 as? UIWindowScene }
-      .flatMap { $0.windows }
-      .first { $0.isKeyWindow }
-    return window
-  }()
+  private let tabBarController: UITabBarController
+  private let userUsecase = UserUseCase()
+  private let disposeBag = DisposeBag()
+  
+  init(tabBarController: UITabBarController) {
+    self.tabBarController = tabBarController
+    
+    userUsecase.fetchCurrentUser()
+      .subscribe()
+      .disposed(by: disposeBag)
+  }
   
   func start() {
     configureTabBarAppearance()
@@ -24,8 +25,6 @@ final class HomeCoordinator: Coordinator {
       createPeopleScreen(),
       createSettingScreen()
     ]
-    
-    window?.rootViewController = tabBarController
   }
   
   private func configureTabBarAppearance() {
@@ -39,12 +38,13 @@ final class HomeCoordinator: Coordinator {
   }
   
   private func createChatRoomsScreen() -> UIViewController {
-    let viewController = ChatRoomsViewController()
-    let navigationController = UINavigationController(
-      rootViewController: viewController
-    )
-    navigationController.tabBarItem.title = "Chats"
-    navigationController.tabBarItem.image = UIImage(named: "chatroom")
+    let navigationController = UINavigationController()
+    let coordinator = ChatRoomListCoordinator(navigationController)
+    
+    childCoordinators.append(coordinator)
+    
+    coordinator.start()
+    
     return navigationController
   }
   
@@ -52,6 +52,8 @@ final class HomeCoordinator: Coordinator {
     let navigationController = UINavigationController()
     let coordinator = PeopleCoordinator(
       navigationController: navigationController)
+    
+    childCoordinators.append(coordinator)
 
     coordinator.start()
     

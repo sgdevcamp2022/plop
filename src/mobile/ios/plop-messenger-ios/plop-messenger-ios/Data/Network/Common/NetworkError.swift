@@ -11,6 +11,7 @@ enum NetworkError: Error {
   case failedToSignup
   case invalidVerifyCode
   case failedWithdrawal
+  case failedToLogout
   
   // User
   case failedFetchUserInfo
@@ -23,4 +24,15 @@ enum NetworkError: Error {
   case failedToFetchFriendRequestList
   case failedToDeleteFriend
   case failedToRespondToRequest
+  case failedToFetchRequestSendedList
+  
+  //Room
+  case failedToCreateChatRoom
+  case failedToInvite
+  case failedToFetchChatRooms
+  case failedToLeaveChatRoom
+  case failedToFetchChatRoomInfo
+  
+  //Message
+  case failedToFetchUnreadMessages
 }

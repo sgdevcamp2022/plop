@@ -7,9 +7,7 @@ final class NetworkHelper {
     httpBody: Data?,
     queries: [URLQueryItem]
   ) -> URLRequest? {
-    //TODO: - BaseURL 만들기
-    
-    let absoluteURL = path
+    let absoluteURL = "http://3.39.130.186:8000" + path
     var urlComponent = URLComponents(string: absoluteURL)
     urlComponent?.queryItems = queries
     
@@ -19,7 +17,7 @@ final class NetworkHelper {
     var request = URLRequest(url: url)
     request.httpMethod = httpMethod
     request.httpBody = httpBody
-    
+    request.setValue("application/json", forHTTPHeaderField: "Content-Type")
     return request
   }
 }

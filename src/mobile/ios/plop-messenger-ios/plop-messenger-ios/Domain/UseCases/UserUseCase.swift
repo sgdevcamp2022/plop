@@ -2,61 +2,55 @@ import Foundation
 import RxSwift
 
 final class UserUseCase {
-  //TODO: - Core Data 연동
   private let network = UserNetwork()
   private let tokenUseCase = TokenUseCase()
-  private let coreData = UserCoreData()
+  private let userRealm = UserRealm()
   
   func fetchUserInfo(
-    target: String
+    user: User
   ) -> Observable<Result<User, Error>> {
-    guard let accessToken = tokenUseCase.fetchAccessToken() else {
-      return Observable.just(.failure(TokenError.failedToFetchAccessToken))
-    }
-    
-    return network.fetchUserInfo(accessToken: accessToken, target: target)
+    return network.fetchUserInfo(user)
   }
   
-  func fetchCurrentUser() -> Observable<User> {
+  // Fetch Current User and save at realm
+  func fetchCurrentUser() -> Observable<Void> {
     guard let currentEmail = UserDefaults.standard.string(forKey: "currentEmail") else {
       return Observable.error(UseCaseError.failedToFetchEmail)
     }
     
-    return fetchUserInfo(target: currentEmail)
-      .map({ [unowned self] result in
+    return network.fetchCurrentUser(target: currentEmail)
+      .flatMap({ result in
         switch result {
         case .success(let user):
-          self.coreData.save(user)
+          return self.userRealm.save(user)
         case .failure(let error):
           throw error
         }
       })
-      .flatMap({ [unowned self] _ in
-        return self.coreData.fetch(currentEmail)
-      })
   }
   
+  // Update user and save at realm
   func updateUserInfo(
     target: String,
     updatedProfile: Profile
-  ) -> Observable<Result<User, Error>> {
-    guard let accessToken = tokenUseCase.fetchAccessToken() else {
-      return Observable.just(.failure(TokenError.failedToFetchAccessToken))
-    }
+  ) -> Observable<Void> {
     return network.updateUserInfo(
-      accessToken: accessToken,
       target: target,
-      updatedProfile: updatedProfile
-    )
+      updatedProfile: updatedProfile)
+    .flatMap({ result in
+      switch result {
+      case .success(let user):
+        return self.userRealm.save(user)
+      case .failure(let error):
+        throw error
+      }
+    })
   }
   
   func search(
     target: String
   ) -> Observable<[User]> {
-    guard let accessToken = tokenUseCase.fetchAccessToken() else {
-      return Observable.error(TokenError.failedToFetchAccessToken)
-    }
-    return network.searchUser(accessToken: accessToken, target: target)
+    return network.searchUser(target: target)
       .map({ result in
         switch result {
         case .success(let users):
@@ -67,63 +61,84 @@ final class UserUseCase {
       })
   }
   
-  //TODO: - Core data logic 추가
-  func fetchFriendList() -> Observable<[User]> {
-    guard let accessToken = tokenUseCase.fetchAccessToken() else {
-      return Observable.error(TokenError.failedToFetchAccessToken)
-    }
-    return network.fetchFriendList(accessToken: accessToken)
-      .map({ result in
+  //Fetch friend list and save at realm
+  func fetchFriendList() -> Observable<Void> {
+    return network.fetchFriendList()
+      .flatMap({ result in
         switch result {
         case .success(let users):
-          return users
+          return self.userRealm.save(users: users)
         case .failure(let error):
           throw error
         }
       })
   }
   
-  func requestFriend(to target: String) -> Observable<Void> {
-    guard let accessToken = tokenUseCase.fetchAccessToken() else {
-      return Observable.error(TokenError.failedToFetchAccessToken)
-    }
-    return network.requestFriend(accessToken: accessToken,
-                                 target: target)
+  func requestFriend(to user: User) -> Observable<Void> {
+    return network.requestFriend(target: user.email)
+      .flatMap({
+        return self.userRealm.save(user)
+      })
   }
   
-  func cancelRequestFriend(to target: String) -> Observable<Void> {
-    guard let accessToken = tokenUseCase.fetchAccessToken() else {
-      return Observable.error(TokenError.failedToFetchAccessToken)
-    }
-    return network.cancelRequestFriend(accessToken: accessToken,
-                                       target: target)
+  func cancelRequestFriend(to user: User) -> Observable<Void> {
+    return network.cancelRequestFriend(target: user.email)
+      .flatMap({
+        return self.userRealm.delete(user.userID)
+      })
   }
   
-  func fetchFriendRequestList() -> Observable<[User]> {
-    guard let accessToken = tokenUseCase.fetchAccessToken() else {
-      return Observable.error(TokenError.failedToFetchAccessToken)
-    }
-    return network.friendRequestList(accessToken: accessToken)
-      .map({ result in
+  func fetchFriendRequestList() -> Observable<Void> {
+    return network.friendRequestList()
+      .flatMap({ result in
         switch result {
         case .success(let users):
-          return users
+          return self.userRealm.save(users: users)
         case .failure(let error):
           throw error
         }
       })
   }
   
-  func respondToFriendRequest(
-    to target: String,
-    method: String
-  ) -> Observable<Void> {
-    guard let accessToken = tokenUseCase.fetchAccessToken() else {
-      return Observable.error(TokenError.failedToFetchAccessToken)
-    }
-    return network.respondToFriendRequest(
-      accessToken: accessToken,
-      target: target,
-      method: method)
+  func fetchRequestSendedList() -> Observable<Void> {
+    return network.fetchRequestSendedList()
+      .flatMap({ result in
+        switch result {
+        case .success(let users):
+          return self.userRealm.save(users: users)
+        case .failure(let error):
+          throw error
+        }
+      })
+  }
+  
+  func acceptRequest(to user: User) -> Observable<Void> {
+    return network.acceptRequest(target: user.email)
+      .flatMap({ result in
+        switch result {
+        case .success(let receiver):
+          if user.email == receiver {
+            return self.userRealm.save(user)
+          }
+          throw NetworkError.failedToRespondToRequest
+        case .failure(let error):
+          throw error
+        }
+      })
+  }
+  
+  func rejectRequest(to user: User) -> Observable<Void> {
+    return network.rejectRequest(target: user.email)
+      .flatMap({ result in
+        switch result {
+        case .success(let receiver):
+          if user.email == receiver {
+            return self.userRealm.delete(user.userID)
+          }
+          throw NetworkError.failedToRespondToRequest
+        case .failure(let error):
+          throw error
+        }
+      })
   }
 }

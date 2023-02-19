@@ -67,11 +67,6 @@ final class KeychainRepository {
     ] as CFDictionary
     
     let status = SecItemAdd(query, nil)
-    
-    if status != errSecSuccess {
-      throw KeychainError.failedToSave
-    }
-    
     if status == errSecDuplicateItem {
       let query = [
         kSecAttrService: service,
@@ -82,6 +77,10 @@ final class KeychainRepository {
       let attributesToUpdate = [kSecValueData: data] as CFDictionary
       
       SecItemUpdate(query, attributesToUpdate)
+    }
+    
+    if status != errSecSuccess {
+      throw KeychainError.failedToSave
     }
   }
 }

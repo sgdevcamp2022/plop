@@ -61,14 +61,53 @@ final class SignupViewController: UIViewController {
     output.signupButtonEnabled.drive(signupButton.rx.isEnabled)
       .disposed(by: disposeBag)
     
-    output.signupResult.drive()
-      .disposed(by: disposeBag)
+    output.signupResult.drive(onNext: { [unowned self] userID in
+      if userID != "" {
+        self.successAlert(userID: userID)
+      } else {
+        self.failedAlert()
+      }
+    })
+    .disposed(by: disposeBag)
     
     output.dismiss.drive(onNext: { [weak self] in
       self?.dismiss(animated: true)
     })
     
     .disposed(by: disposeBag)
+  }
+  
+  private func successAlert(userID: String) {
+    let alertController = UIAlertController(
+      title: "🎉 환영합니다 🎉",
+      message: "\(userID)님 로그인 화면에서 로그인 해주세요!",
+      preferredStyle: .alert)
+    
+    let alertAction = UIAlertAction(
+      title: "알겠어요",
+      style: .default,
+      handler: { [weak self] _ in
+        self?.dismiss(animated: true)
+      })
+    
+    alertController.addAction(alertAction)
+    
+    self.present(alertController, animated: true)
+  }
+  
+  private func failedAlert() {
+    let alertController = UIAlertController(
+      title: "❌ 문제가 발생했어요 ❌",
+      message: "죄송합니다. 다시 시도해주세요.",
+      preferredStyle: .alert)
+    
+    let alertAction = UIAlertAction(
+      title: "네",
+      style: .default)
+    
+    alertController.addAction(alertAction)
+    
+    self.present(alertController, animated: true)
   }
 }
 

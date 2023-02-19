@@ -5,8 +5,8 @@ final class WebSocketUseCase {
   
   private let webSocketService: WebSocketService
   
-  init(_ url: URL) {
-    self.webSocketService = WebSocketService(url)
+  init(path: String) {
+    self.webSocketService = WebSocketService(path)
   }
   
   func connect<T: Decodable>(_ type: T.Type) -> Observable<(T?, String?)> {

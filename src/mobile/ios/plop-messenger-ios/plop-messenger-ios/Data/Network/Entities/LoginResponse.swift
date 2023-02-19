@@ -9,8 +9,8 @@ struct LoginResponse: Decodable {
 struct LoginData: Decodable {
   let accessToken: String
   let refreshToken: String?
-  let accessExpire: Int
-  let refreshExpire: Int?
+  let accessExpire: String
+  let refreshExpire: String?
 }
 
 extension LoginData {
@@ -19,7 +19,7 @@ extension LoginData {
       accessToken: accessToken,
       refreshToken: refreshToken ?? "",
       accessExpire: accessExpire,
-      refreshExpire: refreshExpire ?? 0
+      refreshExpire: refreshExpire ?? ""
     )
   }
 }

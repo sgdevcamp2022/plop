@@ -1,25 +1,24 @@
 import UIKit
 import RxCocoa
 import RxSwift
+import RxDataSources
+import Differentiator
 
 final class AddFriendViewController: UIViewController {
   
   private let cancelButton = UIBarButtonItem(
     title: "취소", style: .done, target: nil, action: nil
   )
-  private let titleLabel = UILabel()
   private let tableView = UITableView()
   private let searchController = UISearchController()
   
+  private var dataSource: RxTableViewSectionedAnimatedDataSource<AddFriendSection>?
+  
   private let viewModel: AddFriendViewModel
-  private let requestTrigger = PublishSubject<String>()
   private let disposeBag = DisposeBag()
   
-  private var userResults: [User] = [] {
-    didSet {
-      tableView.reloadSections(IndexSet(0...0), with: .automatic)
-    }
-  }
+  private let sendRequestTrigger = PublishSubject<User>()
+  private let cancelRequestTrigger = PublishSubject<User>()
   
   init(viewModel: AddFriendViewModel) {
     self.viewModel = viewModel
@@ -34,6 +33,9 @@ final class AddFriendViewController: UIViewController {
     super.viewDidLoad()
     configureUI()
     layout()
+    
+    configureDataSource()
+    
     bind()
   }
   
@@ -42,23 +44,51 @@ final class AddFriendViewController: UIViewController {
       search: searchController.searchBar.rx.text.orEmpty.asDriver(),
       searchTrigger: searchController.searchBar.rx.textDidEndEditing.asDriver(),
       cancelTrigger: cancelButton.rx.tap.asDriver(),
-      requestTrigger: requestTrigger.asDriver(onErrorJustReturn: ""))
+      requestTrigger: sendRequestTrigger.asDriverOnErrorJustComplete(),
+      cancelRequestTrigger: cancelRequestTrigger.asDriverOnErrorJustComplete()
+    )
     
     let output = viewModel.transform(input)
     
-    output.searchResult
-      .drive(onNext: { [unowned self] users in
-        self.userResults = users
-      })
-      .disposed(by: disposeBag)
-    
+    if let dataSource = dataSource {
+      output.searchResult
+        .asObservable()
+        .bind(to: tableView.rx.items(dataSource: dataSource))
+        .disposed(by: disposeBag)
+    }
+
     output.cancel
       .drive()
       .disposed(by: disposeBag)
     
-    output.requestResult
+    output.sendRequest
       .drive()
       .disposed(by: disposeBag)
+    
+    output.cancelRequest
+      .drive()
+      .disposed(by: disposeBag)
+    
+    tableView.rx.setDelegate(self)
+      .disposed(by: disposeBag)
+  }
+  
+  private func configureDataSource() {
+    dataSource = RxTableViewSectionedAnimatedDataSource<AddFriendSection>(configureCell: { [unowned self] dataSource, tableView, indexPath, item in
+      guard let cell = tableView.dequeueReusableCell(
+        withIdentifier: AddFriendCell.reuseIdentifier,
+        for: indexPath) as? AddFriendCell else {
+        return UITableViewCell()
+      }
+      
+      cell.configureData(item)
+      
+      cell.delegate = self
+      return cell
+    },
+    titleForHeaderInSection: { dataSource, indexPath in
+      return dataSource.sectionModels[indexPath].headerTitle
+    })
   }
 }
 
@@ -71,14 +101,13 @@ extension AddFriendViewController {
     searchController.searchBar.placeholder = "검색"
     searchController.searchBar.tintColor = .systemRed
     searchController.hidesNavigationBarDuringPresentation = false
+    searchController.searchBar.autocorrectionType = .no
+    searchController.searchBar.autocapitalizationType = .none
     
     navigationItem.hidesSearchBarWhenScrolling = false
     navigationItem.leftBarButtonItem = cancelButton
     navigationItem.searchController = searchController
-    
-    tableView.delegate = self
-    tableView.dataSource = self
-    
+
     tableView.register(
       AddFriendCell.self,
       forCellReuseIdentifier: AddFriendCell.reuseIdentifier
@@ -92,8 +121,7 @@ extension AddFriendViewController {
     
     NSLayoutConstraint.activate([
       tableView.topAnchor.constraint(
-        equalToSystemSpacingBelow: view.safeAreaLayoutGuide.topAnchor,
-        multiplier: 2),
+        equalTo: view.safeAreaLayoutGuide.topAnchor),
       tableView.leadingAnchor.constraint(
         equalTo: view.safeAreaLayoutGuide.leadingAnchor),
       tableView.trailingAnchor.constraint(
@@ -104,27 +132,6 @@ extension AddFriendViewController {
   }
 }
 
-extension AddFriendViewController: UITableViewDataSource {
-  func tableView(
-    _ tableView: UITableView,
-    numberOfRowsInSection section: Int
-  ) -> Int {
-    return userResults.count
-  }
-  
-  func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    guard let cell = tableView.dequeueReusableCell(
-      withIdentifier: AddFriendCell.reuseIdentifier,
-      for: indexPath) as? AddFriendCell else {
-      return UITableViewCell()
-    }
-    let user = userResults[indexPath.row]
-    cell.configureData(user)
-    cell.delegate = self
-    return cell
-  }
-}
-
 extension AddFriendViewController: UITableViewDelegate {
   func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
     return 64
@@ -132,13 +139,11 @@ extension AddFriendViewController: UITableViewDelegate {
 }
 
 extension AddFriendViewController: AddFriendCellDelegate {
-  func requestFriend(_ cell: AddFriendCell, _ email: String) {
-    if cell.canRequest {
-      requestTrigger.onNext(email)
-      cell.canRequest.toggle()
-    } else {
-      requestTrigger.onNext("")
-      cell.canRequest.toggle()
-    }
+  func sendRequest(to user: User) {
+    sendRequestTrigger.onNext(user)
+  }
+  
+  func cancelRequest(to user: User) {
+    cancelRequestTrigger.onNext(user)
   }
 }

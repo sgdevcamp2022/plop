@@ -2,24 +2,30 @@ import Foundation
 import RxSwift
 import RxCocoa
 
+//TODO: - 로그인 화면에서 내부DB 데이터들 다 지워주는 로직 작성해야함.
+
 final class LoginViewModel: ViewModelType {
   struct Input {
     let email: Driver<String>
     let password: Driver<String>
     let loginTrigger: Driver<Void>
     let signupTrigger: Driver<Void>
+    let fetchUserTrigger: Driver<Void>
   }
   
   struct Output {
     let buttonEnabled: Driver<Bool>
-    let loginSuccess: Driver<Void>
+    let loginResult: Driver<Bool>
     let presentSignup: Driver<Void>
+    let fetchUser: Driver<Void>
   }
   
-  private let usecase = AuthUseCase()
-  private let coordinator: LoginCoordinator
+  private let coordinator: SceneCoordinator
   
-  init(coordinator: LoginCoordinator) {
+  private let usecase = AuthUseCase()
+  private let userUsecase = UserUseCase()
+  
+  init(coordinator: SceneCoordinator) {
     self.coordinator = coordinator
   }
   
@@ -35,24 +41,28 @@ final class LoginViewModel: ViewModelType {
         }
       })
     
-    let login = input.loginTrigger
+    let loginResult = input.loginTrigger
       .withLatestFrom(emailAndPassword)
-      .flatMapLatest({ [unowned self] email, password in
+      .flatMap({ email, password in
         return self.usecase.login(email: email, password: password)
           .map({ result in
             switch result {
             case .success(_):
-              UserDefaults.standard.set(email, forKey: "currentEmail")
-              self.coordinator.toHome()
+              return true
             case .failure(_):
-              self.coordinator.presentLoginAlert(
-                title: "로그인 실패",
-                message: "로그인에 실패했습니다.\n다시 시도해주세요!"
-              )
-              break
+              return false
             }
           })
           .asDriverOnErrorJustComplete()
+      })
+    
+    let user = input.fetchUserTrigger
+      .flatMap({
+        return self.userUsecase.fetchCurrentUser()
+          .asDriverOnErrorJustComplete()
+      })
+      .map({
+        self.coordinator.toHome()
       })
     
     let presentSignup = input.signupTrigger
@@ -60,7 +70,8 @@ final class LoginViewModel: ViewModelType {
     
     return Output(
       buttonEnabled: buttonEnabled,
-      loginSuccess: login,
-      presentSignup: presentSignup)
+      loginResult: loginResult,
+      presentSignup: presentSignup,
+      fetchUser: user)
   }
 }

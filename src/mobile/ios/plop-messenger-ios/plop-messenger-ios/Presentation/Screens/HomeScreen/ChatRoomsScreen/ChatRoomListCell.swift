@@ -18,9 +18,9 @@ final class ChatRoomListCell: UITableViewCell {
     fatalError("init(coder:) has not been implemented")
   }
   
-  func setupWithData(_ room: RoomListModel) {
+  func setupWithData(_ room: ChatRoom) {
     roomNameLabel.text = room.title
-    lastMessageLabel.text = room.lastMessage
+    lastMessageLabel.text = room.messages.last?.content ?? ""
   }
 }
 

@@ -4,6 +4,8 @@ final class SceneCoordinator: Coordinator {
   var childCoordinators: [Coordinator] = []
   
   private var window: UIWindow
+  private var launchViewController: LaunchViewController!
+  private var loginViewController: LoginViewController!
   
   init(window: UIWindow) {
     self.window = window
@@ -12,20 +14,35 @@ final class SceneCoordinator: Coordinator {
   
   func start() {
     let viewModel = LaunchViewModel(coordinator: self)
-    let launchViewController = LaunchViewController(viewModel: viewModel)
+    launchViewController = LaunchViewController(viewModel: viewModel)
     
     window.rootViewController = launchViewController
   }
   
   func toLogin() {
-    let coordinator = LoginCoordinator(window: self.window)
-    childCoordinators.append(coordinator)
-    coordinator.start()
+    let viewModel = LoginViewModel(coordinator: self)
+    loginViewController = LoginViewController(viewModel: viewModel)
+    
+    window.rootViewController = loginViewController
   }
   
   func toHome() {
-    let coordinator = HomeCoordinator()
+    let tabBarController = UITabBarController()
+    let coordinator = HomeCoordinator(tabBarController: tabBarController)
+    
     childCoordinators.append(coordinator)
     coordinator.start()
+    
+    window.rootViewController = tabBarController
+  }
+  
+  func toSignup() {
+    let viewModel = SignupViewModel(coordinator: self)
+    let viewController = SignupViewController(viewModel: viewModel)
+    loginViewController.present(viewController, animated: true)
+  }
+  
+  func dismiss() {
+    window.rootViewController?.presentedViewController?.dismiss(animated: true)
   }
 }

@@ -4,13 +4,18 @@ import RxCocoa
 
 final class LoginViewController: UIViewController {
   //MARK: - Views
-  private let logoImageView = UIImageView(image: UIImage(named: "plop-logo"))
-  private let emailTextField = PlopTextField(placeholder: "Email을 입력해 주세요...", isSecure: false)
-  private let passwordTextField = PlopTextField(placeholder: "Password", isSecure: true)
+  private let logoImageView = UIImageView(
+    image: UIImage(named: "plop-logo"))
+  private let emailTextField = PlopTextField(
+    placeholder: "이메일 또는 아이디", isSecure: false)
+  private let passwordTextField = PlopTextField(
+    placeholder: "비밀번호", isSecure: true)
   private let loginButton = PlopOrangeButton(title: "로그인")
   private let signupButton = PlopGrayButton(title: "회원가입")
   private let findAccountButton = PlopNoBackgroundButton(
-    title: "이메일 / 비밀번호 찾기", titleColor: UIConstants.plopColor, font: .caption1)
+    title: "이메일 / 비밀번호 찾기",
+    titleColor: UIConstants.plopColor,
+    font: .caption1)
   private let loginStackView = UIStackView()
   private lazy var tapGestureRecognizer: UITapGestureRecognizer = {
     let tapGestureRecognizer = UITapGestureRecognizer(
@@ -23,6 +28,7 @@ final class LoginViewController: UIViewController {
   //MARK: - Properties
   private let viewModel: LoginViewModel
   private let disposeBag = DisposeBag()
+  private let fetchUserTrigger = PublishSubject<Void>()
   
   init(viewModel: LoginViewModel) {
     self.viewModel = viewModel
@@ -48,18 +54,44 @@ final class LoginViewController: UIViewController {
       email: emailTextField.rx.text.orEmpty.asDriver(),
       password: passwordTextField.rx.text.orEmpty.asDriver(),
       loginTrigger: loginButton.rx.tap.asDriver(),
-      signupTrigger: signupButton.rx.tap.asDriver())
+      signupTrigger: signupButton.rx.tap.asDriver(),
+      fetchUserTrigger: fetchUserTrigger.asDriver(onErrorJustReturn: ()))
     
     let output = viewModel.transform(input)
     
     output.buttonEnabled.drive(loginButton.rx.isEnabled)
       .disposed(by: disposeBag)
     
-    output.loginSuccess.drive()
-      .disposed(by: disposeBag)
+    output.loginResult.drive(onNext: { [unowned self] success in
+      if success {
+        self.fetchUserTrigger.onNext(())
+      } else {
+        self.failedAlert()
+      }
+    })
+    .disposed(by: disposeBag)
     
     output.presentSignup.drive()
       .disposed(by: disposeBag)
+    
+    output.fetchUser
+      .drive()
+      .disposed(by: disposeBag)
+  }
+  
+  private func failedAlert() {
+    let alertController = UIAlertController(
+      title: "❌ 문제가 발생했어요 ❌",
+      message: "죄송합니다. 다시 시도해주세요.",
+      preferredStyle: .alert)
+    
+    let alertAction = UIAlertAction(
+      title: "네",
+      style: .default)
+    
+    alertController.addAction(alertAction)
+    
+    self.present(alertController, animated: true)
   }
 }
 

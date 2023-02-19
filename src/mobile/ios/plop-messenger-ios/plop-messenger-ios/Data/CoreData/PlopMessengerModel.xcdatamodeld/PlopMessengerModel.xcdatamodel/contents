@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21512" systemVersion="22C65" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21513" systemVersion="22D49" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="CDFriend" representedClassName="CDFriend" syncable="YES">
         <attribute name="block" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="email" attributeType="String"/>
@@ -8,10 +8,9 @@
         <attribute name="uid" attributeType="String"/>
     </entity>
     <entity name="CDMember" representedClassName="CDMember" syncable="YES">
-        <attribute name="email" attributeType="String"/>
-        <attribute name="imageURL" optional="YES" attributeType="String" valueTransformerName="UIImageTransformer" customClassName="UIImage"/>
-        <attribute name="nickname" attributeType="String"/>
-        <attribute name="uid" optional="YES" attributeType="String"/>
+        <attribute name="enteredAt" attributeType="String"/>
+        <attribute name="lastReadMessageID" optional="YES" attributeType="String"/>
+        <attribute name="uid" attributeType="String"/>
         <relationship name="room" maxCount="1" deletionRule="Nullify" destinationEntity="CDRoom" inverseName="members" inverseEntity="CDRoom"/>
     </entity>
     <entity name="CDMessage" representedClassName="CDMessage" syncable="YES">
@@ -27,6 +26,7 @@
     <entity name="CDRoom" representedClassName="CDRoom" syncable="YES">
         <attribute name="lastMessage" optional="YES" attributeType="String"/>
         <attribute name="title" attributeType="String"/>
+        <attribute name="type" attributeType="String"/>
         <attribute name="uid" attributeType="String"/>
         <relationship name="members" toMany="YES" deletionRule="Cascade" destinationEntity="CDMember" inverseName="room" inverseEntity="CDMember"/>
         <relationship name="messages" toMany="YES" deletionRule="Cascade" destinationEntity="CDMessage" inverseName="room" inverseEntity="CDMessage"/>

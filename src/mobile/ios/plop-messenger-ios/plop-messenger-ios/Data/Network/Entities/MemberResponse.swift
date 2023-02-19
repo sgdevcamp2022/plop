@@ -15,10 +15,8 @@ struct MemberResponse: Decodable {
 extension MemberResponse {
   func toDomain() -> Member {
     return Member(
-      uid: userID,
-      email: "",
-      nickname: "",
-      imageURL: ""
-    )
+      userID: userID,
+      lastReadMessageID: lastReadMessageID,
+      enteredAt: enteredAt)
   }
 }

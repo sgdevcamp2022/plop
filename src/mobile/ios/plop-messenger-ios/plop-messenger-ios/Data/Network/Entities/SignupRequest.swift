@@ -34,6 +34,7 @@ extension SignupData {
     return User(
       userID: userID,
       email: email,
+      state: .none,
       profile: Profile(
         nickname: nickname,
         imageURL: "")

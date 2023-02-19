@@ -25,13 +25,13 @@ final class LaunchViewController: UIViewController {
   }
   
   private func bind() {
-    let viewWillAppear = rx.sentMessage(
+    let viewDidAppear = rx.sentMessage(
       #selector(UIViewController.viewWillAppear(_:)))
       .mapToVoid()
       .asDriverOnErrorJustComplete()
     
     let input = LaunchViewModel.Input(
-      autoLoginTrigger: viewWillAppear)
+      autoLoginTrigger: viewDidAppear)
     
     let output = viewModel.transform(input)
     
