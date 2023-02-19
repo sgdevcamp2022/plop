@@ -11,7 +11,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 import smilegate.plop.chat.dto.ChatMessageDto;
-import smilegate.plop.chat.dto.response.RespRoomDto;
+import smilegate.plop.chat.dto.RoomMessageDto;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +42,7 @@ public class KafkaProducerConfig {
     }
 
     @Bean
-    public ProducerFactory<String, RespRoomDto> roomProducerFactory(){
+    public ProducerFactory<String, RoomMessageDto> roomProducerFactory(){
         return new DefaultKafkaProducerFactory<>(roomProducerConfigurations());
     }
 
@@ -56,7 +56,7 @@ public class KafkaProducerConfig {
     }
 
     @Bean
-    public KafkaTemplate<String, RespRoomDto> roomKafkaTemplate(){
+    public KafkaTemplate<String, RoomMessageDto> roomKafkaTemplate(){
         return new KafkaTemplate<>(roomProducerFactory());
     }
 }

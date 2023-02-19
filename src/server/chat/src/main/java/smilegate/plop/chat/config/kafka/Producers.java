@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 import smilegate.plop.chat.dto.ChatMessageDto;
-import smilegate.plop.chat.dto.response.RespRoomDto;
+import smilegate.plop.chat.dto.RoomMessageDto;
 import smilegate.plop.chat.service.ChatMessageService;
 
 // 토픽에 메시지전송(이벤트 발행)
@@ -22,7 +22,7 @@ public class Producers {
     @Value("${kafka.topic.chat-name}")
     private String topicChatName;
 
-    private final KafkaTemplate<String, RespRoomDto> roomKafkaTemplate;
+    private final KafkaTemplate<String, RoomMessageDto> roomKafkaTemplate;
     @Value("${kafka.topic.room-name}")
     private String topicRoomName;
     private ChatMessageService chatMessageService;
@@ -42,16 +42,16 @@ public class Producers {
         });
     }
 
-    public void sendRoomMessage(RespRoomDto respRoomDto){
-        ListenableFuture<SendResult<String, RespRoomDto>> listenable = roomKafkaTemplate.send(topicRoomName,respRoomDto);
-        listenable.addCallback(new ListenableFutureCallback<SendResult<String, RespRoomDto>>() {
+    public void sendRoomMessage(RoomMessageDto roomMessageDto){
+        ListenableFuture<SendResult<String, RoomMessageDto>> listenable = roomKafkaTemplate.send(topicRoomName,roomMessageDto);
+        listenable.addCallback(new ListenableFutureCallback<SendResult<String, RoomMessageDto>>() {
             @Override
-            public void onSuccess(SendResult<String, RespRoomDto> result) {
-                log.info("Sent message=[" + respRoomDto.getRoom_id() + "] with offset=[" + result.getRecordMetadata().offset() + "]");
+            public void onSuccess(SendResult<String, RoomMessageDto> result) {
+                log.info("Sent message=[" + roomMessageDto.getRespRoomDto().getRoom_id() + "] with offset=[" + result.getRecordMetadata().offset() + "]");
             }
             @Override
             public void onFailure(Throwable ex) {
-                log.info("Unable to send message=[" + respRoomDto.getRoom_id() + "] due to : " + ex.getMessage());
+                log.info("Unable to send message=[" + roomMessageDto.getRespRoomDto().getRoom_id() + "] due to : " + ex.getMessage());
             }
         });
     }

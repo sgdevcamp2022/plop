@@ -11,7 +11,7 @@ import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import smilegate.plop.chat.dto.ChatMessageDto;
-import smilegate.plop.chat.dto.response.RespRoomDto;
+import smilegate.plop.chat.dto.RoomMessageDto;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -52,9 +52,9 @@ public class KafkaConsumerConfig {
     }
 
     @Bean
-    public ConsumerFactory<String, RespRoomDto> roomConsumerFactory(){
+    public ConsumerFactory<String, RoomMessageDto> roomConsumerFactory(){
         return new DefaultKafkaConsumerFactory<>(roomConsumerConfigurations(), new StringDeserializer(),
-                new JsonDeserializer<>(RespRoomDto.class));
+                new JsonDeserializer<>(RoomMessageDto.class));
     }
 
     private Map<String, Object> roomConsumerConfigurations() {
