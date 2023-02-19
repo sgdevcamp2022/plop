@@ -266,6 +266,9 @@ fun ClickableMessage(
         isUserMe = isUserMe
     )
 
+    val fontColor = if(isUserMe) MaterialTheme.colors.onPrimary
+    else MaterialTheme.colors.onSecondary
+
     ClickableText(
         text = styleMessage,
         onClick = {
@@ -279,6 +282,7 @@ fun ClickableMessage(
                 }
         },
         modifier = Modifier.padding(ChatItemBubbleValue.chatBubblePadding),
-        style = TextStyle(fontSize = 17.sp)
+        style = TextStyle(fontSize = 17.sp, color = fontColor),
+
     )
 }

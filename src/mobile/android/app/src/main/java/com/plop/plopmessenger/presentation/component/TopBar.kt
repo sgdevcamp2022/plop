@@ -1,5 +1,6 @@
 package com.plop.plopmessenger.presentation.component
 
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -18,6 +19,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.plop.plopmessenger.presentation.screen.main.SettingValue
+import com.plop.plopmessenger.presentation.state.UserState
 
 object TopBarValue {
     val HorizontalPadding = 3.dp
@@ -32,7 +35,6 @@ object TopBarValue {
 @Composable
 fun TopBarWithProfile(
     onClick:() -> Unit,
-    profileImage: String,
     content: String,
     icon: ImageVector,
     modifier: Modifier = Modifier
@@ -44,7 +46,9 @@ fun TopBarWithProfile(
         verticalAlignment = Alignment.CenterVertically
     ) {
         ProfileImage(
-            imageURL = profileImage
+            onClick = {},
+            uri = UserState.profileImg,
+            profileSize = ProfileImageValue.ChatTopBarImageSize
         )
 
         Spacer(modifier = Modifier.size(TopBarValue.SpacerBetweenProfileAndTitle))

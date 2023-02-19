@@ -28,6 +28,7 @@ import com.plop.plopmessenger.domain.model.ChatRoom
 import com.plop.plopmessenger.domain.model.ChatRoomType
 import com.plop.plopmessenger.domain.model.Member
 import com.plop.plopmessenger.presentation.component.*
+import com.plop.plopmessenger.presentation.state.UserState
 import com.plop.plopmessenger.presentation.viewmodel.ChatsViewModel
 import com.plop.plopmessenger.util.Constants
 import com.plop.plopmessenger.util.KeyLine
@@ -72,7 +73,6 @@ fun ChatsScreen(
     ) {
         TopBarWithProfile(
             onClick = { navigateToAddChat() },
-            profileImage = "",
             content = stringResource(id = R.string.chats_title),
             icon = Icons.Filled.Edit
         )
@@ -92,11 +92,12 @@ fun ChatsScreen(
 
             item {
                 LazyRow(
-                    modifier = Modifier.padding(vertical = 16.dp)
+                    modifier = Modifier.padding(vertical = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(3.dp)
                 ) {
                     items(state.value.presence) {
                         ProfileStateItem(
-                            imageURL = "",
+                            imageURL = it.profileImg,
                             nickname = it.nickname
                         )
                     }
