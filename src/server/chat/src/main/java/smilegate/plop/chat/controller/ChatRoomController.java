@@ -17,6 +17,7 @@ import smilegate.plop.chat.dto.RoomMessageDto;
 import smilegate.plop.chat.dto.request.ReqDmDto;
 import smilegate.plop.chat.dto.request.ReqGroupDto;
 import smilegate.plop.chat.dto.request.ReqInviteDto;
+import smilegate.plop.chat.dto.request.ReqReadMessage;
 import smilegate.plop.chat.dto.response.RespMyChatRoom;
 import smilegate.plop.chat.dto.response.RespRoomDto;
 import smilegate.plop.chat.exception.ErrorResponseDto;
@@ -121,5 +122,11 @@ public class ChatRoomController {
     @GetMapping("/v1/info/{roomid}")
     public ResponseEntity<RespRoomDto> chatRoomInfo(@PathVariable(value = "roomid") String roomId){
         return new ResponseEntity<>(chatRoomMongoService.getChatRoomInfo(roomId), HttpStatus.OK);
+    }
+
+    @Operation(summary = "마지막 읽은 메시지 id 저장")
+    @PutMapping("/v1/last-message")
+    public ResponseEntity<APIMessage> updateLastReadMsgId(@RequestBody ReqReadMessage reqReadMessage){
+        return new ResponseEntity<>(chatRoomMongoService.updateLastReadMsgId(reqReadMessage), HttpStatus.OK);
     }
 }

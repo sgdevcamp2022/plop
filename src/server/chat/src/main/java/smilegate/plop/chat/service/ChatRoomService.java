@@ -1,5 +1,6 @@
 package smilegate.plop.chat.service;
 
+import com.mongodb.client.result.UpdateResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import smilegate.plop.chat.domain.chat.ChatMessageRepository;
@@ -9,6 +10,7 @@ import smilegate.plop.chat.dto.*;
 import smilegate.plop.chat.dto.request.ReqDmDto;
 import smilegate.plop.chat.dto.request.ReqGroupDto;
 import smilegate.plop.chat.dto.request.ReqInviteDto;
+import smilegate.plop.chat.dto.request.ReqReadMessage;
 import smilegate.plop.chat.dto.response.RespMyChatRoom;
 import smilegate.plop.chat.dto.response.RespRoomDto;
 import smilegate.plop.chat.exception.CustomAPIException;
@@ -143,5 +145,11 @@ public class ChatRoomService {
                 .managers(roomCollection.getManagers())
                 .createdAt(roomCollection.getCreatedAt())
                 .build();
+    }
+
+    public APIMessage updateLastReadMsgId(ReqReadMessage reqReadMessage) {
+        UpdateResult updateResult = roomRepository.updateLastReadMsgId(reqReadMessage);
+        if(updateResult.getModifiedCount() == 0) return new APIMessage(APIMessage.ResultEnum.failed, updateResult.getModifiedCount());
+        return new APIMessage(APIMessage.ResultEnum.success, updateResult.getModifiedCount());
     }
 }
