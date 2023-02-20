@@ -16,6 +16,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -70,35 +71,50 @@ fun Messages(
         modifier = modifier
             .padding(bottom = 4.dp)
             .fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(2.dp)
+        verticalArrangement = Arrangement.spacedBy(3.dp)
     ) {
         items(messages.size) { index ->
-            val prevAuthor = messages.getOrNull(index - 1)?.messageFromId
-            val nextAuthor = messages.getOrNull(index + 1)?.messageFromId
-            val content = messages[index]
-            val prevTimeDiffIsOverMin = if(messages.getOrNull(index - 1) == null) false
-            else (content.createdAt.minute - messages.getOrNull(index - 1)?.createdAt!!.minute) >= 1
-            val nextTimeDiffIsOverMin = if(messages.getOrNull(index + 1) == null) false
-            else (messages.getOrNull(index + 1)?.createdAt!!.minute - content.createdAt.minute) >= 1
-            val isFirstMessageByAuthor = (nextAuthor != content.messageFromId || nextTimeDiffIsOverMin)
-            val isLastMessageByAuthor = (prevAuthor != content.messageFromId || prevTimeDiffIsOverMin)
+            if(messages[index].content.contains("초대")) {
+                Surface(
+                    color = MaterialTheme.colors.secondary
+                ) {
+                    Text(
+                        text = messages[index].content,
+                        color = MaterialTheme.colors.onSecondary,
+                        modifier = Modifier
+                            .padding(vertical = 3.dp)
+                            .fillMaxWidth(),
+                        textAlign = TextAlign.Center
+                    )
+                }
+            } else if(messages[index].content != "-") {
+                val prevAuthor = messages.getOrNull(index - 1)?.messageFromId
+                val nextAuthor = messages.getOrNull(index + 1)?.messageFromId
+                val content = messages[index]
+                val prevTimeDiffIsOverMin = if(messages.getOrNull(index - 1) == null) false
+                else (content.createdAt.minute - messages.getOrNull(index - 1)?.createdAt!!.minute) >= 1
+                val nextTimeDiffIsOverMin = if(messages.getOrNull(index + 1) == null) false
+                else (messages.getOrNull(index + 1)?.createdAt!!.minute - content.createdAt.minute) >= 1
+                val isFirstMessageByAuthor = (nextAuthor != content.messageFromId || nextTimeDiffIsOverMin)
+                val isLastMessageByAuthor = (prevAuthor != content.messageFromId || prevTimeDiffIsOverMin)
 
-            if(index >= state.messages.size - 1 && !state.endReached && !state.isLoading) {
-                getNextMessage()
+                if(index >= state.messages.size - 1 && !state.endReached && !state.isLoading) {
+                    getNextMessage()
+                }
+
+                Message(
+                    onAuthorClick = onAuthorClick,
+                    message = content,
+                    isUserMe = content.messageFromId == userId,
+                    isFirstMessageByAuthor = isFirstMessageByAuthor,
+                    isLastMessageByAuthor = isLastMessageByAuthor,
+                    onImageClick = onImageClick,
+                    onVideoClick = onVideoClick,
+                    isGroupChat = isGroupChat,
+                    member = member,
+                    modifier = Modifier
+                )
             }
-
-            Message(
-                onAuthorClick = onAuthorClick,
-                message = content,
-                isUserMe = content.messageFromId == userId,
-                isFirstMessageByAuthor = isFirstMessageByAuthor,
-                isLastMessageByAuthor = isLastMessageByAuthor,
-                onImageClick = onImageClick,
-                onVideoClick = onVideoClick,
-                isGroupChat = isGroupChat,
-                member = member,
-                modifier = Modifier
-            )
         }
         item {
             Spacer(modifier = Modifier.size(ChatItemBubbleValue.betweenContentAndChat))
@@ -266,6 +282,9 @@ fun ClickableMessage(
         isUserMe = isUserMe
     )
 
+    val fontColor = if(isUserMe) MaterialTheme.colors.onPrimary
+    else MaterialTheme.colors.onSecondary
+
     ClickableText(
         text = styleMessage,
         onClick = {
@@ -279,6 +298,7 @@ fun ClickableMessage(
                 }
         },
         modifier = Modifier.padding(ChatItemBubbleValue.chatBubblePadding),
-        style = TextStyle(fontSize = 17.sp)
+        style = TextStyle(fontSize = 17.sp, color = fontColor),
+
     )
 }

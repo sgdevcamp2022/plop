@@ -7,12 +7,16 @@ import com.plop.plopmessenger.domain.model.ChatRoom
 import com.plop.plopmessenger.domain.model.People
 import com.plop.plopmessenger.domain.model.toChatRoom
 import com.plop.plopmessenger.domain.repository.ChatRoomRepository
+import com.plop.plopmessenger.domain.repository.FriendRepository
 import com.plop.plopmessenger.domain.usecase.chatroom.ChatRoomUseCase
+import com.plop.plopmessenger.domain.usecase.friend.FriendUseCase
 import com.plop.plopmessenger.domain.usecase.presence.GetPresenceUserUseCase
 import com.plop.plopmessenger.domain.usecase.presence.PresenceUseCase
 import com.plop.plopmessenger.domain.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -20,7 +24,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ChatsViewModel @Inject constructor(
     private val chatRoomUseCase: ChatRoomUseCase,
-    private val presenceUserUseCase: PresenceUseCase
+    private val presenceUserUseCase: PresenceUseCase,
+    private val friendUseCase: FriendUseCase
 ): ViewModel() {
     var chatsState = MutableStateFlow(ChatsState())
         private set
@@ -29,7 +34,8 @@ class ChatsViewModel @Inject constructor(
         viewModelScope.launch {
             getRemoteChatRoom()
             getLocalChatRooms()
-            launch { getPresence() }
+            getFriendList()
+            getPresence()
         }
     }
 
@@ -67,15 +73,28 @@ class ChatsViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getPresence() {
-        val response = presenceUserUseCase.getPresenceUserUseCase()
-        when(response) {
-            is Resource.Success -> {
-                chatsState.update {
-                    it.copy(presence = response.data?: emptyList())
+    private suspend fun getFriendList() {
+        viewModelScope.launch {
+            when(friendUseCase.getRemoteFriendListUseCase()) {
+                is Resource.Success -> {
                 }
-            }else -> {
+                else -> {
+                    Log.d("GetRemoteFriendList", "error")
+                }
+            }
+        }.join()
+    }
 
+    private fun getPresence() {
+        viewModelScope.launch {
+            presenceUserUseCase.getPresenceUserUseCase().collect() { result ->
+                when(result) {
+                    is Resource.Error -> {}
+                    is Resource.Loading -> TODO()
+                    is Resource.Success -> {
+                        chatsState.update { it.copy(presence = result.data?: emptyList()) }
+                    }
+                }
             }
         }
     }

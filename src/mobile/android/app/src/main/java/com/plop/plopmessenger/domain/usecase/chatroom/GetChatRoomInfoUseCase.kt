@@ -13,12 +13,12 @@ import javax.inject.Inject
 
 class GetChatRoomInfoUseCase @Inject constructor(
     private val chatRoomRepository: ChatRoomRepository,
-    private val getRemoteChatRoomInfoUseCase: GetRemoteChatRoomInfoUseCase
+//    private val getRemoteChatRoomInfoUseCase: GetRemoteChatRoomInfoUseCase
 ) {
     suspend operator fun invoke(chatRoomId: String): Resource<ChatRoom> {
         return withContext(Dispatchers.IO) {
             try {
-                getRemoteChatRoomInfoUseCase(chatRoomId)
+                //getRemoteChatRoomInfoUseCase(chatRoomId)
                 Resource.Success(chatRoomRepository.loadChatRoomAndMemberById(chatRoomId).toChatRoom())
             } catch (e: Exception) {
                 Log.d("GetChatRoomInfoUseCase", e.message.toString())

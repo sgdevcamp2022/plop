@@ -20,4 +20,8 @@ class SocketRepositoryImpl @Inject constructor(
         webSocketListener.join("/chatting/topic/room/${roomId}")
     }
 
+    override fun close() {
+        webSocketListener.close()
+    }
+
 }
