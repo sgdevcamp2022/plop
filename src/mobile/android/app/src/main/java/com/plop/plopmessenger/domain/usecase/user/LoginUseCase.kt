@@ -29,7 +29,7 @@ class LoginUseCase @Inject constructor(
                         UserPref(
                             user?.accessToken ?: "",
                             user?.refreshToken ?: "",
-                            "",
+                            email,
                             email
                         )
                     )

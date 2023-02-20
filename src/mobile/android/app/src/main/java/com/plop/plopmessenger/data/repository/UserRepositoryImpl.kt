@@ -57,6 +57,14 @@ class UserRepositoryImpl @Inject constructor(
         return pref.setNickname(nickname)
     }
 
+    override fun getEmail(): Flow<String> {
+        return pref.getEmail()
+    }
+
+    override suspend fun setEmail(email: String) {
+        return pref.setEmail(email)
+    }
+
     override fun getProfileImg(): Flow<String> {
         return pref.getProfileImg()
     }
@@ -145,6 +153,7 @@ class UserRepositoryImpl @Inject constructor(
     override suspend fun getSearchUser(target: String): Response<GetSearchUserResponse> {
         return userApi.getSearchUser(target)
     }
+
 }
 
 

@@ -19,6 +19,8 @@ interface UserRepository {
     suspend fun setUserId(userId: String)
     fun getNickname(): Flow<String>
     suspend fun setNickname(nickname: String)
+    fun getEmail(): Flow<String>
+    suspend fun setEmail(email: String)
     fun getProfileImg(): Flow<String>
     suspend fun setProfileImg(profileImg: String)
     fun getThemeModel(): Flow<Boolean>
