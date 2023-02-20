@@ -33,6 +33,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponseDto> handleAccessTokenException(Exception e) {
         ErrorResponseDto errorResponseDto = ErrorCode.NOT_ACCESS_TOKEN.toErrorResponseDto(e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponseDto);
+    }@ExceptionHandler(DuplicatedFriendshipException.class)
+    public ResponseEntity<ErrorResponseDto> handleDuplicatedFriendshipException(Exception e) {
+        ErrorResponseDto errorResponseDto = ErrorCode.DUPLICATED_FRIENDSHIP.toErrorResponseDto(e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponseDto);
     }
     @ExceptionHandler({SignatureException.class, MalformedJwtException.class,
             UnsupportedJwtException.class,IllegalArgumentException.class, ExpiredJwtException.class

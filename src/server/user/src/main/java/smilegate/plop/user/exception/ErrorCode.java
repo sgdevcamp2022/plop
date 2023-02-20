@@ -18,7 +18,8 @@ public enum ErrorCode {
     USER_NOT_FOUND(404, "USER-001", "해당 유저가 존재하지 않는 경우"),
     DUPLICATION_USER(409,"USER-002","해당 유저가 이미 존재하는 경우"),//409 confilct
     FAILED_FILE_STREAM(500,"USER-003","파일 전송 혹은 변환에 실패한 경우"),
-    FRIENDSHIP_NOT_FOUND(404,"USER-004","서로 요청받은 친구 요청이 없는 경우");
+    FRIENDSHIP_NOT_FOUND(404,"USER-004","서로 요청받은 친구 요청이 없는 경우"),
+    DUPLICATED_FRIENDSHIP(400,"USER-005","이미 친구 요청을 받은 대상이거나, 친구인 경우");
 
     private final int status;
     private final String code;

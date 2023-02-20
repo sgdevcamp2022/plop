@@ -6,11 +6,13 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import smilegate.plop.user.domain.friend.FriendEntity;
 import smilegate.plop.user.dto.UserDto;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @ToString
@@ -56,6 +58,14 @@ public class UserEntity extends BaseEntity {
 
     @Column(name = "fcm_token")
     private String fcmToken;
+
+//    @OneToMany(mappedBy = "senderId", cascade = CascadeType.REMOVE, orphanRemoval = true)
+//    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
+//    @JoinColumns({ @JoinColumn(name = "senderId",
+//            referencedColumnName = "receiverId"),
+//            @JoinColumn(name = "receiverId", referencedColumnName = "senderId")
+//    })
+//    private List<FriendEntity> friends;
 
     public UserDto toUserDto() {
         UserDto userDto = UserDto.builder()
