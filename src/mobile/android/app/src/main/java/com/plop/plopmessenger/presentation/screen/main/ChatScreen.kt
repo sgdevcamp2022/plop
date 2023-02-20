@@ -219,7 +219,7 @@ fun UserInput(
         Row(
             modifier = Modifier
                 .padding(horizontal = KeyLine)
-                .height(ChatScreenValue.UserInputHeightSize)
+                .defaultMinSize(minHeight = ChatScreenValue.UserInputHeightSize)
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
