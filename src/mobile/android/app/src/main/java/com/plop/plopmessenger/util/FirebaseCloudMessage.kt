@@ -21,7 +21,7 @@ class FirebaseCloudMessage : FirebaseMessagingService() {
     }
 
     override fun onNewToken(token: String) {
-        Log.d("FCM가희","token : ${token}")
+        Log.d("FCM","token : ${token}")
         createChannel()
     }
 
@@ -29,7 +29,7 @@ class FirebaseCloudMessage : FirebaseMessagingService() {
 
         val taskDetailIntent = Intent(
             Intent.ACTION_VIEW,
-            ("https://plopmessenger/" + messageBody["id"]).toUri(),
+            ("https://plopmessenger/" + messageBody["roomId"]).toUri(),
             this,
             MainActivity::class.java
         )
@@ -50,7 +50,7 @@ class FirebaseCloudMessage : FirebaseMessagingService() {
         val notificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        val notificationBuilder = NotificationCompat.Builder(this, messageBody["channel"]!!)
+        val notificationBuilder = NotificationCompat.Builder(this, "channel1")
             .setSmallIcon(R.drawable.ic_app_logo)
             .setContentTitle(messageBody["title"])
             .setContentText(messageBody["message"])
