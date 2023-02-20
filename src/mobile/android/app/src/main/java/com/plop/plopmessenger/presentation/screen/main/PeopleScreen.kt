@@ -16,6 +16,7 @@ import com.plop.plopmessenger.presentation.component.PeopleItem
 import com.plop.plopmessenger.presentation.component.PeopleWithTwoBtnItem
 import com.plop.plopmessenger.presentation.component.SubTitle
 import com.plop.plopmessenger.presentation.component.TopBarWithProfile
+import com.plop.plopmessenger.presentation.state.UserState
 import com.plop.plopmessenger.presentation.viewmodel.PeopleViewModel
 import com.plop.plopmessenger.util.KeyLine
 
@@ -43,7 +44,6 @@ fun PeopleScreen(
     ) {
         TopBarWithProfile(
             onClick = { navigateToAddPeople() },
-            profileImage = "",
             content = stringResource(id = R.string.people_title),
             icon = ImageVector.vectorResource(id = R.drawable.ic_person_add)
         )

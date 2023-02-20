@@ -11,7 +11,12 @@ import com.plop.plopmessenger.data.remote.api.RefreshApi
 import com.plop.plopmessenger.data.remote.api.UserApi
 import com.plop.plopmessenger.domain.repository.PresenceRepository
 import com.plop.plopmessenger.domain.repository.UserRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -21,7 +26,7 @@ import javax.inject.Inject
 
 class PresenceRepositoryImpl @Inject constructor(
     private val presenceApi: PresenceApi
-): PresenceRepository {
+) : PresenceRepository {
     override suspend fun setOn(): Response<Void> {
         return presenceApi.putOn()
     }
@@ -30,10 +35,10 @@ class PresenceRepositoryImpl @Inject constructor(
         return presenceApi.putOff()
     }
 
-    override suspend fun getPresenceUser(): Response<GetPresenceUserResponse> {
-        return presenceApi.getPresenceUser()
-    }
-
+    override fun getPresenceUser() = flow {
+       while(true) {
+           emit(presenceApi.getPresenceUser())
+           delay(5_00000)
+       }
+    }.flowOn(Dispatchers.IO)
 }
-
-

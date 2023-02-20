@@ -3,9 +3,13 @@ package com.plop.plopmessenger.domain.usecase.chatroom
 import android.util.Log
 import com.plop.plopmessenger.data.dto.response.toMember
 import com.plop.plopmessenger.data.local.entity.toChatRoom
+import com.plop.plopmessenger.data.local.entity.toMember
+import com.plop.plopmessenger.domain.model.toMember
+import com.plop.plopmessenger.domain.model.toPeople
 import com.plop.plopmessenger.domain.repository.ChatRoomRepository
 import com.plop.plopmessenger.domain.repository.MemberRepository
 import com.plop.plopmessenger.domain.repository.SocketRepository
+import com.plop.plopmessenger.domain.repository.UserRepository
 import com.plop.plopmessenger.domain.util.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.joinAll
@@ -15,7 +19,8 @@ import javax.inject.Inject
 class GetRemoteChatRoomUseCase @Inject constructor(
     private val chatRoomRepository: ChatRoomRepository,
     private val memberRepository: MemberRepository,
-    private val socketRepository: SocketRepository
+    private val socketRepository: SocketRepository,
+    private val userRepository: UserRepository
 ) {
     suspend operator fun invoke(): Resource<Boolean> {
         try {
@@ -30,7 +35,10 @@ class GetRemoteChatRoomUseCase @Inject constructor(
                         )
                         chatrooms?.getMyRoomDto?.forEach {
                             memberRepository.insertAllMember(
-                                it.members.map { member -> member.toMember(it.roomId) }
+                                it.members.map { member ->
+                                    val memberProfile = userRepository.getUserProfile(member.userId).body()
+                                    memberProfile?.user?.toMember(it.roomId)!!
+                                }
                             )
                         }
                         if(chatRoomIsEmpty) socketRepository.joinAll() else {}

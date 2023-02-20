@@ -6,4 +6,5 @@ interface SocketRepository {
     fun connect()
     fun joinAll()
     fun join(roomId: String)
+    fun close()
 }

@@ -45,6 +45,7 @@ class WebSocketListener @Inject constructor(
     private val DEFAULT_ACK = "auto"
     private val SUPPORTED_VERSIONS = "1.1,1.2"
 
+    private val connectedTopic = mutableSetOf<String>()
     private var shouldBeConnected: Boolean = false
     private var connected = false
     private lateinit var webSocket: WebSocket
@@ -76,16 +77,17 @@ class WebSocketListener @Inject constructor(
     }
 
     private fun handleMessage(message: SocketMessage) {
-        when (message.command) {
-            Commands.CONNECTED -> {
-                Log.d("STOMP 로그", "연결되었다는 메세지")
-            }
-            Commands.MESSAGE -> {
-                val jsonObject = JSONObject(message.payload)
-                val chatRoomId = jsonObject.getString("room_id")
-                CoroutineScope(Dispatchers.IO).launch {
-                    if(chatRoomRepository.hasChatRoomById(chatRoomId)){
-                        Log.d("메세지받음", jsonObject.toString())
+        try {
+            when (message.command) {
+                Commands.CONNECTED -> {
+                    Log.d("STOMP 로그", "연결되었다는 메세지")
+                }
+                Commands.MESSAGE -> {
+                    val jsonObject = JSONObject(message.payload)
+                    val chatRoomId = jsonObject.getString("room_id")
+                    CoroutineScope(Dispatchers.IO).launch {
+                        if(chatRoomRepository.hasChatRoomById(chatRoomId) && jsonObject.has("sender_id")){
+                            saveMember(jsonObject.getString("sender_id"), jsonObject.getString("room_id"))
                             saveMessage(
                                 Message(
                                     chatroomId = jsonObject.getString("room_id"),
@@ -97,32 +99,36 @@ class WebSocketListener @Inject constructor(
                                 )
                             )
                         }
-                    else{
-                        Log.d("받음", jsonObject.toString())
-                        saveNewChatRoom(
-                            chatRoomId = chatRoomId,
-                            title = jsonObject.getString("title"),
-                            type = jsonObject.getString("type"),
-                            updatedAt = jsonObject.getString("createdAt")
-                        )
-                        saveMembers(jsonObject.getJSONArray("members"), chatRoomId)
-                        join("/chatting/topic/room/${chatRoomId}")
+                        else{
+                            saveNewChatRoom(
+                                chatRoomId = chatRoomId,
+                                title = jsonObject.getString("title"),
+                                type = jsonObject.getString("type"),
+                                updatedAt = jsonObject.getString("createdAt")
+                            )
+                            saveMembers(jsonObject.getJSONArray("members"), chatRoomId)
+                            join("/chatting/topic/room/${chatRoomId}")
+                        }
                     }
                 }
             }
+        } catch (e: Exception) {
+            Log.d("ChatRoom Error Occur", e.message.toString())
         }
     }
 
 
     fun join(topic: String) {
         val topicId = UUID.randomUUID().toString()
-
-        val headers = HashMap<String, String>()
-        headers[Headers.ID] = topicId
-        headers[Headers.DESTINATION] = topic
-        headers[Headers.ACK] = DEFAULT_ACK
-        Log.d("JOIN", compileMessage(SocketMessage(Commands.SUBSCRIBE, headers = headers)).toString())
-        webSocket.send(compileMessage(SocketMessage(Commands.SUBSCRIBE, headers = headers)))
+        if(!connectedTopic.contains(topic)){
+            val headers = HashMap<String, String>()
+            headers[Headers.ID] = topicId
+            headers[Headers.DESTINATION] = topic
+            headers[Headers.ACK] = DEFAULT_ACK
+            connectedTopic.add(topic)
+            Log.d("JOIN", compileMessage(SocketMessage(Commands.SUBSCRIBE, headers = headers)).toString())
+            webSocket.send(compileMessage(SocketMessage(Commands.SUBSCRIBE, headers = headers)))
+        }
     }
 
     fun joinAll() {
@@ -173,12 +179,13 @@ class WebSocketListener @Inject constructor(
 
     suspend fun saveMember(memberId: String, chatRoomId: String) {
         try {
+            val memberProfile = userRepository.getUserProfile(memberId).body()
             memberRepository.insertMember(
                 Member(
                     memberId = memberId,
                     chatroomId = chatRoomId,
-                    nickname = "",
-                    profileImg = "",
+                    nickname = memberProfile?.user?.profile?.nickname?:"",
+                    profileImg = memberProfile?.user?.profile?.img?:"",
                     readMessage = null
                 )
             )

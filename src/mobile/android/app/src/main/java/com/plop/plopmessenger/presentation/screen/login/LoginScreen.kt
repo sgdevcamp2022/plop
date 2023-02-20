@@ -14,6 +14,7 @@ import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -103,11 +104,11 @@ fun LoginScreen(
             onQueryChange = viewModel::setPwdQuery,
             onSearchFocusChange = viewModel::setPwdState,
             searchFocused = state.pwdTextFieldFocusState,
+            visualTransformation = PasswordVisualTransformation(),
             placeholder = stringResource(id = R.string.initial_password_et),
             onDone = {
                 focusManager.clearFocus()
                 viewModel.login()
-                navigateToMain()
             }
         )
 
