@@ -55,6 +55,11 @@
 		B42BBFF3299368F70037B2EA /* PlopProfileImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B42BBFF2299368F70037B2EA /* PlopProfileImageView.swift */; };
 		B42BBFF52993702B0037B2EA /* ChatRoomListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B42BBFF42993702B0037B2EA /* ChatRoomListCell.swift */; };
 		B42BBFF7299378680037B2EA /* ChatRoomListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B42BBFF6299378680037B2EA /* ChatRoomListViewModel.swift */; };
+		B431C6F829A281D600960FFD /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B431C6F729A281D600960FFD /* GoogleService-Info.plist */; };
+		B431C6FB29A2834000960FFD /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = B431C6FA29A2834000960FFD /* FirebaseAnalytics */; };
+		B431C6FD29A2834000960FFD /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = B431C6FC29A2834000960FFD /* FirebaseMessaging */; };
+		B431C70029A31FED00960FFD /* PushTarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = B431C6FF29A31FED00960FFD /* PushTarget.swift */; };
+		B431C70229A3229E00960FFD /* PushNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = B431C70129A3229E00960FFD /* PushNetwork.swift */; };
 		B44BC3E229A267EE00362277 /* RealmRepositoryError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B44BC3E129A267EE00362277 /* RealmRepositoryError.swift */; };
 		B460829F298A217700BABC97 /* NetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B460829E298A217700BABC97 /* NetworkError.swift */; };
 		B46082A1298A259300BABC97 /* SignupRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46082A0298A259300BABC97 /* SignupRequest.swift */; };
@@ -99,11 +104,9 @@
 		B4C716412991098A0015DCEC /* LaunchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4C716402991098A0015DCEC /* LaunchViewController.swift */; };
 		B4C7164529914ACB0015DCEC /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4C7164429914ACB0015DCEC /* Coordinator.swift */; };
 		B4C7164729914CEC0015DCEC /* LaunchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4C7164629914CEC0015DCEC /* LaunchViewModel.swift */; };
-		B4CD3300298E74F200628402 /* WebSocketUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4CD32FF298E74F100628402 /* WebSocketUseCase.swift */; };
 		B4D5C0B6299905A400BAF894 /* ChatRoomListResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D5C0B5299905A400BAF894 /* ChatRoomListResponse.swift */; };
 		B4D6814A298BADE5000D8920 /* KeychainRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D68149298BADE5000D8920 /* KeychainRepository.swift */; };
 		B4D6814C298BAE7D000D8920 /* Token.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D6814B298BAE7D000D8920 /* Token.swift */; };
-		B4D8411B299E91870036E10C /* ChatRoomWebsocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D8411A299E91870036E10C /* ChatRoomWebsocket.swift */; };
 		B4D8411E299E9BE80036E10C /* SwiftStomp in Frameworks */ = {isa = PBXBuildFile; productRef = B4D8411D299E9BE80036E10C /* SwiftStomp */; };
 		B4E8D66F29880E9D003B946D /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = B4E8D66E29880E9D003B946D /* RxCocoa */; };
 		B4E8D67129880E9D003B946D /* RxRelay in Frameworks */ = {isa = PBXBuildFile; productRef = B4E8D67029880E9D003B946D /* RxRelay */; };
@@ -118,7 +121,6 @@
 		B4EAB1F9298FF4F200A3E098 /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4EAB1F8298FF4F200A3E098 /* LoginViewModel.swift */; };
 		B4FBACE1299E7975002A04C2 /* ChatRoomListSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FBACE0299E7975002A04C2 /* ChatRoomListSection.swift */; };
 		B4FBACE4299E8BFC002A04C2 /* Starscream in Frameworks */ = {isa = PBXBuildFile; productRef = B4FBACE3299E8BFC002A04C2 /* Starscream */; };
-		B4FD2EF82995376700644855 /* RoomListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FD2EF72995376700644855 /* RoomListModel.swift */; };
 		B4FD2EFA29954EF300644855 /* FriendRequestCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FD2EF929954EF300644855 /* FriendRequestCell.swift */; };
 		B4FD2EFC29954EF900644855 /* FriendCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FD2EFB29954EF900644855 /* FriendCell.swift */; };
 /* End PBXBuildFile section */
@@ -168,6 +170,10 @@
 		B42BBFF2299368F70037B2EA /* PlopProfileImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlopProfileImageView.swift; sourceTree = "<group>"; };
 		B42BBFF42993702B0037B2EA /* ChatRoomListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomListCell.swift; sourceTree = "<group>"; };
 		B42BBFF6299378680037B2EA /* ChatRoomListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomListViewModel.swift; sourceTree = "<group>"; };
+		B431C6F729A281D600960FFD /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		B431C6FE29A28B0800960FFD /* plop-messenger-ios.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "plop-messenger-ios.entitlements"; sourceTree = "<group>"; };
+		B431C6FF29A31FED00960FFD /* PushTarget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushTarget.swift; sourceTree = "<group>"; };
+		B431C70129A3229E00960FFD /* PushNetwork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNetwork.swift; sourceTree = "<group>"; };
 		B44BC3E129A267EE00362277 /* RealmRepositoryError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmRepositoryError.swift; sourceTree = "<group>"; };
 		B460829E298A217700BABC97 /* NetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkError.swift; sourceTree = "<group>"; };
 		B46082A0298A259300BABC97 /* SignupRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupRequest.swift; sourceTree = "<group>"; };
@@ -212,11 +218,9 @@
 		B4C716402991098A0015DCEC /* LaunchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchViewController.swift; sourceTree = "<group>"; };
 		B4C7164429914ACB0015DCEC /* Coordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coordinator.swift; sourceTree = "<group>"; };
 		B4C7164629914CEC0015DCEC /* LaunchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchViewModel.swift; sourceTree = "<group>"; };
-		B4CD32FF298E74F100628402 /* WebSocketUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketUseCase.swift; sourceTree = "<group>"; };
 		B4D5C0B5299905A400BAF894 /* ChatRoomListResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomListResponse.swift; sourceTree = "<group>"; };
 		B4D68149298BADE5000D8920 /* KeychainRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainRepository.swift; sourceTree = "<group>"; };
 		B4D6814B298BAE7D000D8920 /* Token.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Token.swift; sourceTree = "<group>"; };
-		B4D8411A299E91870036E10C /* ChatRoomWebsocket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomWebsocket.swift; sourceTree = "<group>"; };
 		B4EAB1E8298F842500A3E098 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		B4EAB1EB298F878100A3E098 /* UIConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIConstants.swift; sourceTree = "<group>"; };
 		B4EAB1EE298F87FF00A3E098 /* PlopOrangeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlopOrangeButton.swift; sourceTree = "<group>"; };
@@ -226,7 +230,6 @@
 		B4EAB1F6298FF31D00A3E098 /* ViewModelType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModelType.swift; sourceTree = "<group>"; };
 		B4EAB1F8298FF4F200A3E098 /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 		B4FBACE0299E7975002A04C2 /* ChatRoomListSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomListSection.swift; sourceTree = "<group>"; };
-		B4FD2EF72995376700644855 /* RoomListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomListModel.swift; sourceTree = "<group>"; };
 		B4FD2EF929954EF300644855 /* FriendRequestCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendRequestCell.swift; sourceTree = "<group>"; };
 		B4FD2EFB29954EF900644855 /* FriendCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -238,11 +241,13 @@
 			files = (
 				B411808C299A8B6F008586BB /* Differentiator in Frameworks */,
 				B41180712999DDD5008586BB /* RxMoya in Frameworks */,
+				B431C6FB29A2834000960FFD /* FirebaseAnalytics in Frameworks */,
 				B4E8D67329880E9D003B946D /* RxSwift in Frameworks */,
 				B4FBACE4299E8BFC002A04C2 /* Starscream in Frameworks */,
 				B4E8D67129880E9D003B946D /* RxRelay in Frameworks */,
 				B411808E299A8B6F008586BB /* RxDataSources in Frameworks */,
 				B411806F2999DDD5008586BB /* Moya in Frameworks */,
+				B431C6FD29A2834000960FFD /* FirebaseMessaging in Frameworks */,
 				B4114E18299BFEB000C9ADFD /* RxRealm in Frameworks */,
 				B4E8D66F29880E9D003B946D /* RxCocoa in Frameworks */,
 				B4D8411E299E9BE80036E10C /* SwiftStomp in Frameworks */,
@@ -329,6 +334,7 @@
 				B41180792999E2A7008586BB /* AuthTarget.swift */,
 				B4118080299A1553008586BB /* UserTarget.swift */,
 				B473CAAE299B30D300ECAD47 /* ChatRoomTarget.swift */,
+				B431C6FF29A31FED00960FFD /* PushTarget.swift */,
 			);
 			path = Targets;
 			sourceTree = "<group>";
@@ -339,6 +345,7 @@
 				B46082A4298A2BE900BABC97 /* AuthNetwork.swift */,
 				B415247229897D05006B86FF /* ChatRoomNetwork.swift */,
 				B4152470298977F4006B86FF /* UserNetwork.swift */,
+				B431C70129A3229E00960FFD /* PushNetwork.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -385,6 +392,8 @@
 		B41E40B62987797C00BB3126 /* plop-messenger-ios */ = {
 			isa = PBXGroup;
 			children = (
+				B431C6FE29A28B0800960FFD /* plop-messenger-ios.entitlements */,
+				B431C6F729A281D600960FFD /* GoogleService-Info.plist */,
 				B41E40C52987797D00BB3126 /* Info.plist */,
 				B41E40B72987797C00BB3126 /* AppDelegate.swift */,
 				B41E40B92987797C00BB3126 /* SceneDelegate.swift */,
@@ -415,7 +424,6 @@
 				B41E40CF29877F6500BB3126 /* ChatRoom.swift */,
 				B4D6814B298BAE7D000D8920 /* Token.swift */,
 				B41E40CD29877F5E00BB3126 /* User.swift */,
-				B4FD2EF72995376700644855 /* RoomListModel.swift */,
 			);
 			path = Entities;
 			sourceTree = "<group>";
@@ -466,8 +474,6 @@
 				B48BF233298C0D20006E2684 /* ChatRoomUseCase.swift */,
 				B48BF22E298C0B07006E2684 /* TokenUseCase.swift */,
 				B48BF22D298C0B07006E2684 /* UserUseCase.swift */,
-				B4CD32FF298E74F100628402 /* WebSocketUseCase.swift */,
-				B4D8411A299E91870036E10C /* ChatRoomWebsocket.swift */,
 				B48BF22B298C0B07006E2684 /* Common */,
 			);
 			path = UseCases;
@@ -712,6 +718,8 @@
 				B4114E17299BFEB000C9ADFD /* RxRealm */,
 				B4FBACE3299E8BFC002A04C2 /* Starscream */,
 				B4D8411D299E9BE80036E10C /* SwiftStomp */,
+				B431C6FA29A2834000960FFD /* FirebaseAnalytics */,
+				B431C6FC29A2834000960FFD /* FirebaseMessaging */,
 			);
 			productName = "plop-messenger-ios";
 			productReference = B41E40B42987797C00BB3126 /* plop-messenger-ios.app */;
@@ -749,6 +757,7 @@
 				B4114E16299BFEB000C9ADFD /* XCRemoteSwiftPackageReference "RxRealm" */,
 				B4FBACE2299E8BFC002A04C2 /* XCRemoteSwiftPackageReference "Starscream" */,
 				B4D8411C299E9BE80036E10C /* XCRemoteSwiftPackageReference "SwiftStomp" */,
+				B431C6F929A2834000960FFD /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			productRefGroup = B41E40B52987797C00BB3126 /* Products */;
 			projectDirPath = "";
@@ -766,6 +775,7 @@
 			files = (
 				B41E40C42987797D00BB3126 /* LaunchScreen.storyboard in Resources */,
 				B41E40C12987797D00BB3126 /* Assets.xcassets in Resources */,
+				B431C6F829A281D600960FFD /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -814,8 +824,8 @@
 				B4FBACE1299E7975002A04C2 /* ChatRoomListSection.swift in Sources */,
 				B42BBFF3299368F70037B2EA /* PlopProfileImageView.swift in Sources */,
 				B4C7164529914ACB0015DCEC /* Coordinator.swift in Sources */,
+				B431C70229A3229E00960FFD /* PushNetwork.swift in Sources */,
 				B411806629993D61008586BB /* CreateChatRoomViewController.swift in Sources */,
-				B4CD3300298E74F200628402 /* WebSocketUseCase.swift in Sources */,
 				B4118081299A1553008586BB /* UserTarget.swift in Sources */,
 				B4EAB1EF298F87FF00A3E098 /* PlopOrangeButton.swift in Sources */,
 				B460829F298A217700BABC97 /* NetworkError.swift in Sources */,
@@ -826,10 +836,10 @@
 				B4114E31299C9A6700C9ADFD /* RealmRepresentable.swift in Sources */,
 				B4EAB1F7298FF31D00A3E098 /* ViewModelType.swift in Sources */,
 				B4118089299A7582008586BB /* FriendRequestResponse.swift in Sources */,
-				B4D8411B299E91870036E10C /* ChatRoomWebsocket.swift in Sources */,
 				B4114E24299C0F1600C9ADFD /* RMMessage.swift in Sources */,
 				B414E8E729A0991300743B69 /* UserRealm.swift in Sources */,
 				B48D4DD4299D4190003C8A9F /* FriendListSection.swift in Sources */,
+				B431C70029A31FED00960FFD /* PushTarget.swift in Sources */,
 				B483F3C02995FD76000F78C6 /* PeopleViewModel.swift in Sources */,
 				B4EAB1E9298F842500A3E098 /* LoginViewController.swift in Sources */,
 				B4A801822998C08400874879 /* MemberData.swift in Sources */,
@@ -870,7 +880,6 @@
 				B4C60995298CC17F00FEA42B /* WebSocketConnectionDelegate.swift in Sources */,
 				B41E40D029877F6500BB3126 /* ChatRoom.swift in Sources */,
 				B4C716412991098A0015DCEC /* LaunchViewController.swift in Sources */,
-				B4FD2EF82995376700644855 /* RoomListModel.swift in Sources */,
 				B4114E11299BDEBF00C9ADFD /* String+Ext.swift in Sources */,
 				B4D6814A298BADE5000D8920 /* KeychainRepository.swift in Sources */,
 				B46082B1298A3EEF00BABC97 /* MemberResponse.swift in Sources */,
@@ -1013,6 +1022,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "plop-messenger-ios/plop-messenger-ios.entitlements";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = SK9D9HK9A2;
@@ -1029,6 +1040,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.howift.plop-messenger-ios";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1040,6 +1052,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "plop-messenger-ios/plop-messenger-ios.entitlements";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = SK9D9HK9A2;
@@ -1056,6 +1070,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.howift.plop-messenger-ios";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1118,6 +1133,14 @@
 				minimumVersion = 5.0.0;
 			};
 		};
+		B431C6F929A2834000960FFD /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 9.0.0;
+			};
+		};
 		B4D8411C299E9BE80036E10C /* XCRemoteSwiftPackageReference "SwiftStomp" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Romixery/SwiftStomp.git";
@@ -1174,6 +1197,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = B411808A299A8B6F008586BB /* XCRemoteSwiftPackageReference "RxDataSources" */;
 			productName = RxDataSources;
+		};
+		B431C6FA29A2834000960FFD /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B431C6F929A2834000960FFD /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
+		};
+		B431C6FC29A2834000960FFD /* FirebaseMessaging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B431C6F929A2834000960FFD /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseMessaging;
 		};
 		B4D8411D299E9BE80036E10C /* SwiftStomp */ = {
 			isa = XCSwiftPackageProductDependency;

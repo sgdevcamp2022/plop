@@ -9,8 +9,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     return true
   }
   
-  // MARK: UISceneSession Lifecycle
-  
+  // MARK: UISceneSession Lifecycle  
   func application(
     _ application: UIApplication,
     configurationForConnecting connectingSceneSession: UISceneSession,
@@ -24,4 +23,3 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     didDiscardSceneSessions sceneSessions: Set<UISceneSession>
   ) {}
 }
-
