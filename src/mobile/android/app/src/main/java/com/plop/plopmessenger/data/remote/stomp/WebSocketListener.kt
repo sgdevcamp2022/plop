@@ -17,9 +17,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.*
 import okhttp3.WebSocketListener
 import okio.ByteString
+import org.json.JSONArray
+import org.json.JSONObject
 import java.io.StringReader
 import java.time.LocalDateTime
 import java.util.*
@@ -29,7 +32,8 @@ import javax.inject.Inject
 const val TERMINATE_MESSAGE_SYMBOL = "\u0000"
 const val NORMAL_CLOSURE_STATUS = 1000
 val PATTERN_HEADER = Pattern.compile("([^:\\s]+)\\s*:\\s*([^:\\s]+)")
-
+const val socketUrl = "ws://3.39.130.186:8011/ws-chat"
+const val stompHost = "stomp.github.org"
 class WebSocketListener @Inject constructor(
     private val okHttpClient: OkHttpClient,
     private val chatRoomRepository: ChatRoomRepository,
@@ -48,9 +52,9 @@ class WebSocketListener @Inject constructor(
 
     fun connect() {
         if (!connected) {
-            Log.d("STOMP", "connect 함수")
+            shouldBeConnected = true
             val request = Request.Builder()
-                .url("wss://pubwss.bithumb.com/pub/ws")
+                .url(socketUrl)
                 .build()
             webSocket = okHttpClient.newWebSocket(request, this)
             connected = true
@@ -77,10 +81,38 @@ class WebSocketListener @Inject constructor(
                 Log.d("STOMP 로그", "연결되었다는 메세지")
             }
             Commands.MESSAGE -> {
-                Log.d("STOMP 로그", "메세지 받음 : onMessage payload: ${message.payload}, heaaders:${message.headers}, command: ${message.command}")
+                val jsonObject = JSONObject(message.payload)
+                val chatRoomId = jsonObject.getString("room_id")
+                CoroutineScope(Dispatchers.IO).launch {
+                    if(chatRoomRepository.hasChatRoomById(chatRoomId)){
+                        Log.d("메세지받음", jsonObject.toString())
+                            saveMessage(
+                                Message(
+                                    chatroomId = jsonObject.getString("room_id"),
+                                    messageId = jsonObject.getString("message_id"),
+                                    messageFromID = jsonObject.getString("sender_id"),
+                                    content = jsonObject.getString("content"),
+                                    createdAt = LocalDateTime.now(),
+                                    type = 1
+                                )
+                            )
+                        }
+                    else{
+                        Log.d("받음", jsonObject.toString())
+                        saveNewChatRoom(
+                            chatRoomId = chatRoomId,
+                            title = jsonObject.getString("title"),
+                            type = jsonObject.getString("type"),
+                            updatedAt = jsonObject.getString("createdAt")
+                        )
+                        saveMembers(jsonObject.getJSONArray("members"), chatRoomId)
+                        join("/chatting/topic/room/${chatRoomId}")
+                    }
+                }
             }
         }
     }
+
 
     fun join(topic: String) {
         val topicId = UUID.randomUUID().toString()
@@ -89,21 +121,20 @@ class WebSocketListener @Inject constructor(
         headers[Headers.ID] = topicId
         headers[Headers.DESTINATION] = topic
         headers[Headers.ACK] = DEFAULT_ACK
+        Log.d("JOIN", compileMessage(SocketMessage(Commands.SUBSCRIBE, headers = headers)).toString())
         webSocket.send(compileMessage(SocketMessage(Commands.SUBSCRIBE, headers = headers)))
-
-        Log.d("STOMP 로그", "Subscribed to: $topic id: $topicId")
     }
 
     fun joinAll() {
         CoroutineScope(Dispatchers.IO).launch {
-            chatRoomRepository.loadChatRoomIdList().collect() { result ->
-                result.forEach {
-                    join(it)
-                }
+            chatRoomRepository.loadChatRoomIdList().forEach {
+                join("/chatting/topic/room/${it}")
             }
             userRepository.getUserId().collect() {
-                join(it)
-                userId = it
+                if(it.isNotEmpty()) {
+                    join("/chatting/topic/new-room/${it}")
+                    userId = it
+                }
             }
         }
     }
@@ -111,44 +142,58 @@ class WebSocketListener @Inject constructor(
 
     fun saveMessage(message: Message) {
         CoroutineScope(Dispatchers.IO).launch {
+            updateChatRoom(message.chatroomId, message.content)
             messageRepository.insertMessage(message)
         }
+
     }
 
-    fun saveNewChatRoom(chatRoom: ChatRoom) {
-        CoroutineScope(Dispatchers.IO).launch {
-            chatRoomRepository.insertChatRoom(chatRoom)
+    suspend fun saveNewChatRoom(chatRoomId: String, title: String, type: String, updatedAt: String) {
+        chatRoomRepository.insertChatRoom(
+            ChatRoom(
+                chatroomId = chatRoomId,
+                title = title,
+                type = if(type == "DM") 1 else 2,
+                updatedAt = LocalDateTime.parse(updatedAt),
+                unread = 0
+            )
+        )
+    }
+
+    suspend fun saveMembers(members: JSONArray, chatRoomId: String) {
+        repeat(members.length()) { index ->
+            var member = members.getJSONObject(index)
+            saveMember(
+                memberId = member.getString("userId"),
+                chatRoomId = chatRoomId
+            )
         }
     }
 
-    fun saveMembers(member: Member) {
-        CoroutineScope(Dispatchers.IO).launch {
-            memberRepository.insertMember(member)
+
+    suspend fun saveMember(memberId: String, chatRoomId: String) {
+        try {
+            memberRepository.insertMember(
+                Member(
+                    memberId = memberId,
+                    chatroomId = chatRoomId,
+                    nickname = "",
+                    profileImg = "",
+                    readMessage = null
+                )
+            )
+        } catch (e: Exception) {
+            Log.d("SaveMember", e.message.toString())
         }
     }
 
-    fun updateChatRoom(roomId: String, content: String) {
-        CoroutineScope(Dispatchers.IO).launch {
+    suspend fun updateChatRoom(roomId: String, content: String) {
+        withContext(Dispatchers.IO) {
             chatRoomRepository.updateChatRoomContentById(roomId, content, LocalDateTime.now())
+            chatRoomRepository.plusChatRoomUnreadById(roomId, 1)
         }
     }
 
-
-    fun send(topic: String, msg: SocketMessage) {
-        val result = webSocket.send(compileMessage(msg))
-    }
-
-    fun sendMessage(roomId: String, messageType: MessageType, content: String, payload: String?) {
-        /** TODO 메세지 보내는 함수 토픽 쪽 다시보기! **/
-        val headers = HashMap<String, String>()
-        //headers[Headers.DESTINATION] = topic
-        headers[Headers.ROOM_ID] = roomId
-        headers[Headers.SENDER_ID] = userId?: ""
-        headers[Headers.MESSAGE_TYPE] = messageType.toString()
-        headers[Headers.CONTENT] = content
-
-        if(userId != null) send(roomId, SocketMessage(Commands.SEND, headers = headers, payload = payload))
-    }
 
     private fun compileMessage(message: SocketMessage): String {
         val builder = StringBuilder()
@@ -189,32 +234,33 @@ class WebSocketListener @Inject constructor(
         reader.useDelimiter(TERMINATE_MESSAGE_SYMBOL)
         val payload = if (reader.hasNext()) reader.next() else null
 
-        return SocketMessage(command, payload!!, headers)
+        return SocketMessage(command, headers, payload!!)
     }
 
     override fun onOpen(socket: WebSocket, response: Response) {
+        val headers = HashMap<String, String>()
+        headers[Headers.VERSION] = SUPPORTED_VERSIONS
+        headers[Headers.HOST] = stompHost
+        webSocket.send(compileMessage(SocketMessage(Commands.CONNECT, headers)))
         webSocket = socket
-        Log.d("STOMP 로그", "onOpen 실행")
     }
 
     override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
-        Log.d("STOMP 로그", "onMessage with byte 실행")
         handleMessage(parseMessage(bytes.toString()))
     }
 
     override fun onMessage(webSocket: WebSocket, text: String) {
-        Log.d("STOMP 로그", "onMessage with text $text")
+        Log.d("onMessage", text.toString())
         handleMessage(parseMessage(text))
     }
 
     override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
-        Log.d("STOMP 로그","Closing : $code / $reason")
         webSocket.close(NORMAL_CLOSURE_STATUS, null)
         webSocket.cancel()
     }
 
     override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
         Log.d("STOMP 로그", "onFailure 실행 ${response}")
-        connect()
+        reconnect()
     }
 }

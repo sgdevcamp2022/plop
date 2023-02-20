@@ -13,14 +13,19 @@ interface ChatRoomDao {
     fun loadChatRoomTitle(chatroomId: String): Flow<String>
 
     @Query(
+        "SELECT chatroom_id FROM chatroom WHERE chatroom_id = :chatroomId"
+    )
+    suspend fun hasChatRoomById(chatroomId: String): String?
+
+    @Query(
         "SELECT chatroom_id FROM chatroom"
     )
-    fun loadChatRoomIdList(): Flow<List<String>>
+    suspend fun loadChatRoomIdList(): List<String>
 
     @Query(
         "SELECT chatroom.chatroom_id FROM chatroom, members WHERE chatroom.chatroom_id =members.chatroom_id AND chatroom.type = 1 AND members.member_id = :friendId"
     )
-    fun hasPersonalChatRoomByFriend(friendId: String): Flow<String?>
+    suspend fun hasPersonalChatRoomByFriend(friendId: String): String?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertChatRoom(chatRoom: ChatRoom)
@@ -50,7 +55,7 @@ interface ChatRoomDao {
     suspend fun plusChatRoomUnreadById(chatroomId: String, unread: Int)
 
     @Query(
-        "UPDATE chatroom SET content = :content AND updated_at = :updatedAt WHERE chatroom_id = :chatroomId"
+        "UPDATE chatroom SET content = :content , updated_at = :updatedAt WHERE chatroom_id = :chatroomId"
     )
     suspend fun updateChatRoomContentById(chatroomId: String, content: String, updatedAt: LocalDateTime)
 
@@ -58,4 +63,7 @@ interface ChatRoomDao {
         "DELETE FROM chatroom WHERE chatroom_id = :chatroomId"
     )
     fun deleteChatRoom(chatroomId: String)
+
+    @Query("DELETE FROM chatroom")
+    suspend fun deleteChatRoomData()
 }

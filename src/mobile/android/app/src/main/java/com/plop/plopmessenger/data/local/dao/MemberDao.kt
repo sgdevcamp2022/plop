@@ -1,5 +1,6 @@
 package com.plop.plopmessenger.data.local.dao
 
+import android.util.Log
 import androidx.room.*
 import com.plop.plopmessenger.data.local.entity.Member
 import kotlinx.coroutines.flow.Flow
@@ -21,14 +22,24 @@ interface MemberDao {
     )
     fun loadChatMemberId(chatroomId: String): Flow<List<Member>>
 
-    @Insert
+    @Query(
+        "SELECT * FROM members WHERE member_id = :memberId AND chatroom_id = :chatroomId"
+    )
+    suspend fun loadChatMemberById(chatroomId: String, memberId: String): List<Member>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMember(member: Member)
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAllMember(vararg members: Member)
 
     @Update
     suspend fun updateMember(member: Member)
+
+    @Query(
+        "UPDATE members SET read_message = :messageId WHERE member_id = :memberId"
+    )
+    suspend fun updateMemberLastRead(memberId: String, messageId: String?)
 
     @Update
     suspend fun updateAllMember(vararg members: Member)

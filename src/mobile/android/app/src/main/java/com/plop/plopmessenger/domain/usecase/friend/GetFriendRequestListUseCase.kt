@@ -15,20 +15,18 @@ class GetFriendRequestListUseCase @Inject constructor(
 ) {
     operator fun invoke(): Flow<Resource<List<People>>> = flow {
         try {
-            val response = friendRepository.getFriendList()
-            when(response.code()) {
-                200 -> {
-                    if(response.body() != null) {
-                        emit(Resource.Success(response.body()!!.profiles.map { it.toPeople() }))
-                    }
+            val response = friendRepository.getFriendRequestList()
+            if(response.isSuccessful) {
+                if(response.body() != null) {
+                    emit(Resource.Success(response.body()?.profiles?.map { it.toPeople() }?: emptyList()))
                 }
-                else -> {
-                    Log.d("GetFriendRequestListUseCase", "error")
-                    emit(Resource.Error("error"))
-                }
+                Log.d("GetFriendRequestListUseCase", "성공..성공이오...!")
+            } else {
+                Log.d("GetFriendRequestListUseCase", "실패...실패오..")
+                emit(Resource.Error("error"))
             }
         }catch (e: Exception) {
-            Log.d("GetFriendRequestListUseCase", "error")
+            Log.d("GetFriendRequestListUseCase", "${e.message}")
             emit(Resource.Error("error"))
         }
     }

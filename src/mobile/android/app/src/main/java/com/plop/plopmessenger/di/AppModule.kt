@@ -6,10 +6,8 @@ import android.util.Log
 import androidx.room.Room
 import com.plop.plopmessenger.data.local.AppDatabase
 import com.plop.plopmessenger.data.pref.PrefDataSource
-import com.plop.plopmessenger.data.remote.api.ChatApi
+import com.plop.plopmessenger.data.remote.api.*
 import com.plop.plopmessenger.data.remote.api.Constants.BASE_URL
-import com.plop.plopmessenger.data.remote.api.FriendApi
-import com.plop.plopmessenger.data.remote.api.UserApi
 import com.plop.plopmessenger.data.remote.stomp.WebSocketListener
 import com.plop.plopmessenger.data.repository.*
 import com.plop.plopmessenger.domain.repository.*
@@ -35,32 +33,72 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppModule {
     @Singleton
+    @AuthRetrofit
     @Provides
-    fun provideRetrofit(okHttpClient: OkHttpClient) : Retrofit {
+    fun provideRetrofit(
+        @AuthOkHttp okHttpClient: OkHttpClient
+    ) : Retrofit {
         return Retrofit.Builder().apply {
             addConverterFactory(GsonConverterFactory.create())
             baseUrl(BASE_URL)
+            client(okHttpClient)
+        }.build()
+    }
+
+    @Singleton
+    @RefreshRetrofit
+    @Provides
+    fun provideRefreshRetrofit(
+        @RefreshOkHttp okHttpClient: OkHttpClient
+    ) : Retrofit {
+        return Retrofit.Builder().apply {
+            addConverterFactory(GsonConverterFactory.create())
+            baseUrl(BASE_URL)
+            client(okHttpClient)
         }.build()
     }
 
     @Singleton
     @Provides
-    fun provideChatApi(retrofit: Retrofit): ChatApi {
+    fun provideChatApi(
+        @AuthRetrofit retrofit: Retrofit
+    ): ChatApi {
         return retrofit.create(ChatApi::class.java)
     }
 
     @Singleton
     @Provides
-    fun provideFriendApi(retrofit: Retrofit): FriendApi {
+    fun provideRefreshApi(
+        @RefreshRetrofit retrofit: Retrofit
+    ): RefreshApi {
+        return retrofit.create(RefreshApi::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideFriendApi(
+        @AuthRetrofit retrofit: Retrofit
+    ): FriendApi {
         return retrofit.create(FriendApi::class.java)
     }
 
     @Singleton
     @Provides
-    fun provideUserApi(retrofit: Retrofit): UserApi {
+    fun provideUserApi(
+        @AuthRetrofit retrofit: Retrofit
+    ): UserApi {
         return retrofit.create(UserApi::class.java)
     }
 
+    @Singleton
+    @Provides
+    fun providePresenceApi(
+        @AuthRetrofit retrofit: Retrofit
+    ): PresenceApi {
+        return retrofit.create(PresenceApi::class.java)
+    }
+
+    @AuthOkHttp
     @Singleton
     @Provides
     fun provideOkHttpClient(
@@ -75,10 +113,25 @@ object AppModule {
             .build()
     }
 
+    @RefreshOkHttp
+    @Singleton
+    @Provides
+    fun provideRefreshOkHttpClient(
+        @RefreshInterceptor interceptor: Interceptor,
+        @LoggingInterceptor loggingInterceptor: Interceptor,
+        @NetworkInterceptor networkInterceptor: Interceptor
+    ): OkHttpClient {
+        return OkHttpClient.Builder()
+            .addInterceptor(interceptor)
+            .addInterceptor(loggingInterceptor)
+            .addNetworkInterceptor(networkInterceptor)
+            .build()
+    }
+
     @Singleton
     @Provides
     fun provideWebSocketListener(
-        okHttpClient: OkHttpClient,
+        @AuthOkHttp okHttpClient: OkHttpClient,
         chatRoomRepository: ChatRoomRepository,
         messageRepository: MessageRepository,
         memberRepository: MemberRepository,
@@ -120,6 +173,33 @@ object AppModule {
             .proceed(newRequest)
     }
 
+    @RefreshInterceptor
+    @Provides
+    fun provideRefreshInterceptor(
+        pref: PrefDataSource
+    ) : Interceptor = Interceptor{ chain ->
+
+        val token = runBlocking(Dispatchers.IO) {
+            pref.getRefreshToken().first().let {
+                if (it.isNotEmpty()) "Bearer $it" else ""
+            }
+        }
+
+        val newRequest = chain
+            .request()
+            .newBuilder()
+            .apply {
+                if (token.isNotBlank()) {
+                    addHeader(Constants.AUTHORIZATION, token)
+                }
+            }
+            .build()
+
+
+        return@Interceptor chain
+            .proceed(newRequest)
+    }
+
 
     @NetworkInterceptor
     @Provides
@@ -140,11 +220,31 @@ object AppModule {
 
     @Qualifier
     @Retention(AnnotationRetention.BINARY)
+    annotation class RefreshInterceptor
+
+    @Qualifier
+    @Retention(AnnotationRetention.BINARY)
     annotation class NetworkInterceptor
 
     @Qualifier
     @Retention(AnnotationRetention.BINARY)
     annotation class LoggingInterceptor
+
+    @Qualifier
+    @Retention(AnnotationRetention.BINARY)
+    annotation class RefreshRetrofit
+
+    @Qualifier
+    @Retention(AnnotationRetention.BINARY)
+    annotation class AuthRetrofit
+
+    @Qualifier
+    @Retention(AnnotationRetention.BINARY)
+    annotation class AuthOkHttp
+
+    @Qualifier
+    @Retention(AnnotationRetention.BINARY)
+    annotation class RefreshOkHttp
 
 
     @Singleton
@@ -194,10 +294,11 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideUserRepository(pref: PrefDataSource, userApi: UserApi): UserRepository {
+    fun provideUserRepository(pref: PrefDataSource, userApi: UserApi, refreshApi: RefreshApi): UserRepository {
         return UserRepositoryImpl(
             pref = pref,
-            userApi = userApi
+            userApi = userApi,
+            refreshApi = refreshApi
         )
     }
 
@@ -206,6 +307,14 @@ object AppModule {
     fun provideSocketRepository(webSocketListener: WebSocketListener): SocketRepository {
         return SocketRepositoryImpl(
             webSocketListener = webSocketListener
+        )
+    }
+
+    @Singleton
+    @Provides
+    fun providePresenceRepository(presenceApi: PresenceApi): PresenceRepository {
+        return PresenceRepositoryImpl(
+            presenceApi = presenceApi
         )
     }
 }

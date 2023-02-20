@@ -1,5 +1,6 @@
 package com.plop.plopmessenger.presentation.viewmodel
 
+import android.util.Log
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -32,12 +33,28 @@ class AddChatMemberViewModel @Inject constructor(
 
     init {
         if(!addChatMemberState.value.chatId.isNullOrBlank()) {
-            getFriendList()
-            getChatroomInfo()
+            viewModelScope.launch {
+                getFriendList()
+                getLocalFriendList()
+                getChatroomInfo()
+            }
         }
     }
 
-    private fun getFriendList() {
+    private suspend fun getFriendList() {
+        viewModelScope.launch {
+            when(friendUseCase.getRemoteFriendListUseCase()) {
+                is Resource.Success -> {
+
+                }
+                else -> {
+                    Log.d("GetRemoteFriendList", "error")
+                }
+            }
+        }.join()
+    }
+
+    private fun getLocalFriendList() {
         viewModelScope.launch {
             friendUseCase.getFriendListUseCase().collect() { result ->
                 when (result) {
@@ -59,6 +76,24 @@ class AddChatMemberViewModel @Inject constructor(
                             it.copy(isLoading = false)
                         }
                     }
+                }
+            }
+        }
+    }
+
+    fun addChatMember() {
+        viewModelScope.launch {
+            val result = chatRoomUseCase.inviteMemberUseCase(
+                addChatMemberState.value.chatId!!,
+                addChatMemberState.value.checkedPeople
+            )
+
+            when(result) {
+                is Resource.Success -> {
+                    Log.d("AddChatMember", "성공...성공이오..")
+                }
+                else -> {
+                    Log.d("AddChatMember", "실패...실패이오..")
                 }
             }
         }
@@ -96,26 +131,25 @@ class AddChatMemberViewModel @Inject constructor(
 
     private fun getChatroomInfo() {
         viewModelScope.launch {
-            chatRoomUseCase.getChatRoomInfoUseCase(addChatMemberState.value.chatId!!).collect { result ->
-                when (result) {
-                    is Resource.Success -> {
-                        addChatMemberState.update {
-                            it.copy(
-                                chatRoomType = result.data?.type ?: ChatRoomType.DM,
-                                isLoading = false,
-                                members = result.data?.members ?: emptyList()
-                            )
-                        }
+            val result = chatRoomUseCase.getChatRoomInfoUseCase(addChatMemberState.value.chatId!!)
+            when (result) {
+                is Resource.Success -> {
+                    addChatMemberState.update {
+                        it.copy(
+                            chatRoomType = result.data?.type ?: ChatRoomType.DM,
+                            isLoading = false,
+                            members = result.data?.members ?: emptyList()
+                        )
                     }
-                    is Resource.Loading -> {
-                        addChatMemberState.update {
-                            it.copy(isLoading = true)
-                        }
+                }
+                is Resource.Loading -> {
+                    addChatMemberState.update {
+                        it.copy(isLoading = true)
                     }
-                    is Resource.Error -> {
-                        addChatMemberState.update {
-                            it.copy(isLoading = false)
-                        }
+                }
+                is Resource.Error -> {
+                    addChatMemberState.update {
+                        it.copy(isLoading = false)
                     }
                 }
             }

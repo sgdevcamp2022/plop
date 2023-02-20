@@ -6,8 +6,7 @@ import com.plop.plopmessenger.data.dto.response.Member
 import java.time.LocalDateTime
 
 data class PostGroupRoomResponse(
-    @SerializedName("created_at")
-    val createdAt: LocalDateTime,
+    val createdAt: String,
     val managers: List<String>,
     val members: List<Member>,
     @SerializedName("room_id")

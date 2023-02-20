@@ -10,6 +10,7 @@ import com.plop.plopmessenger.presentation.component.BottomBarTabs
 object LoginDestinations {
     const val LOGIN_ROUTE = "login"
     const val SIGN_UP_ROUTE = "signup"
+    const val FIND_PASSWORD_ROUTE = "findPassword"
 }
 
 object BottomBarDestinations {
@@ -44,6 +45,10 @@ class LoginNavigationAction(navController: NavController) {
 
     val navigateToSignUp:() -> Unit = {
         navController.navigate(LoginDestinations.SIGN_UP_ROUTE)
+    }
+
+    val navigateToFindPassword:() -> Unit = {
+        navController.navigate(LoginDestinations.FIND_PASSWORD_ROUTE)
     }
 }
 
@@ -84,6 +89,12 @@ class MainNavigationAction(val navController: NavController) {
     val navigateToChat: (String, NavBackStackEntry) -> Unit = { chatId, from ->
         if (from.lifecycleIsResumed()) {
             navController.navigate("${MainDestinations.CHAT_ROUTE}/$chatId")
+        }
+    }
+
+    val navigateLeaveChat: () -> Unit = {
+        navController.navigate(BottomBarDestinations.CHATS_ROUTE) {
+            popUpTo(BottomBarDestinations.CHATS_ROUTE)
         }
     }
 

@@ -1,6 +1,8 @@
 package com.plop.plopmessenger.data.repository
 
+import com.plop.plopmessenger.data.dto.request.user.DeleteFriendRejectRequest
 import com.plop.plopmessenger.data.dto.request.user.DeleteFriendRequestRequest
+import com.plop.plopmessenger.data.dto.request.user.PostFriendAcceptRequest
 import com.plop.plopmessenger.data.dto.request.user.PostFriendRequest
 import com.plop.plopmessenger.data.dto.response.user.*
 import com.plop.plopmessenger.data.local.dao.FriendDao
@@ -21,6 +23,10 @@ class FriendRepositoryImpl @Inject constructor(
 
     override fun loadFriendByNickname(nickname: String): Flow<List<Friend>> {
         return friendDao.loadFriendByNickname(nickname = "%$nickname%")
+    }
+
+    override suspend fun loadFriendById(friendId: String): List<Friend> {
+        return friendDao.loadFriendById(friendId)
     }
 
     override suspend fun insertFriend(friend: Friend) {
@@ -51,6 +57,14 @@ class FriendRepositoryImpl @Inject constructor(
         return friendApi.getFriendList()
     }
 
+    override suspend fun getFriendRequestList(): Response<GetFriendRequestListResponse> {
+        return friendApi.getFriendRequestList()
+    }
+
+    override suspend fun getFriendResponseList(): Response<GetFriendResponseListResponse> {
+        return friendApi.getFriendResponseList()
+    }
+
     override suspend fun postFriendRequest(postFriendRequest: PostFriendRequest): Response<PostFriendResponse> {
         return friendApi.postFriendRequest(postFriendRequest)
     }
@@ -63,10 +77,15 @@ class FriendRepositoryImpl @Inject constructor(
         return friendApi.deleteFriend(friendid)
     }
 
-    override suspend fun putFriendRequest(
-        friendid: String,
-        status: Boolean
-    ): Response<PutFriendResponse> {
-        return friendApi.putFriendRequest(friendid, status)
+    override suspend fun postFriendAcceptRequest(postFriendAcceptRequest: PostFriendAcceptRequest): Response<PostFriendAcceptResponse> {
+        return friendApi.postFriendRequestAccept(postFriendAcceptRequest)
+    }
+
+    override suspend fun deleteFriendRejectRequest(deleteFriendRejectRequest: DeleteFriendRejectRequest): Response<DeleteFriendRejectResponse> {
+        return friendApi.deleteFriendRequestReject(deleteFriendRejectRequest)
+    }
+
+    override suspend fun deleteFriends() {
+        return friendDao.deleteFriends()
     }
 }

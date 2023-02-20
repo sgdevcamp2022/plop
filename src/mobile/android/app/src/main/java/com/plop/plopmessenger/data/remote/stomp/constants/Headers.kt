@@ -9,6 +9,7 @@ object Headers {
     const val ROOM_ID = "room_id"
     const val SENDER_ID = "sender_id"
     const val CONTENT = "content"
+    const val HOST = "host"
     const val ID = "id"
     const val ACK = "ack"
 }

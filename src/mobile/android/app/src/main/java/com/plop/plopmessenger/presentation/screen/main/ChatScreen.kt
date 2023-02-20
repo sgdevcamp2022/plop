@@ -161,7 +161,7 @@ fun ChatScreen(
         )
 
         UserInput(
-            onMessageSent = { /*TODO*/ },
+            onMessageSent = viewModel::sendMessage,
             resetScroll = { /*TODO*/ },
             query = query,
             onQueryChange = viewModel::setQuery,

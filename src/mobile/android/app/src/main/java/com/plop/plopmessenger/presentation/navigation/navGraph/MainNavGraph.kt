@@ -12,7 +12,8 @@ import com.plop.plopmessenger.presentation.screen.main.*
 fun MainNavGraph(
     navController: NavHostController = rememberNavController(),
     startDestination: String = MainDestinations.MAIN_ROUTE,
-    navigationAction: MainNavigationAction
+    navigationAction: MainNavigationAction,
+    navigateToLogin:() -> Unit
 ) {
     NavHost(
         navController = navController,
@@ -22,14 +23,15 @@ fun MainNavGraph(
             route = MainDestinations.MAIN_ROUTE,
             startDestination = BottomBarDestinations.CHATS_ROUTE
         ) {
-            bottomNavGraph(navigationAction)
-            chatGraph(navigationAction)
+            bottomNavGraph(navigationAction, navigateToLogin)
+            chatGraph(navigationAction, navigateToLogin)
         }
     }
 }
 
 private fun NavGraphBuilder.bottomNavGraph(
-    navigationAction: MainNavigationAction
+    navigationAction: MainNavigationAction,
+    navigateToLogin:() -> Unit
 ) {
     composable(BottomBarDestinations.CHATS_ROUTE) { from ->
         ChatsScreen(
@@ -42,20 +44,21 @@ private fun NavGraphBuilder.bottomNavGraph(
         route = MainDestinations.PEOPLE_GRAPH_ROUTE,
         startDestination = BottomBarDestinations.PEOPLE_ROUTE
     ) {
-        peopleGraph(navigationAction)
+        peopleGraph(navigationAction, navigateToLogin)
     }
 
     navigation(
         route = MainDestinations.SETTING_GRAPH_ROUTE,
         startDestination = BottomBarDestinations.SETTING_ROUTE
     ) {
-        settingGraph(navigationAction)
+        settingGraph(navigationAction, navigateToLogin)
     }
 
 }
 
 private fun NavGraphBuilder.chatGraph(
-    navigationAction: MainNavigationAction
+    navigationAction: MainNavigationAction,
+    navigateToLogin:() -> Unit
 ) {
     composable(
         route = "${MainDestinations.CHAT_ROUTE}/{${DestinationID.CHAT_ID}}",
@@ -107,6 +110,7 @@ private fun NavGraphBuilder.chatGraph(
     ) { from ->
         ChatInfoScreen(
             navigateToAddMember = { chatId -> navigationAction.navigateToAddMember(chatId, from)},
+            navigateToChats = navigationAction.navigateLeaveChat,
             upPress = navigationAction.upPress
         )
     }
@@ -142,7 +146,8 @@ private fun NavGraphBuilder.chatGraph(
 }
 
 private fun NavGraphBuilder.peopleGraph(
-    navigationAction: MainNavigationAction
+    navigationAction: MainNavigationAction,
+    navigateToLogin:() -> Unit
 ) {
     composable(BottomBarDestinations.PEOPLE_ROUTE) { from ->
         PeopleScreen(
@@ -157,10 +162,11 @@ private fun NavGraphBuilder.peopleGraph(
 }
 
 private fun NavGraphBuilder.settingGraph(
-    navigationAction: MainNavigationAction
+    navigationAction: MainNavigationAction,
+    navigateToLogin:() -> Unit
 ) {
     composable(BottomBarDestinations.SETTING_ROUTE) { from ->
-        SettingScreen(navigationAction.navigateToModifyProfile)
+        SettingScreen(navigationAction.navigateToModifyProfile, navigateToLogin)
     }
 
     composable(MainDestinations.MODIFY_PROFILE) { from ->

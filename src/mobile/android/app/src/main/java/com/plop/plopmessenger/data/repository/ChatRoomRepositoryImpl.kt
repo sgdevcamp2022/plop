@@ -1,9 +1,7 @@
 package com.plop.plopmessenger.data.repository
 
-import com.plop.plopmessenger.data.dto.request.chat.DeleteChatRoomRequest
-import com.plop.plopmessenger.data.dto.request.chat.PostDmRoomRequest
-import com.plop.plopmessenger.data.dto.request.chat.PostGroupRoomRequest
-import com.plop.plopmessenger.data.dto.request.chat.PostInvitationRequest
+import android.util.Log
+import com.plop.plopmessenger.data.dto.request.chat.*
 import com.plop.plopmessenger.data.dto.response.chat.*
 import com.plop.plopmessenger.data.local.dao.ChatRoomDao
 import com.plop.plopmessenger.data.local.dao.ChatRoomMemberImage
@@ -26,19 +24,23 @@ class ChatRoomRepositoryImpl @Inject constructor(
         return chatRoomDao.loadChatRoomTitle(chatroomId)
     }
 
-    override fun loadChatRoomAndMessage(): Flow<List<ChatRoomMemberImage>> {
+    override fun loadChatRoomAndMessage(): Flow<List<ChatRoomMemberImage?>> {
         return chatroomMemberImageDao.loadChatRoomAndMessage()
     }
 
-    override fun loadChatRoomIdList(): Flow<List<String>> {
+    override suspend fun loadChatRoomIdList(): List<String> {
         return chatRoomDao.loadChatRoomIdList()
     }
 
-    override fun loadChatRoomAndMemberById(chatroomId: String): Flow<ChatRoomMemberImage> {
+    override suspend fun hasChatRoomById(chatroomId: String): Boolean {
+        return !chatRoomDao.hasChatRoomById(chatroomId).isNullOrBlank()
+    }
+
+    override fun loadChatRoomAndMemberById(chatroomId: String): ChatRoomMemberImage {
         return chatroomMemberImageDao.loadChatRoomAndMemberById(chatroomId)
     }
 
-    override fun hasPersonalChatRoomByFriend(friendId: String): Flow<String?> {
+    override suspend fun hasPersonalChatRoomByFriend(friendId: String): String? {
         return chatRoomDao.hasPersonalChatRoomByFriend(friendId)
     }
 
@@ -95,10 +97,9 @@ class ChatRoomRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteChatroom(
-        roomid: String,
-        deleteChatRoomRequest: DeleteChatRoomRequest
+        roomid: String
     ): Response<DeleteChatRoomResponse> {
-        return chatApi.deleteChatroom(roomid, deleteChatRoomRequest)
+        return chatApi.deleteChatroom(roomid)
     }
 
     override suspend fun getChatroomNewMessage(roomid: String, readMsgId: String): Response<GetChatRoomNewMessageResponse> {
@@ -114,4 +115,14 @@ class ChatRoomRepositoryImpl @Inject constructor(
     override suspend fun getChatRoomInfo(roomid: String): Response<GetChatRoomInfoResponse> {
         return return chatApi.getChatRoomInfo(roomid)
     }
+
+    override suspend fun postMessage(postMessageRequest: PostMessageRequest): Response<Void> {
+        return chatApi.postMessage(postMessageRequest)
+    }
+
+    override suspend fun deleteChatRoomData() {
+        return chatRoomDao.deleteChatRoomData()
+    }
+
+
 }

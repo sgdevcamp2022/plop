@@ -3,16 +3,16 @@ package com.plop.plopmessenger.data.remote.api
 import com.plop.plopmessenger.data.dto.request.user.*
 import com.plop.plopmessenger.data.dto.response.user.*
 import com.plop.plopmessenger.data.remote.api.Constants.DELETE_LOGOUT
+import com.plop.plopmessenger.data.remote.api.Constants.DELETE_WITHDRAWAL
 import com.plop.plopmessenger.data.remote.api.Constants.GET_SEARCH_USER
 import com.plop.plopmessenger.data.remote.api.Constants.GET_USER_PROFILE
-import com.plop.plopmessenger.data.remote.api.Constants.POST_AUTO_LOGIN
 import com.plop.plopmessenger.data.remote.api.Constants.POST_EMAIL_CODE
 import com.plop.plopmessenger.data.remote.api.Constants.POST_EMAIL_VERIFY
 import com.plop.plopmessenger.data.remote.api.Constants.POST_LOGIN
 import com.plop.plopmessenger.data.remote.api.Constants.POST_PASSWORD_NEW
 import com.plop.plopmessenger.data.remote.api.Constants.POST_SIGN_UP
 import com.plop.plopmessenger.data.remote.api.Constants.PUT_USER_PROFILE
-import com.plop.plopmessenger.data.remote.api.Constants.PUT_WITHDRAWAL
+import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -21,11 +21,6 @@ interface UserApi {
     suspend fun postLogin(
         @Body loginRequest: PostLoginRequest
     ): Response<PostLoginResponse>
-
-    @POST(POST_AUTO_LOGIN)
-    suspend fun postAutoLogin(
-        @Body postAutoLoginRequest: PostAutoLoginRequest
-    ): Response<PostAutoLoginResponse>
 
     @DELETE(DELETE_LOGOUT)
     suspend fun deleteLogout(): Response<DeleteLogoutResponse>
@@ -45,8 +40,8 @@ interface UserApi {
         @Body postEmailVerifyRequest: PostEmailVerifyRequest
     ): Response<PostEmailVerifyResponse>
 
-    @PUT(PUT_WITHDRAWAL)
-    suspend fun putWithdrawal(): Response<PutWithdrawalResponse>
+    @DELETE(DELETE_WITHDRAWAL)
+    suspend fun deleteWithdrawal(): Response<DeleteWithdrawalResponse>
 
     @POST(POST_PASSWORD_NEW)
     suspend fun postPasswordNew(
@@ -55,16 +50,19 @@ interface UserApi {
 
     @GET(GET_USER_PROFILE)
     suspend fun getUserProfile(
-        @Query("email") email: String
+        @Query("target") target: String
     ): Response<GetUserProfileResponse>
 
+    @Multipart
     @PUT(PUT_USER_PROFILE)
     suspend fun putUserProfile(
-        @Body putUserProfileRequest: PutUserProfileRequest
+        @Part img: MultipartBody.Part?,
+        @Part("target") target: String,
+        @Part("nickname") nickname: String
     ): Response<PutUserProfileResponse>
 
-    @GET(GET_SEARCH_USER)
+    @GET("$GET_SEARCH_USER")
     suspend fun getSearchUser(
-        @Body getSearchUserRequest: GetSearchUserRequest
+        @Query("target") target: String
     ): Response<GetSearchUserResponse>
 }

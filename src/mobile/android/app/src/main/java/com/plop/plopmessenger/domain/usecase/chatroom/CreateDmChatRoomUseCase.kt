@@ -7,40 +7,40 @@ import com.plop.plopmessenger.data.local.entity.Member
 import com.plop.plopmessenger.domain.model.People
 import com.plop.plopmessenger.domain.repository.ChatRoomRepository
 import com.plop.plopmessenger.domain.repository.MemberRepository
+import com.plop.plopmessenger.domain.repository.MessageRepository
 import com.plop.plopmessenger.domain.util.Resource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import java.time.LocalDateTime
-import java.util.*
 import javax.inject.Inject
 
 class CreateDmChatRoomUseCase @Inject constructor(
     private val repository: ChatRoomRepository,
-    private val memberRepository: MemberRepository
+    private val memberRepository: MemberRepository,
+    private val messageRepository: MessageRepository,
 ) {
-    suspend operator fun invoke(friend: People): Flow<Resource<Boolean>> = flow{
+    suspend operator fun invoke(friend: People): Resource<String> {
         try {
             val response = repository.postDmChatroom(PostDmRoomRequest(friend.peopleId))
-            when(response.code()){
-                200 -> {
-                    val chatroom = response.body()
+            if(response.isSuccessful) {
+                val chatroom = response.body()
+                val createdAt = LocalDateTime.now()
 
-                    if (chatroom?.roomId != null) {
-                        emit(Resource.Success(true))
-                        repository.insertChatRoom(
-                            ChatRoom(chatroom.roomId, friend.nickname, 0, "", LocalDateTime.now(), 1)
-                        )
-                        memberRepository.insertMember(
-                            Member(chatroom.roomId, friend.peopleId, friend.nickname, friend.profileImg, null)
-                        )
-                    }
-                }
-                else -> {
-                    Log.d("CreateDmChatRoomUseCase", response.code().toString())
-                }
+                repository.insertChatRoom(
+                    ChatRoom(chatroom?.roomId?:"", friend.nickname, 0, "", createdAt?: LocalDateTime.now(), 1)
+                )
+                memberRepository.insertMember(
+                    Member(chatroom?.roomId?:"", friend.peopleId, friend.nickname, friend.profileImg, null)
+                )
+                return Resource.Success(chatroom?.roomId?:"")
+            }
+            else {
+                Log.d("CreateDmChatRoomUseCase", "error")
+                return Resource.Error(response.message().toString())
             }
         } catch (e: Exception) {
             Log.d("CreateDmChatRoomUseCase", e.message.toString())
+            return Resource.Error(e.message.toString())
         }
     }
 }

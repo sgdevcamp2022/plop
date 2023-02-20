@@ -60,8 +60,8 @@ fun PeopleScreen(
 
             items(requests) { request ->
                 PeopleWithTwoBtnItem(
-                    onLeftClick = { /*TODO*/ },
-                    onRightClick = { /*TODO*/ },
+                    onLeftClick = { viewModel.acceptRequest(request) },
+                    onRightClick = { viewModel.rejectRequest(request) },
                     leftBtnContent = stringResource(id = R.string.people_accept_btn),
                     rightBtnContent = stringResource(id = R.string.people_deny_btn),
                     imageURL = request.profileImg,

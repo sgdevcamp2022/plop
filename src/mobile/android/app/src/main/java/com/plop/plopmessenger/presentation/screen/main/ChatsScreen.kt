@@ -61,7 +61,6 @@ fun ChatsScreen(
     val viewModel = hiltViewModel<ChatsViewModel>()
 
     var state = viewModel.chatsState.collectAsState()
-    var activePeople by remember{ mutableStateOf(listOf<Member>()) }
 
     var textFieldFocusState by remember { mutableStateOf(false) }
     var focusManager = LocalFocusManager.current
@@ -95,10 +94,10 @@ fun ChatsScreen(
                 LazyRow(
                     modifier = Modifier.padding(vertical = 16.dp)
                 ) {
-                    items(activePeople) {
+                    items(state.value.presence) {
                         ProfileStateItem(
                             imageURL = "",
-                            nickname = ""
+                            nickname = it.nickname
                         )
                     }
                 }
@@ -112,7 +111,7 @@ fun ChatsScreen(
                 items(state.value.chats) {
                     ChatItem(
                         onClick = navigateToChat,
-                        chatRoom = it,
+                        chatRoom = it!!,
                         isActivate = null)
                     Spacer(modifier = Modifier.size(ChatsScreenValue.SpacerBetweenChatRooms))
                 }
@@ -226,18 +225,20 @@ fun ChatItem(
 
         Spacer(modifier = Modifier.size(ChatsScreenValue.SpacerBetweenMessageAndUnread))
 
-        Text(
-            text = unread,
-            fontSize = 14.sp,
-            color = MaterialTheme.colors.onPrimary,
-            maxLines = 1,
-            textAlign = TextAlign.Center,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier
-                .background(MaterialTheme.colors.primary, CircleShape)
-                .defaultMinSize(minWidth = ChatsScreenValue.UnreadSize)
-                .padding(3.dp)
-        )
+        if(unread != "0") {
+            Text(
+                text = unread,
+                fontSize = 14.sp,
+                color = MaterialTheme.colors.onPrimary,
+                maxLines = 1,
+                textAlign = TextAlign.Center,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier
+                    .background(MaterialTheme.colors.primary, CircleShape)
+                    .defaultMinSize(minWidth = ChatsScreenValue.UnreadSize)
+                    .padding(3.dp)
+            )
+        }
 
     }
 }

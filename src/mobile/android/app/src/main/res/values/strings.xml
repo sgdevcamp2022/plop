@@ -8,12 +8,25 @@
 
     <string name="initial_email_et">이메일을 입력해주세요</string>
     <string name="initial_password_et">패스워드를 입력해주세요</string>
+    <string name="initial_nickname_et">닉네임을 입력해주세요</string>
+    <string name="initial_user_id_et">아이디를 입력해주세요</string>
 
     <string name="login_login_btn">로그인</string>
     <string name="login_signUp_btn">새 계정 만들기</string>
     <string name="login_find">아이디 / 비밀번호 찾기</string>
+    <string name="login_dialog_ok">확인</string>
+    <string name="login_dialog_title">아이디 또는 비밀번호가 잘못되었습니다.</string>
 
     <string name="signup_create_btn">계정 생성</string>
+    <string name="signup_dialog_ok">확인</string>
+    <string name="signup_dialog_success">성공적으로 회원가입 되었습니다.</string>
+
+    <string name="find_password_email_et">이메일을 입력해주세요</string>
+    <string name="find_password_pwd_et">새로운 비밀번호를 입력해주세요</string>
+    <string name="find_password_id_et">아이디를 입력해주세요</string>
+    <string name="find_password_create_btn">비밀번호 변경</string>
+    <string name="find_password_dialog_success">성공적으로 비밀번호가 변경되었습니다.</string>
+    <string name="find_password_dialog_ok">확인</string>
 
     <string name="chats_title">Chat</string>
     <string name="people_title">People</string>
@@ -49,6 +62,9 @@
     <string name="chat_info_add_member_btn">사용자 추가하기</string>
     <string name="chat_info_alarm_btn">알림 및 소리</string>
     <string name="chat_info_exit_btn">대화방 나가기</string>
+    <string name="chat_info_dialog">대화방을 나가시겠습니까?</string>
+    <string name="chat_info_dialog_ok">나가기</string>
+    <string name="chat_info_dialog_no">취소</string>
 
     <string name="add_chat_member_top_bar">Add Member</string>
     <string name="add_chat_member_cancel_btn">취소</string>

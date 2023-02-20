@@ -1,5 +1,6 @@
 package com.plop.plopmessenger.presentation.screen.main
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -10,15 +11,44 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.plop.plopmessenger.domain.repository.SocketRepository
+import com.plop.plopmessenger.domain.usecase.presence.PresenceUseCase
+import com.plop.plopmessenger.domain.usecase.socket.subscribeAllUseCase
+import com.plop.plopmessenger.presentation.screen.login.InitialActivity
+import com.plop.plopmessenger.presentation.screen.login.LoginRoot
 import com.plop.plopmessenger.presentation.theme.PlopMessengerTheme
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var socketRepository: SocketRepository
+
+    @Inject
+    lateinit var presenceUseCase: PresenceUseCase
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MainRootScreen()
+            MainRootScreen {
+                startActivity(Intent(this, InitialActivity::class.java))
+                finish()
+            }
         }
+        socketRepository.connect()
+        socketRepository.joinAll()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        presenceUseCase.putOnUseCase()
+    }
+
+
+    override fun onStop() {
+        super.onStop()
+        presenceUseCase.putOffUseCase()
     }
 }
