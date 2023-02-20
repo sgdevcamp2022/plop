@@ -10,8 +10,10 @@ import com.plop.plopmessenger.domain.model.Member
 import com.plop.plopmessenger.domain.model.People
 import com.plop.plopmessenger.domain.usecase.chatroom.ChatRoomUseCase
 import com.plop.plopmessenger.domain.usecase.friend.FriendUseCase
+import com.plop.plopmessenger.domain.usecase.socket.sendMessageUseCase
 import com.plop.plopmessenger.domain.util.Resource
 import com.plop.plopmessenger.presentation.navigation.DestinationID
+import com.plop.plopmessenger.presentation.state.UserState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -24,6 +26,7 @@ import javax.inject.Inject
 class AddChatMemberViewModel @Inject constructor(
     private val friendUseCase: FriendUseCase,
     private val chatRoomUseCase: ChatRoomUseCase,
+    private val sendMessageUseCase: sendMessageUseCase,
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
@@ -90,12 +93,23 @@ class AddChatMemberViewModel @Inject constructor(
 
             when(result) {
                 is Resource.Success -> {
+                    sendMessage(addChatMemberState.value.checkedPeople.firstOrNull()?.nickname ?: "")
                     Log.d("AddChatMember", "성공...성공이오..")
                 }
                 else -> {
                     Log.d("AddChatMember", "실패...실패이오..")
                 }
             }
+        }
+    }
+
+    fun sendMessage(nickname: String) {
+        viewModelScope.launch {
+            sendMessageUseCase(
+                roomId =  addChatMemberState.value.chatId!!,
+                content = "${UserState.userId}님께서 ${nickname}님을 초대하셨습니다.",
+                userId = UserState.userId
+            )
         }
     }
 
