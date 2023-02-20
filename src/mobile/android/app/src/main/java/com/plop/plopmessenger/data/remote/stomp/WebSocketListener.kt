@@ -59,6 +59,7 @@ class WebSocketListener @Inject constructor(
                 .build()
             webSocket = okHttpClient.newWebSocket(request, this)
             connected = true
+            connectedTopic.clear()
         }
     }
 
