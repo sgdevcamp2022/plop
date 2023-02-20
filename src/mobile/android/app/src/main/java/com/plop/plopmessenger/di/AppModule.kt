@@ -98,6 +98,14 @@ object AppModule {
         return retrofit.create(PresenceApi::class.java)
     }
 
+    @Singleton
+    @Provides
+    fun provideFCMApi(
+        @AuthRetrofit retrofit: Retrofit
+    ): FCMApi {
+        return retrofit.create(FCMApi::class.java)
+    }
+
     @AuthOkHttp
     @Singleton
     @Provides
@@ -315,6 +323,14 @@ object AppModule {
     fun providePresenceRepository(presenceApi: PresenceApi): PresenceRepository {
         return PresenceRepositoryImpl(
             presenceApi = presenceApi
+        )
+    }
+
+    @Singleton
+    @Provides
+    fun provideFCMRepository(fcmApi: FCMApi):FCMRepository {
+        return FCMRepositoryImpl(
+            fcmApi = fcmApi
         )
     }
 }
