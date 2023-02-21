@@ -3,6 +3,7 @@ package smilegate.plop.user.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import smilegate.plop.user.domain.friend.FriendEntity;
 import smilegate.plop.user.domain.friend.FriendRepository;
 import smilegate.plop.user.domain.user.UserEntity;
@@ -20,6 +21,7 @@ import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -148,6 +150,7 @@ public class FriendService {
 
         return responseFriend;
     }
+    @Transactional(readOnly = true)
     public List<ResponseProfile> friendList(String jwt) {
         JwtUser sender = jwtTokenProvider.getUserInfo(jwt);
         UserEntity senderEntity = userRepository.findByEmail(sender.getEmail());
@@ -158,24 +161,43 @@ public class FriendService {
                 senderEntity.getId(),
                 FriendshipCode.ACCCEPTED.value()
         );
-        List<ResponseProfile> responseFriendList = new ArrayList<>();
+        List<Long> userIdList = new ArrayList<>();
         if (friendEntityList != null) {
             for(FriendEntity friend : friendEntityList) {
-                UserEntity user;
-                if (friend.getSenderId().equals(senderEntity.getId())) { //내가 요청한 경우(sender) -> 수락한 사람이 친구 (receiver)
-                    user = userRepository.findById(friend.getReceiverId()).orElse(null);
-                } else { // 내가 수락한 경우(receiver) -> 요청한 사람이 친구 (sender)
-                    user = userRepository.findById(friend.getSenderId()).orElse(null);
+                if (friend.getSenderId().equals(senderEntity.getId())){
+                    userIdList.add(friend.getReceiverId());
+                }else {
+                    userIdList.add(friend.getSenderId());
                 }
-                if (user == null)
-                    throw new UserNotFoundException("user is Not Found in friendship");
-
-                ResponseProfile userProfile = new ResponseProfile(user.getUserId(), user.getEmail(), user.getProfile());
-                responseFriendList.add(userProfile);
             }
-            log.error(responseFriendList.toString());
         }
-        return responseFriendList;
+        List<UserEntity> userEntities = userRepository.findByIdIn(userIdList);
+
+        return convertToResponseProfile(userEntities);
+//        List<ResponseProfile> responseFriendList = new ArrayList<>();
+//        if (friendEntityList != null) {
+//            for(FriendEntity friend : friendEntityList) {
+//                UserEntity user;
+//                if (friend.getSenderId().equals(senderEntity.getId())) { //내가 요청한 경우(sender) -> 수락한 사람이 친구 (receiver)
+//                    user = userRepository.findById(friend.getReceiverId()).orElse(null);
+//                } else { // 내가 수락한 경우(receiver) -> 요청한 사람이 친구 (sender)
+//                    user = userRepository.findById(friend.getSenderId()).orElse(null);
+//                }
+//                if (user == null)
+//                    throw new UserNotFoundException("user is Not Found in friendship");
+//
+//                ResponseProfile userProfile = new ResponseProfile(user.getUserId(), user.getEmail(), user.getProfile());
+//                responseFriendList.add(userProfile);
+//            }
+//            log.error(responseFriendList.toString());
+//        }
+//        return responseFriendList;
+    }
+
+    List<ResponseProfile> convertToResponseProfile(List<UserEntity> userEntities){
+        List<ResponseProfile> responseProfiles = new ArrayList<>();
+        userEntities.stream().map(ue-> responseProfiles.add(new ResponseProfile(ue.getUserId(), ue.getEmail(),ue.getProfile()))).collect(Collectors.toList());
+        return responseProfiles;
     }
 
     public List<ResponseProfile> requestFriendList(String jwt) {
