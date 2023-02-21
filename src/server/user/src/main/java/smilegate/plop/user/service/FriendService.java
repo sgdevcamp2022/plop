@@ -9,14 +9,17 @@ import smilegate.plop.user.domain.user.UserEntity;
 import smilegate.plop.user.domain.user.UserRepository;
 import smilegate.plop.user.dto.response.ResponseFriend;
 import smilegate.plop.user.dto.response.ResponseProfile;
+import smilegate.plop.user.exception.DuplicatedFriendshipException;
 import smilegate.plop.user.exception.FriendshipNotFoundException;
 import smilegate.plop.user.exception.UserNotFoundException;
 import smilegate.plop.user.model.FriendshipCode;
 import smilegate.plop.user.model.JwtUser;
 import smilegate.plop.user.security.JwtTokenProvider;
 
+import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -57,6 +60,11 @@ public class FriendService {
                     senderEntity.getId(), receiverEntity.getId(),FriendshipCode.REQUESTED.value());
             friendRepository.delete(friendEntity);
         } else { //FriendshipCode.REQUESTED.value() 신청하고 싶은 경우 새로 만들어서 1로 생성
+            // 이전에 역(sender와 receiver가 반대)으로 생성된 관계가 있는 지 확인
+            // 이전에 sender가 receiver가 동일하게 생성된 경우 복합 키로 인해 제한(자동으로 제한됨)
+            Optional<FriendEntity> duplicatedFriendship = friendRepository.findBySenderIdAndReceiverId(receiverEntity.getId(), senderEntity.getId());
+            if (duplicatedFriendship.isPresent())
+                throw new DuplicatedFriendshipException(String.format("[%s] and [%s] are already related", target,sender.getUserId()));
             friendEntity = FriendEntity.builder()
                     .senderId(senderEntity.getId())
                     .receiverId(receiverEntity.getId())
