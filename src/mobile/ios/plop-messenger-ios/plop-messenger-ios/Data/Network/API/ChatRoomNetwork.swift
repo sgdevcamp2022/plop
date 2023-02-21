@@ -28,9 +28,7 @@ final class ChatRoomNetwork {
   ) -> Observable<Result<ChatRoom, Error>> {
     return provider.rx.request(.createChatRoom(creator, userID))
       .observe(on: scheduler)
-      .debug()
       .map(ChatRoomResponse.self)
-      .debug()
       .map({ return $0.toDomain() })
       .asObservable()
       .asResult()

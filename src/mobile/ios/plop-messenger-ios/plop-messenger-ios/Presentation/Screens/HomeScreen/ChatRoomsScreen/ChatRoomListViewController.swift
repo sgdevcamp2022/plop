@@ -7,12 +7,13 @@ final class ChatRoomListViewController: UIViewController {
     searchResultsController: nil
   )
   
-  private let onlineFriendsView = OnlineFriendsView(onlineFriends: [1, 2, 3])
+  private let onlineFriendsView = UIView()
   private let createChatRoomButton = UIBarButtonItem(
     image: UIImage(systemName: "square.and.pencil"),
     style: .plain,
     target: nil,
     action: nil)
+  private let presenceViewController = PresenceViewController()
   
   //TODO: - Table View
   private let tableView = UITableView()
@@ -45,6 +46,12 @@ final class ChatRoomListViewController: UIViewController {
     configureChatRoomListView()
     
     layout()
+    
+    addChild(presenceViewController)
+    onlineFriendsView.addSubview(presenceViewController.view)
+    onlineFriendsView.addSubview(presenceViewController.view)
+    presenceViewController.view.frame = onlineFriendsView.bounds
+    presenceViewController.didMove(toParent: self)
   
     bind()
     
@@ -139,7 +146,7 @@ extension ChatRoomListViewController {
   private func layout() {
     onlineFriendsView.translatesAutoresizingMaskIntoConstraints = false
     tableView.translatesAutoresizingMaskIntoConstraints = false
-    
+
     view.addSubview(onlineFriendsView)
     view.addSubview(tableView)
     

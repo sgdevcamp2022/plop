@@ -12,12 +12,17 @@ final class HomeCoordinator: NSObject, Coordinator {
   private let userUsecase = UserUseCase()
   private let disposeBag = DisposeBag()
   private let pushNetwork = PushNetwork()
+  private let presenceNetwork = PresenceNetwork()
   
   init(tabBarController: UITabBarController) {
     self.tabBarController = tabBarController
     super.init()
     
     userUsecase.fetchCurrentUser()
+      .subscribe()
+      .disposed(by: disposeBag)
+    
+    presenceNetwork.changeStateToOnline()
       .subscribe()
       .disposed(by: disposeBag)
     
@@ -34,7 +39,7 @@ final class HomeCoordinator: NSObject, Coordinator {
       }
     })
   }
-  
+
   func start() {
     configureTabBarAppearance()
     tabBarController.tabBar.tintColor = UIConstants.plopColor

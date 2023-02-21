@@ -1,7 +1,9 @@
 import UIKit
-
+import RxSwift
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
+  private let presenceNetwork = PresenceNetwork()
+  private let disposeBag = DisposeBag()
   func application(
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
@@ -22,4 +24,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     _ application: UIApplication,
     didDiscardSceneSessions sceneSessions: Set<UISceneSession>
   ) {}
+  
+  func applicationDidEnterBackground(_ application: UIApplication) {
+    print("BackGround!!!!!")
+  }
+  
+  func applicationWillTerminate(_ application: UIApplication) {
+    print("Will terminate")
+  }
 }

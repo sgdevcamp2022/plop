@@ -22,7 +22,6 @@ final class PushNetwork {
   
   func register(_ tokenID: String) -> Observable<Void> {
     return provider.rx.request(.register(tokenID))
-      .debug()
       .observe(on: scheduler)
       .asObservable()
       .mapToVoid()
