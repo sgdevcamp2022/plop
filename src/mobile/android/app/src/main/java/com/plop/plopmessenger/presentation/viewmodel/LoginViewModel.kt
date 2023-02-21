@@ -50,6 +50,7 @@ class LoginViewModel @Inject constructor(
             launch { userUseCase.setNicknameUseCase(people.nickname) }
             launch { userUseCase.setProfileImgUseCase(people.profileImg) }
             launch { userUseCase.setUserIdUseCase(people.peopleId) }
+            launch { userUseCase.setEmailUseCase(people.email) }
         }
     }
 

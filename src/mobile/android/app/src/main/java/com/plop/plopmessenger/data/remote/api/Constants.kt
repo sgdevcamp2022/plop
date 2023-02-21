@@ -37,5 +37,7 @@ object Constants {
     const val PUT_ON = "/presence/v1/on"
     const val GET_PRESENCE_USER = "/presence/v1/users"
 
+    const val POST_FCM = "/push/v1/register"
+
     const val PAGE_SIZE = 10
 }

@@ -89,6 +89,17 @@ class PrefDataSource @Inject constructor(@ApplicationContext val context: Contex
         }
     }
 
+    fun getEmail(): Flow<String> {
+        return context.dataStore.data
+            .map { it[LOGIN_USER_EMAIL]?: ""}
+    }
+
+    suspend fun setEmail(email: String) {
+        context.dataStore.edit {
+            it[LOGIN_USER_EMAIL] = email
+        }
+    }
+
     fun getProfileImg(): Flow<String> {
         return context.dataStore.data
             .map { it[LOGIN_USER_PROFILE_IMG]?: ""}
