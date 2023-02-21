@@ -24,14 +24,23 @@ public class ChatMessageRepositoryImpl implements ChatMongoTemplateRepository{
     @Override
     public MessageCollection getLastMessage(String roomId) {
 
-        List<MessageCollection> messageCollectionList = mongoTemplate.find(Query.query(Criteria.where("roomId").is(roomId))
-                .with(Sort.by(Sort.Direction.DESC,"createdAt")).limit(1), MessageCollection.class);
+//        List<MessageCollection> messageCollectionList = mongoTemplate.find(query
+//                .with(Sort.by(Sort.Direction.DESC,"createdAt")).limit(1), MessageCollection.class);
+//        if(messageCollectionList.size() == 0){
+//            messageCollectionList.add(new MessageCollection());
+//        }
+//        return messageCollectionList.get(0);
 
-        if(messageCollectionList.size() == 0){
-            messageCollectionList.add(new MessageCollection());
+        Query query = Query.query(Criteria.where("roomId").is(roomId)).with(Sort.by(Sort.Direction.DESC,"createdAt"));
+
+        query.fields().exclude("roomId");
+        query.fields().exclude("type");
+
+        MessageCollection messageCollection = mongoTemplate.findOne(query, MessageCollection.class);
+        if(messageCollection == null){
+            return new MessageCollection();
         }
-
-        return messageCollectionList.get(0);
+        return messageCollection;
     }
 
     @Override
