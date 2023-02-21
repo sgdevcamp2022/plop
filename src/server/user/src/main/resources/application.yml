@@ -1,5 +1,8 @@
 
 server:
+  tomcat:
+    threads:
+      max: 100
   port: 0
 
 spring:
@@ -7,6 +10,9 @@ spring:
     name: user-service
   jpa:
     show-sql: true
+#    properties:
+#      hibernate:
+#        format_sql: true
   #    hibernate:
   #      ddl-auto: create-drop
   datasource:
