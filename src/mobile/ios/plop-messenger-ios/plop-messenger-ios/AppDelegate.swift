@@ -8,10 +8,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
+    let notificationOption = launchOptions?[.remoteNotification]
+    if let notification = notificationOption as? [String: AnyObject],
+       let aps = notification["aps"] as? [String: AnyObject] {
+      print(aps)
+    }
     return true
   }
   
-  // MARK: UISceneSession Lifecycle  
+  // MARK: UISceneSession Lifecycle
   func application(
     _ application: UIApplication,
     configurationForConnecting connectingSceneSession: UISceneSession,
@@ -26,10 +31,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   ) {}
   
   func applicationDidEnterBackground(_ application: UIApplication) {
-    print("BackGround!!!!!")
   }
   
   func applicationWillTerminate(_ application: UIApplication) {
-    print("Will terminate")
   }
 }

@@ -100,5 +100,15 @@ final class ChatRoomUseCase {
           roomID, userID, messageID)
       })
   }
+  
+  func send(to roomID: String, sender senderID: String, type messageType: String, content: String) -> Observable<Void> {
+    let request = MessageRequest(
+      roomID: roomID,
+      senderID: senderID,
+      messageType: messageType,
+      content: content)
+    return network.sendMessage(request)
+      
+  }
 }
 

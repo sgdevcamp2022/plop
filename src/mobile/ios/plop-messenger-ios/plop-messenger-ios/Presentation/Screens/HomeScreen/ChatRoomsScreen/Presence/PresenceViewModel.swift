@@ -43,11 +43,11 @@ final class PresenceViewModel: ViewModelType {
       })
     
     let disconnected = input.disconnectTrigger
-      .map({ [weak websocket] in
-        guard let websocket = websocket else { return }
-        if websocket.isConnected {
-          websocket.disconnect()
-        }
+      .flatMap({ [unowned self, websocket] in
+        websocket?.disconnect()
+        return self.presenceNetwork.changeStateToOffline()
+          .mapToVoid()
+          .asDriverOnErrorJustComplete()
       })
     
     let onlineUsers = input.fetchOnlineUsersTrigger
@@ -75,7 +75,7 @@ final class PresenceViewModel: ViewModelType {
   }
   
   private func configureWebsocket() {
-    guard let url = URL(string: "ws://3.39.130.186:8021/ws-presence"),
+    guard let url = URL(string: URLConstants.presenceWebsocketURL),
           let accessToken = tokenUsecase.fetchAccessToken() else {
       return
     }
@@ -99,15 +99,12 @@ extension PresenceViewModel: SwiftStompDelegate {
     swiftStomp.subscribe(to: "/presence/user-sub/\(userID)")
   }
   
-  func onDisconnect(swiftStomp: SwiftStomp, disconnectType: StompDisconnectType) {
-    print("Disconnect!")
-  }
+  func onDisconnect(swiftStomp: SwiftStomp, disconnectType: StompDisconnectType) {}
   
   func onMessageReceived(swiftStomp: SwiftStomp, message: Any?, messageId: String, destination: String, headers: [String : String]) {
     guard let message = message as? String,
           let data = message.data(using: .utf8),
           var friends = try? friendsSubject.value() else { return }
-    print(message)
     do {
       let decodedMessage = try JSONDecoder().decode(PresenceChangeResponse.self, from: data)
       if decodedMessage.status == "offline" {
@@ -126,12 +123,7 @@ extension PresenceViewModel: SwiftStompDelegate {
   
   func onReceipt(swiftStomp: SwiftStomp, receiptId: String) {}
   
-  func onError(swiftStomp: SwiftStomp, briefDescription: String, fullDescription: String?, receiptId: String?, type: StompErrorType) {
-    guard let fullDescription = fullDescription else {
-      return
-    }
-    print("❌ : \(fullDescription)")
-  }
+  func onError(swiftStomp: SwiftStomp, briefDescription: String, fullDescription: String?, receiptId: String?, type: StompErrorType) {}
   
   func onSocketEvent(eventName: String, description: String) {}
 

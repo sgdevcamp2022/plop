@@ -27,10 +27,11 @@ final class PlopProfileImageView: UIImageView {
   }
   
   private func commonInit() {
-    backgroundColor = .lightGray
+    backgroundColor = .systemBackground
     contentMode = .scaleAspectFit
     clipsToBounds = true
     layer.masksToBounds = true
+    image = UIImage(named: "base-profile")
   }
   
   // MARK: - Layouts

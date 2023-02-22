@@ -12,7 +12,6 @@ final class AuthNetwork {
     guard let accessToken = keychainService.fetchAccessToken() else {
       return MoyaProvider<AuthTarget>()
     }
-    print("Access token: \(accessToken)")
     let authPlugin = AccessTokenPlugin { _ in accessToken}
     let provider = MoyaProvider<AuthTarget>(plugins: [authPlugin])
     return provider

@@ -54,9 +54,13 @@ final class PresenceViewController: UIViewController {
   }
   
   private func bind() {
+    NotificationCenter.default.addObserver(self, selector: #selector(willEnterForegroundAction), name: UIApplication.willEnterForegroundNotification, object: nil)
+    let didEnterBackground = NotificationCenter.default.rx.notification(UIApplication.didEnterBackgroundNotification)
+      .mapToVoid()
+      .asDriverOnErrorJustComplete()
     let input = PresenceViewModel.Input(
       connectTrigger: connectTrigger.asDriverOnErrorJustComplete(),
-      disconnectTrigger: disconnectTrigger.asDriverOnErrorJustComplete(),
+      disconnectTrigger: didEnterBackground,
       fetchOnlineUsersTrigger: fetchOnlineUsersTrigger.asDriverOnErrorJustComplete(),
       didEnterBackgroundTrigger: NotificationCenter.default.rx.notification(UIApplication.didEnterBackgroundNotification)
         .mapToVoid()
@@ -78,7 +82,11 @@ final class PresenceViewController: UIViewController {
     
     output.disconnected.drive().disposed(by: disposeBag)
     output.onlineUsers.drive().disposed(by: disposeBag)
-    output.didEnterBackground.debug().drive().disposed(by: disposeBag)
+    output.didEnterBackground.drive().disposed(by: disposeBag)
+  }
+  
+  @objc private func willEnterForegroundAction() {
+    connectTrigger.onNext(())
   }
 }
 

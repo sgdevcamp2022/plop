@@ -10,6 +10,7 @@ enum ChatRoomTarget {
   case leave(_ roomID: String)
   case fetchNewMessages(_ roomID: String, _ lastMessageID: String)
   case saveLastMessage(_ roomID: String, _ userID: String, _ messageID: String)
+  case sendMessage(_ message: MessageRequest)
 }
 
 extension ChatRoomTarget: TargetType {
@@ -35,6 +36,8 @@ extension ChatRoomTarget: TargetType {
       return "/chatting/room/v1/new-message/\(roomID)/\(messageID)"
     case .saveLastMessage(_, _, _):
       return "/chatting/room/v1/last-message"
+    case .sendMessage(_):
+      return "/chatting/v1/message"
     }
   }
   
@@ -56,6 +59,8 @@ extension ChatRoomTarget: TargetType {
       return .get
     case.saveLastMessage(_, _, _):
       return .put
+    case .sendMessage(_):
+      return .post
     }
   }
   
@@ -97,6 +102,15 @@ extension ChatRoomTarget: TargetType {
         ],
         encoding: JSONEncoding.default
       )
+    case .sendMessage(let message):
+      return .requestParameters(
+        parameters: [
+          "room_id": message.roomID,
+          "sender_id": message.senderID,
+          "message_type": message.messageType,
+          "content": message.content
+        ],
+        encoding: JSONEncoding.default)
     }
   }
   
@@ -110,7 +124,7 @@ extension ChatRoomTarget: TargetType {
 extension ChatRoomTarget: AccessTokenAuthorizable {
   var authorizationType: AuthorizationType? {
     switch self {
-    case .invite(_, _), .fetchNewMessages(_, _), .saveLastMessage(_, _, _):
+    case .invite(_, _), .fetchNewMessages(_, _), .saveLastMessage(_, _, _), .sendMessage(_):
       return .none
     default:
       return .bearer

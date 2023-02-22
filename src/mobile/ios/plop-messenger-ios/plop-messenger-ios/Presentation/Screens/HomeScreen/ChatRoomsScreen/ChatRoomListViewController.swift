@@ -1,6 +1,9 @@
 import UIKit
 import RxSwift
 import RxCocoa
+import FirebaseCore
+import FirebaseMessaging
+import UserNotifications
 
 final class ChatRoomListViewController: UIViewController {
   private let searchController = UISearchController(
@@ -21,6 +24,10 @@ final class ChatRoomListViewController: UIViewController {
   private let disposeBag = DisposeBag()
   private let fetchChatRoomListTrigger = PublishSubject<Void>()
   private let roomSelectedTrigger = PublishSubject<ChatRoom>()
+  private let connectTrigger = PublishSubject<Void>()
+  
+  private let pushNetwork = PushNetwork()
+  
   private var rooms = [ChatRoom]() {
     didSet {
       tableView.reloadSections(IndexSet(0...0), with: .automatic)
@@ -45,6 +52,8 @@ final class ChatRoomListViewController: UIViewController {
     configureNavigationItems()
     configureChatRoomListView()
     
+    configureFCM()
+    
     layout()
     
     addChild(presenceViewController)
@@ -59,18 +68,25 @@ final class ChatRoomListViewController: UIViewController {
   }
   
   private func bind() {
+    
+    let didEnterBackground = NotificationCenter.default.rx.notification(UIScene.didEnterBackgroundNotification)
+      .mapToVoid()
+      .asDriverOnErrorJustComplete()
+    
     let input = ChatRoomListViewModel.Input(
       fetchChatRoomListTrigger: fetchChatRoomListTrigger.asDriverOnErrorJustComplete(),
       createChatRoomTrigger: createChatRoomButton.rx.tap.asDriver(),
-      chatRoomSelectedTrigger: roomSelectedTrigger.asDriverOnErrorJustComplete()
+      chatRoomSelectedTrigger: roomSelectedTrigger.asDriverOnErrorJustComplete(),
+      connectTrigger: connectTrigger.asDriverOnErrorJustComplete(),
+      disconnectTrigger: didEnterBackground
     )
     
     let output = chatRoomsViewModel.transform(input)
     
-    
     output.chatRoomList
       .drive(onNext: { chatRooms in
         self.rooms = chatRooms
+        self.connectTrigger.onNext(())
       })
       .disposed(by: disposeBag)
     
@@ -85,6 +101,9 @@ final class ChatRoomListViewController: UIViewController {
     output.presentChatRoom
       .drive()
       .disposed(by: disposeBag)
+    
+    output.connected.drive().disposed(by: disposeBag)
+    output.disconnected.drive().disposed(by: disposeBag)
   }
 }
 
@@ -201,5 +220,75 @@ extension ChatRoomListViewController: UITableViewDelegate {
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     let chatRoom = rooms[indexPath.row]
     roomSelectedTrigger.onNext(chatRoom)
+  }
+}
+
+//MARK: - FCM stuffs
+extension ChatRoomListViewController {
+  private func configureFCM() {
+    FirebaseApp.configure()
+    
+    UNUserNotificationCenter.current().delegate = self
+    Messaging.messaging().delegate = self
+    Messaging.messaging().isAutoInitEnabled = true
+    
+    let application = UIApplication.shared
+    UNUserNotificationCenter.current().requestAuthorization(options: [
+      .badge, .sound, .alert
+    ], completionHandler: { granted, _ in
+      guard granted else { return }
+      DispatchQueue.main.async {
+        application.registerForRemoteNotifications()
+      }
+    })
+  }
+}
+
+//MARK: - MessagingDelegate
+extension ChatRoomListViewController: MessagingDelegate {
+  func messaging(
+    _ messaging: Messaging,
+    didReceiveRegistrationToken fcmToken: String?
+  ) {
+    guard let fcmToken = fcmToken else { return }
+    registerPushNotification(fcmToken)
+  }
+  
+  private func registerPushNotification(_ tokenID: String) {
+    pushNetwork.register(tokenID)
+      .subscribe(onNext: {
+        print("🤝 Sended fcm token")
+      })
+      .disposed(by: disposeBag)
+  }
+}
+
+//MARK: - UNUserNotificationCenterDelegate
+extension ChatRoomListViewController: UNUserNotificationCenterDelegate {
+  func application(
+    _ application: UIApplication,
+    didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
+  ) {
+    Messaging.messaging().apnsToken = deviceToken
+  }
+  
+  func userNotificationCenter(
+    _ center: UNUserNotificationCenter,
+    willPresent notification: UNNotification
+  ) async -> UNNotificationPresentationOptions {
+    return []
+  }
+
+  func userNotificationCenter(
+    _ center: UNUserNotificationCenter,
+    didReceive response: UNNotificationResponse
+  ) async {
+    let userInfo = response.notification.request.content.userInfo
+     
+    guard let id = userInfo["roomId"] as? String else { return }
+    
+    if let room = rooms.first(where: { $0.roomID == id}) {
+      self.roomSelectedTrigger.onNext(room)
+    }
   }
 }

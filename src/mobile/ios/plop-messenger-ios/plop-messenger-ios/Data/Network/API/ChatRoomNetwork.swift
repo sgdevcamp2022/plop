@@ -102,4 +102,11 @@ final class ChatRoomNetwork {
       .asObservable()
       .mapToVoid()
   }
+  
+  func sendMessage(_ message: MessageRequest) -> Observable<Void> {
+    return provider.rx.request(.sendMessage(message))
+      .observe(on: scheduler)
+      .asObservable()
+      .mapToVoid()
+  }
 }

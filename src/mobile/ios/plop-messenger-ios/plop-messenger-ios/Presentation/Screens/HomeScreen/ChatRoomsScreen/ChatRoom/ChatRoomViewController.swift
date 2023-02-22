@@ -2,24 +2,30 @@ import UIKit
 import RxSwift
 import RxCocoa
 import MessageKit
-import RxDataSources
 import InputBarAccessoryView
 import SwiftStomp
 
 final class ChatRoomViewController: MessagesViewController {
-  private var chatRoom: ChatRoom
-  private let currentUserID: String
-  private var viewModel: ChatRoomViewModel
-  
-  private let sendTrigger = PublishSubject<String>()
-  private let createRoomTrigger = PublishSubject<ChatRoom>()
+
+  //MARK: - Triggers
+  private let createChatRoomTrigger = PublishSubject<ChatRoom>()
+  private let subscribeRoomTrigger = PublishSubject<Void>()
+  private let sendFirstMessageTrigger = PublishSubject<String>()
   private let fetchHistoryTrigger = PublishSubject<Void>()
-  private let fetchNewMessagesTrigger = PublishSubject<String?>()
+  private let fetchNewMessagesTrigger = PublishSubject<String>()
+  private let sendTrigger = PublishSubject<String>()
   private let saveLastMessageTrigger = PublishSubject<String>()
   
   private let disposeBag = DisposeBag()
-  private let senderID = UserDefaults.standard.string(forKey: "currentUserID")
   
+  private var chatRoom: ChatRoom? {
+    didSet {
+      self.title = chatRoom?.title
+    }
+  }
+  private var firstMessage: String? = nil
+  
+  var viewModel: ChatRoomViewModel!
   var messages = [Message]() {
     didSet {
       self.messages.sort()
@@ -27,22 +33,8 @@ final class ChatRoomViewController: MessagesViewController {
       self.messagesCollectionView.scrollToLastItem(animated: true)
     }
   }
-  private let swiftStomp: SwiftStomp?
   
-  init(_ room: ChatRoom, _ currentUserID: String, _ swiftStomp: SwiftStomp) {
-    self.chatRoom = room
-    self.currentUserID = currentUserID
-    self.swiftStomp = swiftStomp
-    self.viewModel = ChatRoomViewModel(room)
-    super.init(nibName: nil, bundle: nil)
-    hidesBottomBarWhenPushed = true
-  }
-  
-  init(_ room: ChatRoom, _ currentUserID: String) {
-    self.chatRoom = room
-    self.currentUserID = currentUserID
-    self.swiftStomp = nil
-    self.viewModel = ChatRoomViewModel(room)
+  init() {
     super.init(nibName: nil, bundle: nil)
     hidesBottomBarWhenPushed = true
   }
@@ -60,6 +52,11 @@ final class ChatRoomViewController: MessagesViewController {
   
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
+    self.chatRoom = viewModel.currentRoom
+  }
+  
+  override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
     fetchHistoryTrigger.onNext(())
   }
   
@@ -72,40 +69,57 @@ final class ChatRoomViewController: MessagesViewController {
   }
   
   private func bind() {
+    
     let input = ChatRoomViewModel.Input(
+      createChatRoomTrigger: createChatRoomTrigger.asDriverOnErrorJustComplete(),
+      subscribeRoomTrigger: subscribeRoomTrigger.asDriverOnErrorJustComplete(),
+      sendFirstMessageTrigger: sendFirstMessageTrigger.asDriverOnErrorJustComplete(),
       fetchMessageHistoryTrigger: fetchHistoryTrigger.asDriverOnErrorJustComplete(),
       fetchNewMessagesTrigger: fetchNewMessagesTrigger.asDriverOnErrorJustComplete(),
-      createRoomTrigger: createRoomTrigger.asDriverOnErrorJustComplete(),
-      sendTrigger: sendTrigger.asDriver(onErrorJustReturn: ""),
+      sendTrigger: sendTrigger.asDriverOnErrorJustComplete(),
       saveLastMessageTrigger: saveLastMessageTrigger.asDriverOnErrorJustComplete())
-    
+
     let output = viewModel.transform(input)
     
+    output.createdRoom
+      .drive(onNext: { [weak self] chatRoom in
+        guard let self = self else { return }
+        self.chatRoom = chatRoom
+        self.subscribeRoomTrigger.onNext(())
+      })
+      .disposed(by: disposeBag)
+    
+    output.subscribedRoom
+      .drive(onNext: { [weak self] in
+        guard let self = self,
+              let firstMessage = self.firstMessage else { return }
+        self.sendFirstMessageTrigger.onNext(firstMessage)
+      })
+      .disposed(by: disposeBag)
+    
+    output.firstMessage.drive().disposed(by: disposeBag)
+    
     output.messageHistory
-      .drive(onNext: { [unowned self] messages in
+      .drive(onNext: { [weak self] messages in
+        guard let self = self else { return }
         self.messages = messages
-        self.fetchNewMessagesTrigger.onNext(messages.last?.messageID)
+        guard let lastMessage = messages.last else { return }
+        self.fetchNewMessagesTrigger.onNext(lastMessage.messageID)
       })
       .disposed(by: disposeBag)
     
     output.fetchNewMessages
       .drive()
       .disposed(by: disposeBag)
-    
-    output.createRoom
-      .drive(onNext: { [unowned self] chatRoom in
-        self.chatRoom = chatRoom
-        self.viewModel = ChatRoomViewModel(chatRoom)
-        if let swiftStomp = self.swiftStomp {
-          swiftStomp.subscribe(to: "/chatting/topic/room/\(chatRoom.roomID)")
-        }
-      })
-      .disposed(by: disposeBag)
-    
+
     output.chatRoomListener
       .drive(onNext: { chatRoom in
         self.messages = chatRoom.messages
       })
+      .disposed(by: disposeBag)
+    
+    output.messageSended
+      .drive()
       .disposed(by: disposeBag)
     
     output.saveLastMessage
@@ -117,7 +131,7 @@ final class ChatRoomViewController: MessagesViewController {
 extension ChatRoomViewController: MessagesDataSource {
   var currentSender: MessageKit.SenderType {
     return Member(
-      userID: senderID ?? "",
+      userID: viewModel.currentUserID,
       lastReadMessageID: nil,
       enteredAt: "")
   }
@@ -171,6 +185,10 @@ extension ChatRoomViewController: MessagesDisplayDelegate {
       message: message) ? .bottomRight : .bottomLeft
     return .bubbleTail(cornerDirection, .curved)
   }
+  
+  func configureAvatarView(_ avatarView: AvatarView, for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) {
+    avatarView.image = UIImage(named: "base-profile")
+  }
 }
 
 extension ChatRoomViewController: InputBarAccessoryViewDelegate {
@@ -179,20 +197,10 @@ extension ChatRoomViewController: InputBarAccessoryViewDelegate {
     didPressSendButtonWith text: String
   ) {
     //If send triggered but don't have roomID, create request
+    let chatRoom = viewModel.currentRoom
     if chatRoom.roomID == "" {
-      createRoomTrigger.onNext(chatRoom)
+      createChatRoomTrigger.onNext(chatRoom)
     } else {
-      guard let swiftStomp = swiftStomp else { return }
-      let messageRequest = MessageRequest(
-        roomID: chatRoom.roomID,
-        senderID: senderID ?? "",
-        messageType: "TEXT",
-        content: text,
-        createdAt: "\(Date())"
-      )
-      swiftStomp.send(
-        body: messageRequest,
-        to: "/chatting/topic/room/\(chatRoom.roomID)")
       inputBar.inputTextView.text.removeAll()
       sendTrigger.onNext(text)
     }
@@ -202,7 +210,6 @@ extension ChatRoomViewController: InputBarAccessoryViewDelegate {
 //MARK: - UI Setup
 extension ChatRoomViewController {
   private func configureUI() {
-    title = self.chatRoom.title ?? "채팅방"
     messagesCollectionView.messagesDataSource = self
     messagesCollectionView.messagesLayoutDelegate = self
     messagesCollectionView.messagesDisplayDelegate = self

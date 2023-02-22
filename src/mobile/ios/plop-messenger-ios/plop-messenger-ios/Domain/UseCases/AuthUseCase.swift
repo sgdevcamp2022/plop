@@ -1,5 +1,4 @@
 import Foundation
-import Moya
 import RxSwift
 
 final class AuthUseCase {

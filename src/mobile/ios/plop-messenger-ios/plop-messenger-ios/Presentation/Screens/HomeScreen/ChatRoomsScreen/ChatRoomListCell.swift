@@ -21,6 +21,8 @@ final class ChatRoomListCell: UITableViewCell {
   func setupWithData(_ room: ChatRoom) {
     roomNameLabel.text = room.title
     lastMessageLabel.text = room.messages.last?.content ?? ""
+    roomImageView.image = UIImage(systemName: "ellipsis.message")
+    roomImageView.tintColor = .systemOrange
   }
 }
 

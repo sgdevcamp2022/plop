@@ -35,7 +35,7 @@ final class ChatRoomListCoordinator: Coordinator {
   
   func dismissAndpushChatRoom(_ type: String, members: [User]) {
     let presentedViewController = self.navigationController.presentedViewController
-    let roomName = members.map({ $0.userID }).joined(separator: ", ")
+    let roomName = members.map({ $0.profile.nickname }).joined(separator: ", ")
     let room = ChatRoom(
       roomID: "",
       title: roomName,
@@ -44,18 +44,20 @@ final class ChatRoomListCoordinator: Coordinator {
       messages: [],
       managers: [])
     presentedViewController?.dismiss(animated: true, completion: {
-      let chatRoomViewController = ChatRoomViewController(
-        room, "ho")
-      self.navigationController.pushViewController(chatRoomViewController, animated: true)
+      let viewModel = ChatRoomViewModel(room, nil)
+      let chatRoomViewController = ChatRoomViewController()
+      chatRoomViewController.viewModel = viewModel
+      self.navigationController.pushViewController(
+        chatRoomViewController,
+        animated: true
+      )
     })
   }
   
   func pushChatRoom(_ chatRoom: ChatRoom, websocket: SwiftStomp) {
-    let viewController = ChatRoomViewController(
-      chatRoom,
-      "ho",
-      websocket
-    )
+    let viewModel = ChatRoomViewModel(chatRoom, websocket)
+    let viewController = ChatRoomViewController()
+    viewController.viewModel = viewModel
     self.navigationController.pushViewController(viewController, animated: true)
   }
 }

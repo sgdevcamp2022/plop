@@ -9,6 +9,9 @@ final class ChatRoomListViewModel: ViewModelType {
     let fetchChatRoomListTrigger: Driver<Void>
     let createChatRoomTrigger: Driver<Void>
     let chatRoomSelectedTrigger: Driver<ChatRoom>
+    
+    let connectTrigger: Driver<Void>
+    let disconnectTrigger: Driver<Void>
   }
   
   struct Output {
@@ -16,6 +19,8 @@ final class ChatRoomListViewModel: ViewModelType {
     let finishedFetchChatRoomList: Driver<Void>
     let createChatRoom: Driver<Void>
     let presentChatRoom: Driver<Void>
+    let connected: Driver<Void>
+    let disconnected: Driver<Void>
   }
   
   private let coordinator: ChatRoomListCoordinator
@@ -23,7 +28,7 @@ final class ChatRoomListViewModel: ViewModelType {
   private let usecase = ChatRoomUseCase()
   private let userUsecase = UserUseCase()
   private let chatRoomRealm = ChatRoomRealm()
-  private let chatRoomWebsocket: SwiftStomp
+  private var chatRoomWebsocket: SwiftStomp?
   
   private var rooms = [ChatRoom]()
   private let currentUserID = UserDefaults.standard.string(
@@ -33,16 +38,7 @@ final class ChatRoomListViewModel: ViewModelType {
   init(coordinator: ChatRoomListCoordinator) {
     self.coordinator = coordinator
     
-    let chatRoomWebsocketURL = URL(
-      string: "ws://3.39.130.186:8011/ws-chat")!
-    chatRoomWebsocket = SwiftStomp(
-      host: chatRoomWebsocketURL,
-      headers: [
-        "Content-Type": "application/json"
-      ])
-    chatRoomWebsocket.autoReconnect = true
-    chatRoomWebsocket.delegate = self
-    chatRoomWebsocket.connect()
+    configureWebsocket()
   }
 
   func transform(_ input: Input) -> Output {
@@ -66,31 +62,83 @@ final class ChatRoomListViewModel: ViewModelType {
       })
     
     let presentChatRoom = input.chatRoomSelectedTrigger
-      .map({ [unowned self] chatRoom in
+      .map({ [weak self, chatRoomWebsocket] chatRoom in
+        guard let self = self, let chatRoomWebsocket = chatRoomWebsocket else {
+          return
+        }
+        
         self.coordinator.pushChatRoom(
-          chatRoom, websocket: self.chatRoomWebsocket)
+          chatRoom,
+          websocket: chatRoomWebsocket)
+      })
+    
+    let connected = input.connectTrigger
+      .map({ [weak self] in
+        guard let self = self else { return }
+        self.connectWebsocket()
+      })
+    
+    let disconnected = input.disconnectTrigger
+      .map({ [weak self] in
+        guard let self = self else { return }
+        self.disconnectWebsocket()
       })
   
     return Output(
       chatRoomList: chatRoomList,
       finishedFetchChatRoomList: finishedFetchChatRoomList,
       createChatRoom: createChatRoom,
-      presentChatRoom: presentChatRoom
+      presentChatRoom: presentChatRoom,
+      connected: connected,
+      disconnected: disconnected
     )
+  }
+  
+  private func configureWebsocket() {
+    guard let url = URL(string: URLConstants.chatWebsocketURL) else {
+      return
+    }
+    
+    chatRoomWebsocket = SwiftStomp(
+      host: url,
+      headers: [
+        "Content-Type": "application/json"
+      ])
+    
+    guard let chatRoomWebsocket = chatRoomWebsocket else { return }
+    chatRoomWebsocket.autoReconnect = true
+    chatRoomWebsocket.delegate = self
+  }
+  
+  private func connectWebsocket() {
+    guard let chatRoomWebsocket = chatRoomWebsocket else { return }
+    if !chatRoomWebsocket.isConnected {
+      chatRoomWebsocket.connect()
+    }
+  }
+  
+  private func disconnectWebsocket() {
+    guard let chatRoomWebsocket = chatRoomWebsocket else { return }
+    if chatRoomWebsocket.isConnected {
+      chatRoomWebsocket.disconnect()
+    }
   }
 }
 
+//MARK: - SwiftStompDelegate
 extension ChatRoomListViewModel: SwiftStompDelegate {
   func onConnect(
     swiftStomp: SwiftStomp,
     connectType: StompConnectType
   ) {
-    print("✅ Connected : \(connectType)")
+    guard let userID = UserDefaults.standard.string(forKey: "currentUserID") else { return }
+
     if connectType == .toStomp {
       rooms.forEach({
         swiftStomp.subscribe(
           to: "/chatting/topic/room/\($0.roomID)")
       })
+      swiftStomp.subscribe(to: "/chatting/topic/new-room/\(userID)")
     }
   }
   
@@ -108,20 +156,17 @@ extension ChatRoomListViewModel: SwiftStompDelegate {
     destination: String,
     headers: [String : String]
   ) {
+    guard let message = message as? String,
+          let data = message.data(using: .utf8) else { return }
+    
     do {
-      guard let message = message as? String else { throw NetworkError.failedToFetchUnreadMessages }
-      guard let data = message.data(using: .utf8) else {
-        throw NetworkError.failedToLogin
-      }
-      let msg = try JSONDecoder().decode(MessageRequest.self, from: data)
-      
-      let messageToSave = msg.toDomain(messageId)
-      chatRoomRealm.save(message: messageToSave, in: messageToSave.roomID)
+      let messageResponse = try JSONDecoder().decode(WebsocketMessage.self, from: data)
+      let domainMessage = messageResponse.toDomain()
+      chatRoomRealm.save(message: domainMessage, in: domainMessage.roomID)
         .subscribe()
         .disposed(by: disposeBag)
-      
     } catch {
-      print(error)
+      return
     }
   }
   
@@ -141,8 +186,5 @@ extension ChatRoomListViewModel: SwiftStompDelegate {
   func onSocketEvent(
     eventName: String,
     description: String
-  ) {
-    print(eventName)
-    print(description)
-  }
+  ) {}
 }

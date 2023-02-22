@@ -68,6 +68,7 @@
 		B46082B1298A3EEF00BABC97 /* MemberResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46082B0298A3EEF00BABC97 /* MemberResponse.swift */; };
 		B46082B3298A40F800BABC97 /* ChatRoomInviteResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46082B2298A40F800BABC97 /* ChatRoomInviteResponse.swift */; };
 		B46082B7298A46FF00BABC97 /* MessageResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46082B6298A46FF00BABC97 /* MessageResponse.swift */; };
+		B46A0E9729A513A700225681 /* WebsocketMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46A0E9629A513A700225681 /* WebsocketMessage.swift */; };
 		B473CAAF299B30D300ECAD47 /* ChatRoomTarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = B473CAAE299B30D300ECAD47 /* ChatRoomTarget.swift */; };
 		B473CAB2299B80E100ECAD47 /* ChatRoomViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B473CAB1299B80E100ECAD47 /* ChatRoomViewController.swift */; };
 		B483F3C02995FD76000F78C6 /* PeopleViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B483F3BF2995FD76000F78C6 /* PeopleViewModel.swift */; };
@@ -113,7 +114,7 @@
 		B4E8D67129880E9D003B946D /* RxRelay in Frameworks */ = {isa = PBXBuildFile; productRef = B4E8D67029880E9D003B946D /* RxRelay */; };
 		B4E8D67329880E9D003B946D /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = B4E8D67229880E9D003B946D /* RxSwift */; };
 		B4EAB1E9298F842500A3E098 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4EAB1E8298F842500A3E098 /* LoginViewController.swift */; };
-		B4EAB1EC298F878100A3E098 /* UIConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4EAB1EB298F878100A3E098 /* UIConstants.swift */; };
+		B4EAB1EC298F878100A3E098 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4EAB1EB298F878100A3E098 /* Constants.swift */; };
 		B4EAB1EF298F87FF00A3E098 /* PlopOrangeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4EAB1EE298F87FF00A3E098 /* PlopOrangeButton.swift */; };
 		B4EAB1F1298FD39900A3E098 /* PlopGrayButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4EAB1F0298FD39900A3E098 /* PlopGrayButton.swift */; };
 		B4EAB1F3298FDC3100A3E098 /* PlopTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4EAB1F2298FDC3100A3E098 /* PlopTextField.swift */; };
@@ -183,6 +184,7 @@
 		B46082B0298A3EEF00BABC97 /* MemberResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberResponse.swift; sourceTree = "<group>"; };
 		B46082B2298A40F800BABC97 /* ChatRoomInviteResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomInviteResponse.swift; sourceTree = "<group>"; };
 		B46082B6298A46FF00BABC97 /* MessageResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageResponse.swift; sourceTree = "<group>"; };
+		B46A0E9629A513A700225681 /* WebsocketMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebsocketMessage.swift; sourceTree = "<group>"; };
 		B473CAAE299B30D300ECAD47 /* ChatRoomTarget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomTarget.swift; sourceTree = "<group>"; };
 		B473CAB1299B80E100ECAD47 /* ChatRoomViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomViewController.swift; sourceTree = "<group>"; };
 		B483F3BF2995FD76000F78C6 /* PeopleViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeopleViewModel.swift; sourceTree = "<group>"; };
@@ -224,7 +226,7 @@
 		B4D68149298BADE5000D8920 /* KeychainRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainRepository.swift; sourceTree = "<group>"; };
 		B4D6814B298BAE7D000D8920 /* Token.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Token.swift; sourceTree = "<group>"; };
 		B4EAB1E8298F842500A3E098 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
-		B4EAB1EB298F878100A3E098 /* UIConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIConstants.swift; sourceTree = "<group>"; };
+		B4EAB1EB298F878100A3E098 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		B4EAB1EE298F87FF00A3E098 /* PlopOrangeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlopOrangeButton.swift; sourceTree = "<group>"; };
 		B4EAB1F0298FD39900A3E098 /* PlopGrayButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlopGrayButton.swift; sourceTree = "<group>"; };
 		B4EAB1F2298FDC3100A3E098 /* PlopTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlopTextField.swift; sourceTree = "<group>"; };
@@ -368,13 +370,14 @@
 				B46082B0298A3EEF00BABC97 /* MemberResponse.swift */,
 				B4A8017F2997FF8D00874879 /* MessageRequest.swift */,
 				B46082B6298A46FF00BABC97 /* MessageResponse.swift */,
+				B4CCC3E729A3575400CC18BA /* PresenceChangeResponse.swift */,
+				B4A2201E29A342F30006D79E /* PresenceResponse.swift */,
 				B46082A0298A259300BABC97 /* SignupRequest.swift */,
 				B483F3C6299639C1000F78C6 /* UserData.swift */,
 				B483F3CA299639F7000F78C6 /* UserListResponse.swift */,
 				B483F3C8299639EF000F78C6 /* UserResponse.swift */,
+				B46A0E9629A513A700225681 /* WebsocketMessage.swift */,
 				B4114E3B299CBA7E00C9ADFD /* WithdrawalResponse.swift */,
-				B4A2201E29A342F30006D79E /* PresenceResponse.swift */,
-				B4CCC3E729A3575400CC18BA /* PresenceChangeResponse.swift */,
 			);
 			path = Entities;
 			sourceTree = "<group>";
@@ -518,6 +521,7 @@
 			children = (
 				B48D78D829A39476004BA14D /* PresenceViewController.swift */,
 				B48D78DA29A39DD2004BA14D /* PresenceViewModel.swift */,
+				B42BBFEA29935F980037B2EA /* FriendsCollectionViewCell.swift */,
 			);
 			path = Presence;
 			sourceTree = "<group>";
@@ -551,7 +555,6 @@
 				B42BBFF42993702B0037B2EA /* ChatRoomListCell.swift */,
 				B4940EF42992A1FB003BB5CD /* ChatRoomListViewController.swift */,
 				B42BBFF6299378680037B2EA /* ChatRoomListViewModel.swift */,
-				B42BBFEA29935F980037B2EA /* FriendsCollectionViewCell.swift */,
 				B4FBACE0299E7975002A04C2 /* ChatRoomListSection.swift */,
 			);
 			path = ChatRoomsScreen;
@@ -671,7 +674,7 @@
 		B4EAB1EA298F877A00A3E098 /* Constants */ = {
 			isa = PBXGroup;
 			children = (
-				B4EAB1EB298F878100A3E098 /* UIConstants.swift */,
+				B4EAB1EB298F878100A3E098 /* Constants.swift */,
 			);
 			path = Constants;
 			sourceTree = "<group>";
@@ -787,7 +790,7 @@
 				B415247329897D05006B86FF /* ChatRoomNetwork.swift in Sources */,
 				B4118094299A9AF8008586BB /* CreateChatRoomCell.swift in Sources */,
 				B48BF232298C0B07006E2684 /* TokenUseCase.swift in Sources */,
-				B4EAB1EC298F878100A3E098 /* UIConstants.swift in Sources */,
+				B4EAB1EC298F878100A3E098 /* Constants.swift in Sources */,
 				B4114E20299C0F0A00C9ADFD /* RMChatRoom.swift in Sources */,
 				B44BC3E229A267EE00362277 /* RealmRepositoryError.swift in Sources */,
 				B48BF230298C0B07006E2684 /* UseCaseError.swift in Sources */,
@@ -864,6 +867,7 @@
 				B4114E22299C0F1200C9ADFD /* RMMember.swift in Sources */,
 				B4CCC3E829A3575400CC18BA /* PresenceChangeResponse.swift in Sources */,
 				B48BF231298C0B07006E2684 /* UserUseCase.swift in Sources */,
+				B46A0E9729A513A700225681 /* WebsocketMessage.swift in Sources */,
 				B46082A5298A2BE900BABC97 /* AuthNetwork.swift in Sources */,
 				B48D4DD2299CC5DF003C8A9F /* Observable+Ext.swift in Sources */,
 				B4EAB1F9298FF4F200A3E098 /* LoginViewModel.swift in Sources */,
