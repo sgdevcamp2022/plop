@@ -1,0 +1,5 @@
+# mac
+.DS_Store
+
+
+src/server/auth/dump.rdb

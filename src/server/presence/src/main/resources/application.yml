@@ -1,0 +1,61 @@
+server:
+  port: 8021
+
+spring:
+  application:
+    name: presence-service
+  profiles:
+    default: prod
+  kafka:
+    consumer:
+      group-id: presence-group
+      auto-offset-reset: latest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring:
+          json:
+            trusted:
+              packages: '*'
+
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+kafka:
+  topic:
+    name: presence
+
+eureka:
+  instance:
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
+
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://127.0.0.1:8761/eureka
+
+
+token:
+  # 1분
+  access_expired_time: 6000000
+  secret_key: plip
+  # 1시간
+  refresh_expired_time: 3600000
+
+
+springdoc:
+  api-docs:
+    path: /presence-api-docs
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  swagger-ui:
+    operations-sorter: alpha
+    tags-sorter: alpha
+    #    http://localhost:8080/swagger-ui/index.html
+    path: /swagger-ui.html
+    disable-swagger-default-url: true
+    doc-expansion: none
+  paths-to-match:
+    - /presence/**
