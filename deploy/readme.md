@@ -117,5 +117,6 @@ src/server/chat/src/main/resources/application-prod.yml
 kafka:
     bootstrap-servers: host.docker.internal:9092
 ```
-    
+채팅서버 단독 포트 : 8011 <br>
+http://localhost:8011
 
