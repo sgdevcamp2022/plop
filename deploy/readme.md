@@ -80,4 +80,42 @@ mysql을 사용하는 서버 : auth,user,push -> 각 폴더의 application.yml �
     password: ${PLOP_DB_PWD} #plop-db-pwd
 ```
 
+### 5. 채팅 서버 관련
+
+- 주키퍼 카프카 설치
+<br>```docker-compose-single-broker.yml ```<br> 생성
+```
+version: '2'
+services:
+  zookeeper:
+    image: wurstmeister/zookeeper
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+  kafka:
+    image: wurstmeister/kafka
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: 127.0.0.1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+```
+
+도커 실행
+``` $ docker-compose -f docker-compose-single-broker.yml up ```
+![Untitled (11)](https://user-images.githubusercontent.com/58140426/221167805-dbd395b3-2f99-4018-a7e6-291f02d2e189.png)
+주키퍼, 카프카 실행확인
+<br>
+재실행시 주키퍼 - 카프카 순으로 실행
+
+- 설정 값 변경
+src/server/chat/src/main/resources/application-prod.yml
+```   
+kafka:
+    bootstrap-servers: host.docker.internal:9092
+```
+    
 
