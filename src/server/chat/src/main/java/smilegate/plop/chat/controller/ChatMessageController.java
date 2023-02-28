@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.web.bind.annotation.*;
 import smilegate.plop.chat.config.kafka.Producers;
 import smilegate.plop.chat.dto.APIMessage;
@@ -34,6 +35,19 @@ public class ChatMessageController {
     private final ChatMessageService chatMessageService;
     private final ChatRoomService chatRoomService;
     private final PushService pushService;
+
+    @MessageMapping("/chatting/pub")
+    @Operation(summary = "웹소켓메시지 전송")
+    public void sendSocketMessage(@Valid @RequestBody ChatMessageDto chatMessageDto){
+        if(!chatRoomService.existsRoom(chatMessageDto.getRoom_id())){
+            throw new CustomAPIException(ErrorCode.ROOM_NOT_FOUND_ERROR, "채팅방이 없음-"+chatMessageDto.getRoom_id());
+        }
+        ChatMessageDto savedMessage = chatMessageService.saveChatMessage(chatMessageDto);
+        producers.sendMessage(savedMessage);
+
+        // 비동기 푸시 알림
+        pushService.pushMessageToUsers(chatMessageDto);
+    }
 
     @Operation(summary = "메시지 전송")
     @PostMapping(value="/v1/message", consumes = "application/json",produces = "application/json")
